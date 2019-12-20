@@ -1,0 +1,83 @@
+a, a:hover {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a .spieler-farbe-selector:hover, a .spieler-farbe-selector-active {
+  border: 2px solid;
+}
+
+.spieler-farbe-warning {
+  color: #856404;
+  background-color: #fff3cd !important; 
+}
+
+.display-none {
+  display: none;
+}
+
+.planungs-header {
+/* height: 75px; */
+}
+
+.details-sidebar {
+  position: fixed;
+  height: 100vh;
+  top: 75px; /* Stay at the top */
+  right: 0;
+  width: 33vw;
+  z-index: 1;
+}
+
+.details-sidebar-header {
+  padding: 5px 0 5px 5px;  
+}
+
+.editor-container {
+  margin-top: 80px;
+}
+
+.mannschafts-row {
+  margin: 30px 0;
+}
+
+.mannschaft {
+  width: 400px;
+  margin: 0 auto;
+}
+
+.mannschaft-header, .spieler, .mannschaft-footer {
+  padding: .25rem .5rem
+}
+
+.invalid {
+  border: 2px solid !important;
+  border-color: #dc3545 !important;
+}
+
+.mannschaft-invalid .mannschaft-header {
+  color: #dc3545 !important;
+}
+
+.mannschaft-invalid .invalid {
+  border-left: 0px solid !important;
+  border-right: 0px solid !important;
+}
+
+.spieler-invalid {
+  color: #dc3545 !important;
+  /* background-color: #f8d7da !important; */
+  margin: 1px 0 0 0;
+}
+
+.spieler-extra-icon {
+  margin-left: 5px;
+}
+
+.spv, .ttr-wert, .ttr-difference {
+  min-width: 50px;
+}
+
+.spv-badge {
+  padding: .25em .8em
+}

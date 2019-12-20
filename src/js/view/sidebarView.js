@@ -1,0 +1,3 @@
+class SidebarView {
+  constructor() {}
+}

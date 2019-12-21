@@ -59,37 +59,155 @@ class EditorView {
       `)
 
       // Add all Spieler to the Mannschaft
-      this.spielerliste = $(`<ul id="mannschaft-${id}-spielerliste" class="list-group list-group-flush connectedSortable"></ul>`)
+      this.spielerliste = $(`<ul id="mannschaft-${id}-spielerliste" class="list-group list-group-flush connectedSortable spielerliste"></ul>`)
       $('#mannschaft-' + id).append(this.spielerliste)
-      spieler.filter(spieler => spieler.mannschaft === mannschaft.nummer).forEach( spieler => {
+      this.spielerlistemodel = spieler.filter(spieler => spieler.mannschaft === mannschaft.nummer).sort((a,b) => { return a.position - b.position })
+      this.spielerlistemodel.forEach( spieler => {
         // spieler.ttrdifferenz may be false for the very first Spieler. Do not display it
         const ttrdifferenz = spieler.ttrdifferenz !== false ? spieler.ttrdifferenz : "";
-        const ttrdifferenzVorzeichen = ttrdifferenz > 0 ? "+" : ttrdifferenz < 0 ? "-" : ""
+        const ttrdifferenzVorzeichen = ttrdifferenz > 0 ? "+" : ""
         this.spielerliste.append(`
           <li id="spieler-${spieler.id}" class="list-group-item spieler">
             <div class="d-flex">
               <div id="spieler-${spieler.id}-position" class="p-2 text-muted">${mannschaft.nummer}.${spieler.position}</div>
-              <div id="spieler-${spieler.id}-name" class="p-2 flex-grow-1">${spieler.name}</div>
+              <div id="spieler-${spieler.id}-name" class="p-2 flex-grow-1 link">${spieler.name}</div>
               <div id="spieler-${spieler.id}-spv" class="p-2 spv"></div>
               <div id="spieler-${spieler.id}-qttr" class="p-2 ttr-wert text-muted">${spieler.qttr}</div>
               <div id="spieler-${spieler.id}-ttrdifferenz" class="p-2 ttr-difference">${ttrdifferenzVorzeichen}${ttrdifferenz}</div>
             </div>
           </li>
-        `) 
+        `)
         $(`#spieler-${spieler.id}-ttrdifferenz`).addClass(ttrdifferenz > 0 ? "text-success" : ttrdifferenz < 0 ? "text-danger" : "")
       })
 
-      // Mannschafts Footer with "Spieler hinzufügen" button
-      this.mannschaftsfooter = $(`<div class="card-footer bg-transparent mannschaft-footer"></div>`)
-      this.addSpielerButton = $(`
-        <button id="mannschaft-${id}-addspielerbtn" class="btn btn-light text-muted">
-          <i class="fa fa-plus"></i>
-          Spieler hinzufügen
-        </button>
+      // New spieler button in seperate list because we dont want it to be draggable
+      $('#mannschaft-' + id).append(`
+        <ul class="list-group list-group-flush">
+          <li id="mannschaft-${id}-new-spieler" class="list-group-item spieler new-spieler-form">
+            <div class="d-flex">
+              <div id="mannschaft-${id}-new-position" class="p-2 text-muted invisible">${mannschaft.nummer}.${this.spielerlistemodel.length + 1}</div>
+              <div id="mannschaft-${id}-new-name" class="p-2 flex-grow-1"></div>
+              <div id="mannschaft-${id}-new-qttr" class="p-2 ttr-wert text-muted"></div>
+            </div>
+          </li>
+        </ul>
       `)
-      this.mannschaftsfooter.append(this.addSpielerButton)
-      $(`#mannschaft-${id}`).append(this.mannschaftsfooter)
+      const addSpielerButton = $(`<button id="mannschaft-${id}-addspielerbtn" class="btn btn-light text-muted"><i class="fa fa-plus"></i> Spieler hinzufügen</button>`)
+      const newNameInput = $(`<input id="mannschaft-${id}-new-name-input" type="text" class="form-control display-none" placeholder="Nachname, Vorname"></input>`)
+      const newQttrInput = $(`<input id="mannschaft-${id}-new-qttr-input" type="number" class="form-control display-none" placeholder="TTR" min="0" max="3000"></input>`)
+      $(`#mannschaft-${id}-new-name`).append(addSpielerButton)
+      $(`#mannschaft-${id}-new-name`).append(newNameInput)
+      $(`#mannschaft-${id}-new-qttr`).append(newQttrInput)
+
+      // add eventlistener to display new spieler form
+      addSpielerButton.hover(
+        () => { $(`#mannschaft-${id}-new-position`).removeClass("invisible") },
+        () => { if ( ! addSpielerButton.hasClass('display-none') ) { $(`#mannschaft-${id}-new-position`).addClass("invisible") } }
+      )
+      
+      // display input form for Name and QTTR instead of button
+      addSpielerButton.click( () => {
+        addSpielerButton.addClass("display-none")
+        newNameInput.removeClass("display-none")
+        newNameInput.removeClass("is-invalid")
+        newQttrInput.removeClass("display-none")
+        newQttrInput.removeClass("is-invalid")
+        $(`#mannschaft-${id}-new-position`).removeClass("invisible")
+        newNameInput.focus()
+      })
+
+      // if both inputs are empty -> discard
+      newNameInput.focusout( () => {
+        if (newNameInput.val() === "" && newQttrInput.val() === "") {
+          addSpielerButton.removeClass("display-none")
+          newNameInput.addClass("display-none")
+          newQttrInput.addClass("display-none")
+          $(`#mannschaft-${id}-new-position`).addClass("invisible")
+        }
+      })
+      newQttrInput.focusout( () => {
+        if (newNameInput.val() === "" && newQttrInput.val() === "") {
+          addSpielerButton.removeClass("display-none")
+          newNameInput.addClass("display-none")
+          newQttrInput.addClass("display-none")
+          $(`#mannschaft-${id}-new-position`).addClass("invisible")
+        }
+      })
+
     })
+
+    // Activate sorting
+    $( ".connectedSortable" ).sortable({
+      connectWith: ".connectedSortable"
+    }).disableSelection();
+    
+  }
+
+  bindAddSpieler(handler) {
+    $(".new-spieler-form input").on("keyup", (event) => {
+      event.preventDefault()
+
+      // Only react on <Enter>
+      if (event.keyCode === 13) {
+        // Find out which input has been hit enter in
+        var input_type = ""
+        var newNameInput = ""
+        var newQttrInput = ""
+        if (event.target.id.includes("new-name")){
+          input_type = "name"
+          newNameInput = $("#" + event.target.id)
+          newQttrInput = $("#" + event.target.id.replace("name","qttr"))
+        } else if (event.target.id.includes("new-qttr")){
+          input_type = "qttr"
+          newNameInput = $("#" + event.target.id.replace("qttr","name"))
+          newQttrInput = $("#" + event.target.id)
+        }
+        var addSpielerButton = $("#" + event.target.id.replace("new-" + input_type + "-input","addspielerbtn"))
+        var newPositionLabel = $("#" + event.target.id.replace("new-" + input_type + "-input","new-position"))
+
+        // Get the inputs
+        var newname = newNameInput.val()
+        var newqttr = parseInt(newQttrInput.val(), 10)
+
+        // Test if inputs are valid
+        if ( newname === "" ) {
+          newNameInput.addClass("is-invalid")
+        }
+        if (newqttr !== parseInt(newqttr, 10) || newqttr <= 0 ) {
+          newQttrInput.addClass("is-invalid")
+        }
+
+        // Add the Spieler to the model
+        if ( newname !== "" && newqttr === parseInt(newqttr, 10) && newqttr > 0 ) {
+          addSpielerButton.removeClass("display-none")
+          newNameInput.addClass("display-none")
+          newNameInput.val("")
+          newNameInput.removeClass("is-invalid")
+          newQttrInput.addClass("display-none")
+          newQttrInput.val("")
+          newQttrInput.removeClass("is-invalid")
+          newPositionLabel.addClass("invisible")
+
+          const mannschaft = parseInt(newPositionLabel.text().trim().split('.')[0], 10)
+          const position = parseInt(newPositionLabel.text().trim().split('.')[1], 10)
+          handler(mannschaft, position, newname, newqttr)
+        }
+      }
+    })
+  }
+
+  handleNewSpielerFormFocusOut(addSpielerButton, newNameInput, newQttrInput, id) {
+    const newname = newNameInput.val()
+    const newqttr = newQttrInput.val()
+    if ( newname === "" && newqttr === "") {
+      // if both inputs are empty -> discard
+      addSpielerButton.removeClass("display-none")
+      newNameInput.addClass("display-none")
+      newQttrInput.addClass("display-none")
+      $(`#mannschaft-${id}-new-position`).addClass("invisible")
+    } else if ( newname !== "" && newqttr !== "" ) {
+      // if both inputs are filled -> add spieler
+    }
   }
 
   _getRomanNumberOfInteger(i){

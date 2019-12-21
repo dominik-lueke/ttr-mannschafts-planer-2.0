@@ -8,12 +8,6 @@
 $(function () {
   // Enable Bootstrap Tooltips
   $('[data-toggle="tooltip"]').tooltip();
-
-  // Activate sorting
-  $( ".connectedSortable" ).sortable({
-    connectWith: ".connectedSortable"
-  }).disableSelection();
-
 });
 
 

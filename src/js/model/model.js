@@ -131,24 +131,42 @@ class Model {
   }
 
   addSpieler(mannschaft, position, name, qttr) {
+
+    // compute the new ttr differenz by searching for the smallest ttr wert of all players before this one
+    var smallest_qttr = 3000
+    this.spieler.filter(spieler => (spieler.mannschaft <= mannschaft && spieler.position < position)).forEach(spieler => {
+      smallest_qttr = smallest_qttr < spieler.qttr ? smallest_qttr: spieler.qttr
+    })
+    const ttrdifferenz = smallest_qttr - qttr
+
+    // add the spieler
     const spieler = {
       id : this.spieler.length > 0 ? this.spieler[this.spieler.length - 1].id + 1 : 1,
       name: name,
       mannschaft, mannschaft,
       position, position,
       qttr: qttr,
+      ttrdifferenz: ttrdifferenz,
       farbe: "",
       spv: false,
       reserve: false,
       sbe: false,
       kommentar: ""
     }
-
     this.spieler.push(spieler)
+
+    // update the ttr differenz for players behind this one if necessary
+    this.spieler.filter(spieler => (spieler.mannschaft >= mannschaft && spieler.position > position)).forEach(spieler => {
+      if (spieler.ttrdifferenz > (spieler.qttr - qttr)) {
+        spieler.ttrdifferenz = spieler.qttr - qttr
+      }
+    })
+
+    this.onMannschaftenChanged(this.mannschaften, this.spieler)
   }
 
   deleteSpieler(id) {
-    this.spieler= this.spieler.filter(spieler => spieler.id !== id )
+    this.spieler = this.spieler.filter(spieler => spieler.id !== id )
   }
 
   addMannschaft(spielklasse){
@@ -167,6 +185,10 @@ class Model {
 
   deleteMannschaft(spielklasse, nummer){
     this.mannschaften = this.mannschaften.filter(mannschaft => ( mannschaft.spielklasse !== spielklasse && mannschaft.nummer !== nummer))
+  }
+
+  bindMannschaftenChanged(callback) {
+    this.onMannschaftenChanged = callback
   }
 
   // Map through all todos, and replace the text of the todo with the specified id

@@ -1,4 +1,5 @@
-a, a:hover {
+a, a:hover,
+.link, .link:hover {
   text-decoration: none;
   cursor: pointer;
 }
@@ -14,10 +15,6 @@ a .spieler-farbe-selector:hover, a .spieler-farbe-selector-active {
 
 .display-none {
   display: none;
-}
-
-.planungs-header {
-/* height: 75px; */
 }
 
 .details-sidebar {
@@ -64,6 +61,10 @@ a .spieler-farbe-selector:hover, a .spieler-farbe-selector-active {
   border-right: 0px solid !important;
 }
 
+.mannschaft .spielerliste {
+  min-height: 25px;
+}
+
 .spieler-invalid {
   color: #dc3545 !important;
   /* background-color: #f8d7da !important; */
@@ -76,6 +77,10 @@ a .spieler-farbe-selector:hover, a .spieler-farbe-selector-active {
 
 .spv, .ttr-wert, .ttr-difference {
   min-width: 50px;
+}
+
+.ttr-wert input {
+  max-width: 90px;
 }
 
 .spv-badge {

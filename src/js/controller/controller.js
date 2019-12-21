@@ -5,11 +5,13 @@ class Controller {
     this.editorView = editorView
     this.sidebarView = sidebarView
 
-    // Initial Display of Header Data
+    // Initial Display
     this.onHeaderDataChanged(this.model.planung)
-
-    // Initial Display of Mannschaften and Spieler
     this.onMannschaftenChanged(this.model.mannschaften, this.model.spieler)
+
+    // Bind Handlers 
+    this.model.bindMannschaftenChanged(this.onMannschaftenChanged)
+    this.editorView.bindAddSpieler(this.handleAddSpieler)
   }
 
   onHeaderDataChanged = planung => {
@@ -18,5 +20,10 @@ class Controller {
 
   onMannschaftenChanged = (mannschaften,spieler) => {
     this.editorView.displayMannschaften(mannschaften,spieler)
+    this.editorView.bindAddSpieler(this.handleAddSpieler)
+  }
+
+  handleAddSpieler = (mannschaft,position,name,qttr) => {
+    this.model.addSpieler(mannschaft,position,name,qttr)
   }
 }

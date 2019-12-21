@@ -2,7 +2,7 @@ class HeaderView {
   constructor() {
     // The header element
     $('#header').append(`
-      <div class="d-flex bg-dark text-white text-center planungs-header fixed-top">
+      <div class="d-flex bg-dark text-white text-center fixed-top">
         <div class="p-2 flex-fill text-muted">
           <h4><small id="planung-verein"></small></h4>
           <h6><small id="planung-vereinsnummer"></small></h6>

@@ -58,7 +58,7 @@ class Model {
         mannschaft: 1,
         position: 2,
         qttr: 1890,
-        ttrdifferenz: 10,
+        ttrdifferenz: -10,
         farbe: "",
         spv: false,
         reserve: false,
@@ -73,7 +73,7 @@ class Model {
         mannschaft: 1,
         position: 3,
         qttr: 1880,
-        ttrdifferenz: 10,
+        ttrdifferenz: -10,
         farbe: "",
         spv: false,
         reserve: false,
@@ -88,7 +88,7 @@ class Model {
         mannschaft: 1,
         position: 4,
         qttr: 1870,
-        ttrdifferenz: 10,
+        ttrdifferenz: -10,
         farbe: "",
         spv: false,
         reserve: false,
@@ -103,7 +103,7 @@ class Model {
         mannschaft: 1,
         position: 5,
         qttr: 1860,
-        ttrdifferenz: 10,
+        ttrdifferenz: -10,
         farbe: "",
         spv: false,
         reserve: false,
@@ -118,7 +118,7 @@ class Model {
         mannschaft: 1,
         position: 6,
         qttr: 1850,
-        ttrdifferenz: 10,
+        ttrdifferenz: -10,
         farbe: "",
         spv: false,
         reserve: false,
@@ -134,10 +134,10 @@ class Model {
 
     // compute the new ttr differenz by searching for the smallest ttr wert of all players before this one
     var smallest_qttr = 3000
-    this.spieler.filter(spieler => (spieler.mannschaft <= mannschaft && spieler.position < position)).forEach(spieler => {
+    this.spieler.filter(spieler => ( (spieler.mannschaft == mannschaft &&  spieler.position < position) || spieler.mannschaft < mannschaft )).forEach(spieler => {
       smallest_qttr = smallest_qttr < spieler.qttr ? smallest_qttr: spieler.qttr
     })
-    const ttrdifferenz = smallest_qttr - qttr
+    const ttrdifferenz =  qttr - smallest_qttr
 
     // add the spieler
     const spieler = {
@@ -156,8 +156,8 @@ class Model {
     this.spieler.push(spieler)
 
     // update the ttr differenz for players behind this one if necessary
-    this.spieler.filter(spieler => (spieler.mannschaft >= mannschaft && spieler.position > position)).forEach(spieler => {
-      if (spieler.ttrdifferenz > (spieler.qttr - qttr)) {
+    this.spieler.filter(spieler => ( (spieler.mannschaft == mannschaft && spieler.position > position) || spieler.mannschaft > mannschaft )).forEach(spieler => {
+      if (spieler.ttrdifferenz < (spieler.qttr - qttr)) {
         spieler.ttrdifferenz = spieler.qttr - qttr
       }
     })

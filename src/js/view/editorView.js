@@ -22,6 +22,7 @@ class EditorView {
     `)
     this.mannschaftsContainer = $('#mannschafts-container')
     this.mannschaftViews = []
+    this.reoderSpielerHandler = {}
   }
 
   displayMannschaften(mannschaften, spieler) {
@@ -36,14 +37,30 @@ class EditorView {
     })
 
     // Activate sorting
-    $( ".connectedSortable" ).sortable({
-      connectWith: ".connectedSortable"
+    $(".connectedSortable").sortable({
+      connectWith: ".connectedSortable",
+      update: (event, ui) => {
+        const old_position_array = $("#" + ui.item.attr("id") + "-position").text().split(".") // MANNSCHAFT.POSITION
+        const old_mannschaft = parseInt(old_position_array[0],10)
+        const old_position = parseInt(old_position_array[1],10)
+        const new_mannschaft = parseInt(ui.item.parent().attr("id").split("-")[2],10) // mannschaft-SPIELKLASSE->NUMMER<-spielerliste
+        const new_position = ui.item.index() + 1
+        if (old_mannschaft != new_mannschaft || old_position != new_position) {
+          const spielklasse = ui.item.attr("id").split("-")[1] // spieler->SPIELKLASSE<-ID
+          const id = parseInt(ui.item.attr("id").split("-")[2],10) // spieler-SPIELKLASSE->ID<
+          this.reoderSpielerHandler(id, old_mannschaft, old_position, new_mannschaft, new_position, spielklasse)
+        }
+      }
     }).disableSelection();
     
   }
 
   bindAddSpieler(handler) {
     this.mannschaftViews.forEach(mannschaft => { mannschaft.bindAddSpieler(handler)})
+  }
+
+  bindReorderSpieler(handler) {
+    this.reoderSpielerHandler = handler
   }
 
 }

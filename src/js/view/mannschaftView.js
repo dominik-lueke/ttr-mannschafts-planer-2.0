@@ -74,15 +74,15 @@ class MannschaftView {
   }
 
   bindAddSpieler(handler) {
-    this.newNameInput.on("keyup", (event) => { this._addSpielerKeyHandler(event, handler) } )
-    this.newQttrInput.on("keyup", (event) => { this._addSpielerKeyHandler(event, handler) } )
+    this.newNameInput.on("keyup", (event) => { this._addSpielerKeyUpHandler(event, handler); } )
+    this.newQttrInput.on("keyup", (event) => { this._addSpielerKeyUpHandler(event, handler); } )
   }
 
   delete() {
     this.html.remove()
   }
 
-  _addSpielerKeyHandler(event, handler) {
+  _addSpielerKeyUpHandler(event, handler) {
     event.preventDefault()
     // On <Enter> we add a new spieler
     if (event.keyCode === 13) {
@@ -105,10 +105,11 @@ class MannschaftView {
 
     // Add the Spieler to the model in it is valid
     if ( newname !== "" && newqttr === parseInt(newqttr, 10) && newqttr > 0 ) {
+      const spielklasse = this.newNameInput.attr("id").split("-")[1]
       const mannschaft = parseInt(this.newPositionLabel.text().trim().split('.')[0], 10)
       const position = parseInt(this.newPositionLabel.text().trim().split('.')[1], 10)
       this._hideAddSpielerForm()
-      handler(mannschaft, position, newname, newqttr)
+      handler(spielklasse, mannschaft, position, newname, newqttr)
     }
   }
 

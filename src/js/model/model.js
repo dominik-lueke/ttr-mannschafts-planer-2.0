@@ -50,8 +50,7 @@ class Model {
         reserve: false,
         sbe: false,
         kommentar: "",
-        invalid: false,
-        invalidKommentar: ""
+        invalid: []
       },
       {
         id: 2,
@@ -66,8 +65,7 @@ class Model {
         reserve: false,
         sbe: false,
         kommentar: "",
-        invalid: false,
-        invalidKommentar: ""
+        invalid: []
       },
       {
         id: 3,
@@ -82,8 +80,7 @@ class Model {
         reserve: false,
         sbe: false,
         kommentar: "",
-        invalid: false,
-        invalidKommentar: ""
+        invalid: []
       },
       {
         id: 4,
@@ -98,8 +95,7 @@ class Model {
         reserve: false,
         sbe: false,
         kommentar: "",
-        invalid: false,
-        invalidKommentar: ""
+        invalid: []
       },
       {
         id: 5,
@@ -114,34 +110,95 @@ class Model {
         reserve: false,
         sbe: false,
         kommentar: "",
-        invalid: false,
-        invalidKommentar: ""
+        invalid: []
       },
       {
         id: 6,
         name: "Nachname, Vorname6",
         spielklasse: "Herren",
-        mannschaft: 1,
-        position: 6,
-        qttr: 1850,
-        ttrdifferenz: -10,
+        mannschaft: 2,
+        position: 1,
+        qttr: 1950,
+        ttrdifferenz: +90,
         farbe: "",
         spv: false,
         reserve: false,
         sbe: false,
         kommentar: "",
-        invalid: false,
-        invalidKommentar: ""
+        invalid: []
       }
     ]
+    this._checkTtrDifferenzenForPosition("Herren", 2, 1)
   }
 
+  /*
+  * Validity Checks for Spieler
+  */
+  _checkTtrDifferenzenForPosition(spielklasse, mannschaft, position){
+    const check_spieler = this.spieler.find( spieler => ( spieler.spielklasse == spielklasse && spieler.mannschaft == mannschaft && spieler.position == position ) )
+    check_spieler.invalid = []
+    // Check if this spieler is invalid because of any positionen higher than its own
+    this.spieler
+    .filter(spieler => ( 
+      spieler.spielklasse == spielklasse && 
+      ( spieler.mannschaft == mannschaft && spieler.position < position ) || ( spieler.mannschaft < mannschaft ) ) &&
+      spieler.qttr < check_spieler.qttr)
+    .forEach(spieler => {
+      var delta = spieler.mannschaft == mannschaft ? 35 : 50
+      delta += spieler.sbe || check_spieler.sbe ? 35 : 0
+      const differenz = check_spieler.qttr - spieler.qttr
+      if ( differenz > delta ) {
+        check_spieler.invalid.push({
+          id: spieler.id,
+          mannschaft: spieler.mannschaft,
+          position: spieler.position,
+          name: spieler.name,
+          differenz: differenz,
+        }) 
+      }
+    })
+    // check if this spieler is the reason any positionen lower than its own are invalid
+    this.spieler
+    .filter(spieler => ( 
+      spieler.spielklasse == spielklasse && 
+      ( spieler.mannschaft == mannschaft && spieler.position > position ) || ( spieler.mannschaft > mannschaft ) ) &&
+      spieler.qttr > check_spieler.qttr)
+    .forEach(spieler => {
+      var delta = spieler.mannschaft == mannschaft ? 35 : 50
+      delta += spieler.sbe || check_spieler.sbe ? 35 : 0
+      const differenz = spieler.qttr - check_spieler.qttr
+      if ( differenz > delta ) {
+        var invalid_spieler = spieler.invalid.find(invalid_spieler => { invalid_spieler.id == spieler.id })
+        if ( ! invalid_spieler ) {
+          invalid_spieler = { id: check_spieler.id }
+        }
+        invalid_spieler.mannschaft = check_spieler.mannschaft
+        invalid_spieler.position = check_spieler.position
+        invalid_spieler.name = check_spieler.name
+        invalid_spieler.differenz = differenz
+        spieler.invalid.push(invalid_spieler)
+      }
+    })
+  }
+
+  _removeSpielerFromInvalidLists(remove_spieler){
+    this.spieler
+    .filter(spieler => ( (spieler.spielklasse == remove_spieler.spielklasse ) && spieler.invalid.find( invalid_spieler => invalid_spieler.id == remove_spieler.id )))
+    .forEach(spieler => {
+      spieler.invalid = spieler.invalid.filter(invalid_spieler => invalid_spieler.id !== remove_spieler.id)
+    })
+  }
+
+  /* 
+  * External Manipulate Spieler Array Functions
+  */
   addSpieler(spielklasse, mannschaft, position, name, qttr) {
     const id = this.spieler.length > 0 ? this.spieler[this.spieler.length - 1].id + 1 : 1
     // add the spieler
     const spieler = {
       id : id,
       name: name,
+      spielklasse: spielklasse,
       qttr: qttr,
       farbe: "",
       spv: false,
@@ -151,15 +208,16 @@ class Model {
     }
     this.spieler.push(spieler)
     // insert the new spieler in the correct (spielklasse, mannschaft, position)
-    this._insertSpielerInMannschaft(id, spielklasse, mannschaft, position)
+    this._insertSpielerInMannschaft(spieler, mannschaft, position)
     // trigger view update
     this.onMannschaftenChanged(this.mannschaften, this.spieler)
   }
 
-  reorderSpieler(id, old_mannschaft, old_position, new_mannschaft, new_position, spielklasse) {
+  reorderSpieler(id, new_mannschaft, new_position) {
+    const spieler = this.spieler.find(spieler => spieler.id == id)
     // reorder = remove from old position + insert in new position
-    this._removePositionFromMannschaft(spielklasse, old_mannschaft, old_position)
-    this._insertSpielerInMannschaft(id, spielklasse, new_mannschaft, new_position)
+    this._removeSpielerFromMannschaft(spieler)
+    this._insertSpielerInMannschaft(spieler, new_mannschaft, new_position)
     // trigger view update
     this.onMannschaftenChanged(this.mannschaften, this.spieler)
   }
@@ -168,41 +226,43 @@ class Model {
     this.spieler = this.spieler.filter(spieler => spieler.id !== id )
   }
 
-  _removePositionFromMannschaft(spielklasse, mannschaft, position){
-    // Give the position the values 0.0
-    this.spieler
-    .filter(spieler => ( spieler.spielklasse == spielklasse && spieler.mannschaft == mannschaft && spieler.position == position) )
-    .forEach(spieler => {
-      spieler.mannschaft = 0
-      spieler.position = 0
-    })
+  /* 
+  * Internal Manipulate Spieler Array Functions
+  */
+  _removeSpielerFromMannschaft(remove_spieler){
+    // Save current spieler position
+    const old_mannschaft = remove_spieler.mannschaft
+    const old_position = remove_spieler.position
+    // Give the spieler the position 0.0
+    remove_spieler.mannschaft = 0
+    remove_spieler.position = 0
     // decrease all positionen from mannschaft greater than position by one
     this.spieler
-    .filter( spieler => ( spieler.spielklasse == spielklasse && spieler.mannschaft == mannschaft && spieler.position > position ) )
+    .filter( spieler => ( spieler.spielklasse == remove_spieler.spielklasse && spieler.mannschaft == old_mannschaft && spieler.position >= old_position ) )
     .forEach( spieler => { spieler.position-- } )
     // reorder this.spieler
     this.spieler = this.spieler.sort((a,b) => this._compareSpielerPositionen(a, b))
     // recompute ttrdifferenz for the new position
-    this._recomputeTtrDifferenzForPosition(spielklasse, mannschaft, position)
+    this._recomputeTtrDifferenzForPosition(remove_spieler.spielklasse, old_mannschaft, old_position)
+    // remove this spieler from all invalid lists of other spieler
+    this._removeSpielerFromInvalidLists(remove_spieler)
   }
 
-  _insertSpielerInMannschaft(id, spielklasse, mannschaft, position) {
+  _insertSpielerInMannschaft(insert_spieler, mannschaft, position) {
     // increase all positionen from mannschaft greater or equal than position by one
     this.spieler
-    .filter( spieler => ( spieler.spielklasse == spielklasse && spieler.mannschaft == mannschaft && spieler.position >= position ) )
+    .filter( spieler => ( spieler.spielklasse == insert_spieler.spielklasse && spieler.mannschaft == mannschaft && spieler.position >= position ) )
     .forEach( spieler => { spieler.position++} )
-    // give the Spieler with id the new mannschaft and position
-    this.spieler
-    .filter(spieler => ( spieler.id == id) )
-    .forEach( spieler => {
-      spieler.spielklasse = spielklasse
-      spieler.mannschaft = mannschaft
-      spieler.position = position
-    })
+    // give the spieler the new mannschaft and position
+    insert_spieler.spielklasse = insert_spieler.spielklasse
+    insert_spieler.mannschaft = mannschaft
+    insert_spieler.position = position
     // reorder this.spieler
     this.spieler = this.spieler.sort((a,b) => this._compareSpielerPositionen(a, b))
     // recompute ttrdifferenz for the new position
-    this._recomputeTtrDifferenzForPosition(spielklasse, mannschaft, position)
+    this._recomputeTtrDifferenzForPosition(insert_spieler.spielklasse, insert_spieler.mannschaft, insert_spieler.position)
+    // check if any ttrdifferenzen are now invalid
+    this._checkTtrDifferenzenForPosition(insert_spieler.spielklasse, insert_spieler.mannschaft, insert_spieler.position)
   }
 
   _compareSpielerPositionen(spieler1, spieler2) {
@@ -237,7 +297,9 @@ class Model {
     return ( (next_index < this.spieler.length) && (this.spieler[next_index].spielklasse == spieler.spielklasse) ) ? this.spieler[next_index] : null
   }
 
-
+  /*
+  * External Manipulate Mannschaften Array Functions
+  */
   addMannschaft(spielklasse){
     const mannschaft = { 
       spielklasse: spielklasse,

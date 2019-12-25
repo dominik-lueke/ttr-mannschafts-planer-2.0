@@ -28,8 +28,8 @@ class Controller {
     this.model.addSpieler(spielklasse,mannschaft,position,name,qttr)
   }
 
-  handleReorderSpieler = (id, old_mannschaft, old_position, new_mannschaft, new_position, spielklasse) => {
-    this.model.reorderSpieler(id, old_mannschaft, old_position, new_mannschaft, new_position, spielklasse)
+  handleReorderSpieler = (id, new_mannschaft, new_position, spielklasse) => {
+    this.model.reorderSpieler(id, new_mannschaft, new_position, spielklasse)
   }
 
 }

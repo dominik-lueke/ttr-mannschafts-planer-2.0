@@ -40,19 +40,27 @@ class EditorView {
     $(".connectedSortable").sortable({
       connectWith: ".connectedSortable",
       update: (event, ui) => {
+        // activate tooltips again
+        $('[data-toggle="tooltip"]').tooltip();
+        // handle reordering
         const old_position_array = $("#" + ui.item.attr("id") + "-position").text().split(".") // MANNSCHAFT.POSITION
         const old_mannschaft = parseInt(old_position_array[0],10)
         const old_position = parseInt(old_position_array[1],10)
         const new_mannschaft = parseInt(ui.item.parent().attr("id").split("-")[2],10) // mannschaft-SPIELKLASSE->NUMMER<-spielerliste
         const new_position = ui.item.index() + 1
         if (old_mannschaft != new_mannschaft || old_position != new_position) {
-          const spielklasse = ui.item.attr("id").split("-")[1] // spieler->SPIELKLASSE<-ID
           const id = parseInt(ui.item.attr("id").split("-")[2],10) // spieler-SPIELKLASSE->ID<
-          this.reoderSpielerHandler(id, old_mannschaft, old_position, new_mannschaft, new_position, spielklasse)
+          this.reoderSpielerHandler(id, new_mannschaft, new_position)
         }
+      },
+      start: (event, ui) => {
+        // deactivate tooltips
+        $("#" + ui.item.attr("id")).tooltip("dispose");
       }
     }).disableSelection();
-    
+
+    // activate tooltips
+    $('[data-toggle="tooltip"]').tooltip();
   }
 
   bindAddSpieler(handler) {

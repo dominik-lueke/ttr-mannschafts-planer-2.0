@@ -5,12 +5,6 @@
 // selectively enable features needed in the rendering
 // process.
 
-$(function () {
-  // Enable Bootstrap Tooltips
-  $('[data-toggle="tooltip"]').tooltip();
-});
-
-
 /*
 * --------------
 *     M V C

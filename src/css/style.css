@@ -65,14 +65,34 @@ a .spieler-farbe-selector:hover, a .spieler-farbe-selector-active {
   min-height: 25px;
 }
 
+/* SPIELER INVALID */
 .spieler-invalid {
   color: #dc3545 !important;
   margin: 1px 0 0 0;
 }
 
+.spieler-invalid-icon {
+  display: none;
+  margin-right: -40px;
+}
+
+.spieler-invalid .spieler-invalid-icon {
+  display: inline-block;
+}
+
+.spieler-invalid .ttr-difference {
+  margin-right: 8px;
+}
+
+.spieler.highlight-invalid .spieler-name {
+  font-weight: bold;
+}
+
 .spieler-extra-icon {
   margin-left: 5px;
 }
+
+/* SPIELER COLUMNS */
 
 .spv, .ttr-wert, .ttr-difference {
   min-width: 50px;
@@ -82,12 +102,15 @@ a .spieler-farbe-selector:hover, a .spieler-farbe-selector-active {
   max-width: 90px;
 }
 
+/* SPIELER SPV */
+
 .spv-badge {
   display: none;
   padding: .25em .8em;
   cursor: pointer
 }
 
-.spv-possible .spv-badge {
+.spv-possible .spv-badge,
+.spv-highlight .spv-badge {
   display: inline-block
 } 

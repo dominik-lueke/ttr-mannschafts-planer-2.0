@@ -101,9 +101,9 @@ class Model {
         id: 5,
         name: "Nachname, Vorname5",
         spielklasse: "Herren",
-        mannschaft: 1,
-        position: 5,
-        qttr: 1860,
+        mannschaft: 2,
+        position: 1,
+        qttr: 1920,
         ttrdifferenz: -10,
         farbe: "",
         spv: false,
@@ -117,8 +117,8 @@ class Model {
         name: "Nachname, Vorname6",
         spielklasse: "Herren",
         mannschaft: 2,
-        position: 1,
-        qttr: 1950,
+        position: 2,
+        qttr: 1930,
         ttrdifferenz: +90,
         farbe: "",
         spv: false,
@@ -129,6 +129,7 @@ class Model {
       }
     ]
     this._checkTtrDifferenzenForPosition("Herren", 2, 1)
+    this._checkTtrDifferenzenForPosition("Herren", 2, 2)
   }
 
   /*
@@ -193,7 +194,7 @@ class Model {
   * External Manipulate Spieler Array Functions
   */
   addSpieler(spielklasse, mannschaft, position, name, qttr) {
-    const id = this.spieler.length > 0 ? this.spieler[this.spieler.length - 1].id + 1 : 1
+    const id = this.spieler.length > 0 ? Math.max.apply(null, this.spieler.map(spieler => spieler.id)) + 1 : 1
     // add the spieler
     const spieler = {
       id : id,

@@ -114,3 +114,9 @@ a .spieler-farbe-selector:hover, a .spieler-farbe-selector-active {
 .spv-highlight .spv-badge {
   display: inline-block
 } 
+
+.edit-tooltip {
+  background: #fff!important;
+  color: #6c757d!important;
+  margin-left: -10px;
+}

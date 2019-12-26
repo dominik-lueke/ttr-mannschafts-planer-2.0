@@ -62,7 +62,28 @@ class SpielerView {
         () => { this._addHighlightsToSpvSpieler() },
         () => { this._removeHighlightsFromSpvSpieler() }
       )
+      
+      // display input form for QTTR instead of label
+      this.spieler_qttr_div.attr("data-toggle","tooltip")
+      this.spieler_qttr_div.attr("data-placement","right")
+      this.spieler_qttr_div.attr("data-html","true")
+      this.spieler_qttr_div.attr("title", `<i class="fa fa-pencil"></i>`)
+      this.spieler_qttr_div.attr("data-template", '<div class="tooltip" role="tooltip"><div class="edit-tooltip tooltip-inner"></div></div>')
+      this.spieler_qttr_div.click( () => { this._displayEditQttrForm() } )
+      this.spieler_qttr_input.focusout( () => { this._hideEditQttrForm() } )
+  }
 
+  _displayEditQttrForm() {
+    this.spieler_qttr_div.addClass("display-none")
+    this.spieler_ttrdifferenz_div.addClass("display-none")
+    this.spieler_qttr_input_div.removeClass("display-none")
+    this.spieler_qttr_input.focus()
+  }
+
+  _hideEditQttrForm() {
+    this.spieler_qttr_div.removeClass("display-none")
+    this.spieler_ttrdifferenz_div.removeClass("display-none")
+    this.spieler_qttr_input_div.addClass("display-none")
   }
 
   _addHighlightsToInvalidSpieler(){

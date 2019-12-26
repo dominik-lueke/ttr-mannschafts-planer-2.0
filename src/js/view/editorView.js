@@ -49,6 +49,7 @@ class EditorView {
       start: (event, ui) => {
         // deactivate tooltips
         $(`#${ui.item.attr("id")}-invalid-icon`).tooltip("dispose")
+        $(`#${ui.item.attr("id")} .ttr-wert`).tooltip("dispose")
       },
       stop: (event, ui) => {
         // activate tooltips again

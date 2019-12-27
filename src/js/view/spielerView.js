@@ -5,7 +5,9 @@ class SpielerView {
       this.spieler = spieler
       const ttrdifferenz = `${spieler.mannschaft}.${spieler.position}` != "1.1" ? spieler.ttrdifferenz : "";
       const ttrdifferenzVorzeichen = ttrdifferenz > 0 ? "+" : ""
-      this.spielerHasSpv = spieler.spv.primary || spieler.spv.secondary > 0
+      this.spielerHasSpv = ( spieler.spv.primary || spieler.spv.secondary > 0 )
+      this.spvEditable = ( spieler.spv.primary && spieler.spv.secondary == 0 )
+      this.invalidSpielerFromHigherMannschaften = spieler.invalidSpielerFromHigherMannschaften
       // Create the HTML Markup
       this.spieler_div = $(`<li id="spieler-${spieler.spielklasse}-${spieler.id}" class="list-group-item spieler"></li>`)
       this.spieler_flex_div = $(`<div class="d-flex"></div>`)
@@ -56,11 +58,15 @@ class SpielerView {
       if ( ! this.spielerHasSpv ){
         this.spieler_spv_badge.removeClass("badge-danger")
         this.spieler_spv_badge.addClass("badge-light")
+        this.spieler_spv_badge.addClass("link")
       } else {
         this.spieler_div.addClass("spv-set")
       }
-      if ((spieler.invalid && spieler.invalid.some(invalid_spieler => invalid_spieler.mannschaft != spieler.mannschaft) ) ) {
+      if ( this.invalidSpielerFromHigherMannschaften > 0 ) {
         this.spieler_div.addClass("spv-possible")
+      }
+      if ( this.spvEditable ) {
+        this.spieler_spv_badge.addClass("link")
       }
       // add extra hover to spv-badge to hightlight the spieler which would also recieve a spv on higher positionen in the same mannschaft
       this.spieler_spv_badge.hover(
@@ -79,7 +85,11 @@ class SpielerView {
   }
 
   bindToggleSpvOnSpieler(handler) {
-    this.spieler_spv_badge.click( (event) => { this._addToggleSpvHandler(event, handler) } )
+    this.spieler_spv_badge.click( (event) => { 
+      if ( this.spieler_spv_badge.hasClass("link") ){ 
+        this._addToggleSpvHandler(event, handler) 
+      } 
+    })
   }
 
   _addToggleSpvHandler(event, handler) {
@@ -117,9 +127,9 @@ class SpielerView {
     this.spieler_spv_badge.addClass("badge-danger")
     this.spieler_spv_badge.removeClass("badge-light")
     // display spv-bage on other spieler with higher positions in same mannschaft
-    const prev_spieler = this.spieler_div.prevAll()
+    const prev_spieler = this.spieler_div.prevAll(":not(.spv-set)")
     prev_spieler.addClass("spv-highlight")
-    const prev_spieler_spv_badge = this.spieler_div.prevAll().find(".spv-badge")
+    const prev_spieler_spv_badge = prev_spieler.find(".spv-badge")
     prev_spieler_spv_badge.addClass("badge-danger")
     prev_spieler_spv_badge.removeClass("badge-light")
   }
@@ -129,9 +139,9 @@ class SpielerView {
     this.spieler_spv_badge.removeClass("badge-danger")
     this.spieler_spv_badge.addClass("badge-light")
     // hide spv-bage on other spieler with higher positions in same mannschaft
-    const prev_spieler = this.spieler_div.prevAll()
+    const prev_spieler = this.spieler_div.prevAll(":not(.spv-set)")
     prev_spieler.removeClass("spv-highlight")
-    const prev_spieler_spv_badge = this.spieler_div.prevAll().find(".spv-badge")
+    const prev_spieler_spv_badge = prev_spieler.find(".spv-badge")
     prev_spieler_spv_badge.removeClass("badge-danger")
     prev_spieler_spv_badge.addClass("badge-light")
   }

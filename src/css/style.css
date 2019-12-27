@@ -39,7 +39,7 @@ a .spieler-farbe-selector:hover, a .spieler-farbe-selector-active {
 }
 
 .mannschaft {
-  width: 400px;
+  width: 420px;
   margin: 0 auto;
 }
 
@@ -93,9 +93,14 @@ a .spieler-farbe-selector:hover, a .spieler-farbe-selector-active {
 }
 
 /* SPIELER COLUMNS */
+.spieler-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 
-.spv, .ttr-wert, .ttr-difference {
-  min-width: 50px;
+.ttr-difference {
+  min-width: 60px;
 }
 
 .ttr-wert input {
@@ -107,7 +112,7 @@ a .spieler-farbe-selector:hover, a .spieler-farbe-selector-active {
 .spv-badge {
   display: none;
   padding: .25em .8em;
-  cursor: pointer
+  cursor: default
 }
 
 .spv-possible .spv-badge,

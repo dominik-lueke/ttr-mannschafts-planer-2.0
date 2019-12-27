@@ -1,16 +1,16 @@
 class Controller {
   constructor(model, headerView, editorView, sidebarView) {
-    this.model = model
+    this.planung = model.planung // only one planung at a time right now
     this.headerView = headerView
     this.editorView = editorView
     this.sidebarView = sidebarView
 
     // Initial Display
-    this.onHeaderDataChanged(this.model.planung)
-    this.onMannschaftenChanged(this.model.mannschaften, this.model.spieler)
+    this.onHeaderDataChanged(this.planung)
+    this.onMannschaftenChanged(this.planung.mannschaften.liste, this.planung.spieler.liste)
 
     // Bind Handlers 
-    this.model.bindMannschaftenChanged(this.onMannschaftenChanged)
+    this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
   }
 
   onHeaderDataChanged = planung => {
@@ -24,16 +24,16 @@ class Controller {
     this.editorView.bindReorderSpieler(this.handleReorderSpieler)
   }
 
-  handleAddSpieler = (spielklasse,mannschaft,position,name,qttr) => {
-    this.model.addSpieler(spielklasse,mannschaft,position,name,qttr)
+  handleAddSpieler = (spielklasse, mannschaft, position, name, qttr) => {
+    this.planung.addSpieler(spielklasse, mannschaft, position, name, qttr)
   }
 
   handleReorderSpieler = (id, new_mannschaft, new_position, spielklasse) => {
-    this.model.reorderSpieler(id, new_mannschaft, new_position, spielklasse)
+    this.planung.reorderSpieler(id, new_mannschaft, new_position, spielklasse)
   }
 
   handleToggleSpvOnSpieler = (id, spv) => {
-    this.model.editSpielerSpv(id, spv)
+    this.planung.editSpielerSpv(id, spv)
   }
 
 }

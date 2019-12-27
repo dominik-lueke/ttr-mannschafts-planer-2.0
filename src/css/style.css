@@ -111,7 +111,8 @@ a .spieler-farbe-selector:hover, a .spieler-farbe-selector-active {
 }
 
 .spv-possible .spv-badge,
-.spv-highlight .spv-badge {
+.spv-highlight .spv-badge,
+.spv-set .spv-badge {
   display: inline-block
 } 
 

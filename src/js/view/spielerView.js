@@ -5,7 +5,7 @@ class SpielerView {
       this.spieler = spieler
       const ttrdifferenz = `${spieler.mannschaft}.${spieler.position}` != "1.1" ? spieler.ttrdifferenz : "";
       const ttrdifferenzVorzeichen = ttrdifferenz > 0 ? "+" : ""
-
+      this.spielerHasSpv = spieler.spv.primary || spieler.spv.secondary > 0
       // Create the HTML Markup
       this.spieler_div = $(`<li id="spieler-${spieler.spielklasse}-${spieler.id}" class="list-group-item spieler"></li>`)
       this.spieler_flex_div = $(`<div class="d-flex"></div>`)
@@ -25,7 +25,10 @@ class SpielerView {
       $(`#spieler-${spieler.spielklasse}-${spieler.id}-ttrdifferenz`).addClass(ttrdifferenz < 0 ? "text-success" : ttrdifferenz > 0 ? "text-danger" : "")
 
       // add invalid class, invalid-icon, tooltip
-      if (spieler.invalid && spieler.invalid.length > 0) {
+      if ( 
+          ( spieler.invalid && spieler.invalid.length > 0 ) && 
+          ( spieler.invalid.some(invalid_spieler => invalid_spieler.mannschaft == spieler.mannschaft) || ! this.spielerHasSpv )
+         ) {
         this.spieler_div.addClass("invalid")
         this.spieler_div.addClass("spieler-invalid")
         this.spieler_invalid_icon.attr("data-toggle","tooltip")
@@ -50,17 +53,19 @@ class SpielerView {
       )
 
       // add spv-badge
-      if ( ! spieler.spv ){
+      if ( ! this.spielerHasSpv ){
         this.spieler_spv_badge.removeClass("badge-danger")
         this.spieler_spv_badge.addClass("badge-light")
+      } else {
+        this.spieler_div.addClass("spv-set")
       }
-      if (spieler.invalid && spieler.invalid.some(invalid_spieler => invalid_spieler.mannschaft != spieler.mannschaft)) {
+      if ((spieler.invalid && spieler.invalid.some(invalid_spieler => invalid_spieler.mannschaft != spieler.mannschaft) ) ) {
         this.spieler_div.addClass("spv-possible")
       }
       // add extra hover to spv-badge to hightlight the spieler which would also recieve a spv on higher positionen in the same mannschaft
       this.spieler_spv_badge.hover(
-        () => { this._addHighlightsToSpvSpieler() },
-        () => { this._removeHighlightsFromSpvSpieler() }
+        () => { if ( ! this.spielerHasSpv ) { this._addHighlightsToSpvSpieler() } },
+        () => { if ( ! this.spielerHasSpv ) { this._removeHighlightsFromSpvSpieler() } }
       )
       
       // display input form for QTTR instead of label
@@ -71,6 +76,15 @@ class SpielerView {
       this.spieler_qttr_div.attr("data-template", '<div class="tooltip" role="tooltip"><div class="edit-tooltip tooltip-inner"></div></div>')
       this.spieler_qttr_div.click( () => { this._displayEditQttrForm() } )
       this.spieler_qttr_input.focusout( () => { this._hideEditQttrForm() } )
+  }
+
+  bindToggleSpvOnSpieler(handler) {
+    this.spieler_spv_badge.click( (event) => { this._addToggleSpvHandler(event, handler) } )
+  }
+
+  _addToggleSpvHandler(event, handler) {
+    event.preventDefault()
+    handler(this.spieler.id, ! this.spielerHasSpv)
   }
 
   _displayEditQttrForm() {

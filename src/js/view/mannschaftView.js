@@ -78,6 +78,10 @@ class MannschaftView {
     this.newQttrInput.on("keyup", (event) => { this._addSpielerKeyUpHandler(event, handler); } )
   }
 
+  bindToggleSpvOnSpieler(handler) {
+    this.spielerViews.forEach(spieler => { spieler.bindToggleSpvOnSpieler(handler)})
+  }
+
   delete() {
     this.html.remove()
   }

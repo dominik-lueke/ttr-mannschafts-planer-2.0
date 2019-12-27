@@ -48,7 +48,10 @@ class Model {
         farbe: "",
         spv: false,
         reserve: false,
-        sbe: false,
+        spv: {
+          primary: false,
+          secondary: 0
+        },
         kommentar: "",
         invalid: []
       },
@@ -61,7 +64,10 @@ class Model {
         qttr: 1890,
         ttrdifferenz: -10,
         farbe: "",
-        spv: false,
+        spv: {
+          primary: false,
+          secondary: 0
+        },
         reserve: false,
         sbe: false,
         kommentar: "",
@@ -78,7 +84,10 @@ class Model {
         farbe: "",
         spv: false,
         reserve: false,
-        sbe: false,
+        spv: {
+          primary: false,
+          secondary: 0
+        },
         kommentar: "",
         invalid: []
       },
@@ -93,7 +102,10 @@ class Model {
         farbe: "",
         spv: false,
         reserve: false,
-        sbe: false,
+        spv: {
+          primary: false,
+          secondary: 0
+        },
         kommentar: "",
         invalid: []
       },
@@ -104,9 +116,12 @@ class Model {
         mannschaft: 2,
         position: 1,
         qttr: 1920,
-        ttrdifferenz: -10,
+        ttrdifferenz: +50,
         farbe: "",
-        spv: false,
+        spv: {
+          primary: false,
+          secondary: 0
+        },
         reserve: false,
         sbe: false,
         kommentar: "",
@@ -121,7 +136,10 @@ class Model {
         qttr: 1930,
         ttrdifferenz: +90,
         farbe: "",
-        spv: false,
+        spv: {
+          primary: false,
+          secondary: 0
+        },
         reserve: false,
         sbe: false,
         kommentar: "",
@@ -148,7 +166,10 @@ class Model {
       var delta = spieler.mannschaft == mannschaft ? 35 : 50
       delta += spieler.sbe || check_spieler.sbe ? 35 : 0
       const differenz = check_spieler.qttr - spieler.qttr
-      if ( differenz > delta ) {
+      // add to invalid list if 
+      // a) differenz is too high AND
+      // b) the check_spieler has no spv OR the spieler are in the same mannschaft
+      if ( differenz > delta && ( ! ( check_spieler.spv.primary || check_spieler.spv.secondary > 0 ) || spieler.mannschaft == mannschaft ) ) {
         check_spieler.invalid.push({
           id: spieler.id,
           mannschaft: spieler.mannschaft,
@@ -202,7 +223,10 @@ class Model {
       spielklasse: spielklasse,
       qttr: qttr,
       farbe: "",
-      spv: false,
+      spv: {
+        primary: false,
+        secondary: 0
+      },
       reserve: false,
       sbe: false,
       kommentar: ""
@@ -217,8 +241,19 @@ class Model {
   reorderSpieler(id, new_mannschaft, new_position) {
     const spieler = this.spieler.find(spieler => spieler.id == id)
     // reorder = remove from old position + insert in new position
-    this._removeSpielerFromMannschaft(spieler)
+    var keep_spv = spieler.mannschaft == new_mannschaft
+    this._removeSpielerFromMannschaft(spieler, keep_spv)
     this._insertSpielerInMannschaft(spieler, new_mannschaft, new_position)
+    // trigger view update
+    this.onMannschaftenChanged(this.mannschaften, this.spieler)
+  }
+
+  editSpielerSpv(id, spv) {
+    const spieler = this.spieler.find(spieler => spieler.id == id)
+    // set the primary Spv for this spieler and the secondary for all with higher positionen in the same mannschaft
+    this._setSpvForSpieler(spieler, spv)
+    // check if any invalid ttrdifferenzen can now be removed
+    this._checkTtrDifferenzenForPosition(spieler.spielklasse, spieler.mannschaft, spieler.position)
     // trigger view update
     this.onMannschaftenChanged(this.mannschaften, this.spieler)
   }
@@ -230,10 +265,24 @@ class Model {
   /* 
   * Internal Manipulate Spieler Array Functions
   */
-  _removeSpielerFromMannschaft(remove_spieler){
+  _removeSpielerFromMannschaft(remove_spieler, keep_spv=false){
     // Save current spieler position
     const old_mannschaft = remove_spieler.mannschaft
     const old_position = remove_spieler.position
+    // Save the next_spieler for which we have to recompute the ttrdifferenz
+    const next_spieler = this._getNextSpieler(remove_spieler)
+    // handle sperrvermerk before the spieler gets updated
+    if ( remove_spieler.spv.primary ) {
+      if (keep_spv ) {
+      // Remove spv only from all spieler in the same mannschaft with higher positionen
+      this._updateSecondarySpvHigherThanPosition(remove_spieler.spielklasse, remove_spieler.mannschaft, remove_spieler.position, false)
+      } else {
+        // Remove spv from this spieler and all spieler in the same mannschaft with higher positionen
+        this._setSpvForSpieler(remove_spieler, false)
+      }
+    }
+    // Reset our secondary spv counter when we leave a mannschaft
+    remove_spieler.spv.secondary = 0
     // Give the spieler the position 0.0
     remove_spieler.mannschaft = 0
     remove_spieler.position = 0
@@ -244,7 +293,9 @@ class Model {
     // reorder this.spieler
     this.spieler = this.spieler.sort((a,b) => this._compareSpielerPositionen(a, b))
     // recompute ttrdifferenz for the new position
-    this._recomputeTtrDifferenzForPosition(remove_spieler.spielklasse, old_mannschaft, old_position)
+    if (next_spieler) {
+      this._recomputeTtrDifferenzForSpieler(next_spieler)
+    }
     // remove this spieler from all invalid lists of other spieler
     this._removeSpielerFromInvalidLists(remove_spieler)
   }
@@ -253,15 +304,23 @@ class Model {
     // increase all positionen from mannschaft greater or equal than position by one
     this.spieler
     .filter( spieler => ( spieler.spielklasse == insert_spieler.spielklasse && spieler.mannschaft == mannschaft && spieler.position >= position ) )
-    .forEach( spieler => { spieler.position++} )
+    .forEach( spieler => { 
+      spieler.position++
+      // also check if any of the positionen has a sperrvermerk and increase our secondary if so
+      if (spieler.spv.primary) { insert_spieler.spv.secondary++ }
+    } )
     // give the spieler the new mannschaft and position
     insert_spieler.spielklasse = insert_spieler.spielklasse
     insert_spieler.mannschaft = mannschaft
     insert_spieler.position = position
     // reorder this.spieler
     this.spieler = this.spieler.sort((a,b) => this._compareSpielerPositionen(a, b))
+    // Update spv for all spieler in the same mannschaft with higher positionen
+    if ( insert_spieler.spv.primary ) {
+      this._updateSecondarySpvHigherThanPosition(insert_spieler.spielklasse, insert_spieler.mannschaft, insert_spieler.position, insert_spieler.spv.primary)
+    }
     // recompute ttrdifferenz for the new position
-    this._recomputeTtrDifferenzForPosition(insert_spieler.spielklasse, insert_spieler.mannschaft, insert_spieler.position)
+    this._recomputeTtrDifferenzForSpieler(insert_spieler)
     // check if any ttrdifferenzen are now invalid
     this._checkTtrDifferenzenForPosition(insert_spieler.spielklasse, insert_spieler.mannschaft, insert_spieler.position)
   }
@@ -271,21 +330,16 @@ class Model {
     return (spielklasse_compare != 0) ? spielklasse_compare : (spieler1.mannschaft * 1000 + spieler1.position) - ( spieler2.mannschaft * 1000 + spieler2.position )
   }
   
-  _recomputeTtrDifferenzForPosition(spielklasse, mannschaft, position) {
-    // update the ttr differenz for the spieler with given and the one at the position behind
-    this.spieler
-    .filter(spieler => ( spieler.spielklasse == spielklasse && spieler.mannschaft == mannschaft && spieler.position == position) )
-    .forEach(spieler => {
-      // update this spieler
-      const previousSpieler = this._getPreviousSpieler(spieler)
-      const prev_ttr = ( previousSpieler !== null ) ? previousSpieler.qttr : -1
-      spieler.ttrdifferenz = (prev_ttr > -1) ? spieler.qttr - prev_ttr: 0
-      // update next spieler
-      const nextSpieler = this._getNextSpieler(spieler)
-      if ( nextSpieler !== null ) {
-        nextSpieler.ttrdifferenz = nextSpieler.qttr - spieler.qttr
-      }
-    })
+  _recomputeTtrDifferenzForSpieler(spieler) {
+    // update this spieler
+    const previousSpieler = this._getPreviousSpieler(spieler)
+    const prev_ttr = ( previousSpieler !== null ) ? previousSpieler.qttr : -1
+    spieler.ttrdifferenz = (prev_ttr > -1) ? spieler.qttr - prev_ttr: 0
+    // update next spieler
+    const nextSpieler = this._getNextSpieler(spieler)
+    if ( nextSpieler !== null ) {
+      nextSpieler.ttrdifferenz = nextSpieler.qttr - spieler.qttr
+    }
   }
 
   _getPreviousSpieler(spieler){
@@ -296,6 +350,22 @@ class Model {
   _getNextSpieler(spieler){
     const next_index = this.spieler.indexOf(spieler) + 1
     return ( (next_index < this.spieler.length) && (this.spieler[next_index].spielklasse == spieler.spielklasse) ) ? this.spieler[next_index] : null
+  }
+
+  _setSpvForSpieler(spieler, spv) {
+    // Set the SPV of this Spieler
+    spieler.spv.primary = spv
+    // Check if other Spieler in the same Mannschaft and with higher Positionen also need an SPV now
+    this._updateSecondarySpvHigherThanPosition(spieler.spielklasse, spieler.mannschaft, spieler.position, spv)
+  }
+
+  _updateSecondarySpvHigherThanPosition(spielklasse, mannschaft, position, spv) {
+    this.spieler
+    .filter(spieler => spieler.spielklasse == spielklasse && spieler.mannschaft == mannschaft && spieler.position < position )
+    .forEach(spieler => {
+        if (spv) { spieler.spv.secondary++ }
+        else { spieler.spv.secondary-- }
+    })
   }
 
   /*

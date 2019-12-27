@@ -11,8 +11,6 @@ class Controller {
 
     // Bind Handlers 
     this.model.bindMannschaftenChanged(this.onMannschaftenChanged)
-    this.editorView.bindAddSpieler(this.handleAddSpieler)
-    this.editorView.bindReorderSpieler(this.handleReorderSpieler)
   }
 
   onHeaderDataChanged = planung => {
@@ -22,6 +20,8 @@ class Controller {
   onMannschaftenChanged = (mannschaften,spieler) => {
     this.editorView.displayMannschaften(mannschaften,spieler)
     this.editorView.bindAddSpieler(this.handleAddSpieler)
+    this.editorView.bindToggleSpvOnSpieler(this.handleToggleSpvOnSpieler)
+    this.editorView.bindReorderSpieler(this.handleReorderSpieler)
   }
 
   handleAddSpieler = (spielklasse,mannschaft,position,name,qttr) => {
@@ -30,6 +30,10 @@ class Controller {
 
   handleReorderSpieler = (id, new_mannschaft, new_position, spielklasse) => {
     this.model.reorderSpieler(id, new_mannschaft, new_position, spielklasse)
+  }
+
+  handleToggleSpvOnSpieler = (id, spv) => {
+    this.model.editSpielerSpv(id, spv)
   }
 
 }

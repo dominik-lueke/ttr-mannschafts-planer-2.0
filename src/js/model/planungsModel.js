@@ -58,7 +58,12 @@ class PlanungsModel {
 
   editSpielerSpv(id, spv) {
     this.spieler.editSpielerSpv(id, spv)
-    console.log(this.spieler.liste)
+    // trigger view update
+    this.onMannschaftenChanged(this.mannschaften.liste, this.spieler.liste)
+  }
+
+  editSpielerQttr(id, qttr) {
+    this.spieler.editSpielerQttr(id, qttr)
     // trigger view update
     this.onMannschaftenChanged(this.mannschaften.liste, this.spieler.liste)
   }

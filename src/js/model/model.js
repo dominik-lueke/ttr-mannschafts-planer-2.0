@@ -9,7 +9,7 @@ class Model {
       this.planung.addMannschaft(i, "Liga", 6, "Samstag", "18:30", "A")
       for (var j=1; j<=6; j++) {
         var id = ( i - 1 ) * 6 + j
-        this.planung.addSpieler(i, j, `Nachname, Vorname${id} sehr lange Namen hier`, qttr_max - 15 * i * j)
+        this.planung.addSpieler(i, j, `Nachname, Vorname ${id}`, qttr_max - 15 * i * j)
       }
     }
 

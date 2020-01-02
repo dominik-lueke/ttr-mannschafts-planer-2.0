@@ -81,45 +81,21 @@ class SpielerView {
       this.spieler_qttr_div.attr("title", `<i class="fa fa-pencil"></i>`)
       this.spieler_qttr_div.attr("data-template", '<div class="tooltip" role="tooltip"><div class="edit-tooltip tooltip-inner"></div></div>')
       this.spieler_qttr_div.click( () => { this._displayEditQttrForm() } )
-      this.spieler_qttr_input.focusout( () => { this._hideEditQttrForm() } )
   }
+
+  /* SPV BADGE */
 
   bindToggleSpvOnSpieler(handler) {
     this.spieler_spv_badge.click( (event) => { 
       if ( this.spieler_spv_badge.hasClass("link") ){ 
-        this._addToggleSpvHandler(event, handler) 
+        this._toggleSpvHandler(event, handler) 
       } 
     })
   }
 
-  _addToggleSpvHandler(event, handler) {
+  _toggleSpvHandler(event, handler) {
     event.preventDefault()
     handler(this.spieler.id, ! this.spielerHasSpv)
-  }
-
-  _displayEditQttrForm() {
-    this.spieler_qttr_div.addClass("display-none")
-    this.spieler_ttrdifferenz_div.addClass("display-none")
-    this.spieler_qttr_input_div.removeClass("display-none")
-    this.spieler_qttr_input.focus()
-  }
-
-  _hideEditQttrForm() {
-    this.spieler_qttr_div.removeClass("display-none")
-    this.spieler_ttrdifferenz_div.removeClass("display-none")
-    this.spieler_qttr_input_div.addClass("display-none")
-  }
-
-  _addHighlightsToInvalidSpieler(){
-    this.spieler.invalid.forEach(invalid_spieler => {
-      $(`#spieler-${this.spieler.spielklasse}-${invalid_spieler.id}`).addClass("highlight-invalid")
-    })
-  }
-
-  _removeHighlightsFromInvalidSpieler(){
-    this.spieler.invalid.forEach(invalid_spieler => {
-      $(`#spieler-${this.spieler.spielklasse}-${invalid_spieler.id}`).removeClass("highlight-invalid")
-    })
   }
 
   _addHighlightsToSpvSpieler(){
@@ -144,6 +120,82 @@ class SpielerView {
     const prev_spieler_spv_badge = prev_spieler.find(".spv-badge")
     prev_spieler_spv_badge.removeClass("badge-danger")
     prev_spieler_spv_badge.addClass("badge-light")
+  }
+
+  /* EDIT QTTR */
+
+  bindEditQttrOnSpieler(handler){
+    this.spieler_qttr_input.on("keyup", (event) => { this._editQttrKeyUpHandler(event, handler); } )
+    this.spieler_qttr_input.focusout( () => { this._editQttrFocusOutHandler(event, handler); } )
+  }
+
+  _editQttrKeyUpHandler(event, handler) {
+    event.preventDefault()
+    // On <Enter> we edit qttr
+    if (event.keyCode === 13) {
+      this._editQttr(handler)
+    
+    // On <Escape> we cancel
+    } else if (event.keyCode === 27) {
+      this._hideEditQttrForm()
+    }
+  }
+
+  _editQttrFocusOutHandler(event, handler) {
+    event.preventDefault()
+    var input = this.spieler_qttr_input.val()
+    // If not empty we edit qttr
+    if (input !== "") {
+      this._editQttr(handler)
+    
+    // Else we cancel
+    } else  {
+      this._hideEditQttrForm()
+    }
+  }
+
+  _editQttr(handler){
+    // Get the inputs
+    var newqttr = parseInt(this.spieler_qttr_input.val(), 10)
+    // Test if inputs are valid
+    if ( newqttr !== parseInt(newqttr, 10) || newqttr <= 0 ) { 
+      this.spieler_qttr_input.addClass("is-invalid") 
+    } else {
+      this.spieler_qttr_div.text(newqttr)
+      this._hideEditQttrForm()
+      // Fire the handler if necessary
+      if (newqttr !== this.spieler.qttr ) {
+        handler(this.spieler.id, newqttr)
+      }
+    }
+  }
+
+  _displayEditQttrForm() {
+    this.spieler_qttr_div.addClass("display-none")
+    this.spieler_ttrdifferenz_div.addClass("display-none")
+    this.spieler_qttr_input_div.removeClass("display-none")
+    this.spieler_qttr_input.val(this.spieler.qttr)
+    this.spieler_qttr_input.focus()
+  }
+
+  _hideEditQttrForm() {
+    this.spieler_qttr_div.removeClass("display-none")
+    this.spieler_ttrdifferenz_div.removeClass("display-none")
+    this.spieler_qttr_input_div.addClass("display-none")
+  }
+
+  /* INVALID SPIELER HIGHLIGHTS */
+
+  _addHighlightsToInvalidSpieler(){
+    this.spieler.invalid.forEach(invalid_spieler => {
+      $(`#spieler-${this.spieler.spielklasse}-${invalid_spieler.id}`).addClass("highlight-invalid")
+    })
+  }
+
+  _removeHighlightsFromInvalidSpieler(){
+    this.spieler.invalid.forEach(invalid_spieler => {
+      $(`#spieler-${this.spieler.spielklasse}-${invalid_spieler.id}`).removeClass("highlight-invalid")
+    })
   }
 
   delete() {

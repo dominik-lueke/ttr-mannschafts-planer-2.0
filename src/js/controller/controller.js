@@ -21,6 +21,7 @@ class Controller {
     this.editorView.displayMannschaften(mannschaften,spieler)
     this.editorView.bindAddSpieler(this.handleAddSpieler)
     this.editorView.bindToggleSpvOnSpieler(this.handleToggleSpvOnSpieler)
+    this.editorView.bindEditQttrOnSpieler(this.handleEditQttrOnSpieler)
     this.editorView.bindReorderSpieler(this.handleReorderSpieler)
   }
 
@@ -34,6 +35,10 @@ class Controller {
 
   handleToggleSpvOnSpieler = (id, spv) => {
     this.planung.editSpielerSpv(id, spv)
+  }
+
+  handleEditQttrOnSpieler = (id, qttr) => {
+    this.planung.editSpielerQttr(id, qttr)
   }
 
 }

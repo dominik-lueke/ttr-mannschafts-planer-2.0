@@ -33,6 +33,11 @@ class SpielerListeModel {
     this._setPrimarySpvForSpieler(spieler, spv)
   }
 
+  editSpielerQttr(id, qttr) {
+    const spieler = this.liste.find(spieler => spieler.id == id)
+    this._setQttrForSpieler(spieler, qttr)
+  }
+
   deleteSpieler(id) {
     // first remove the spieler from its mannschaft to keep the spieler array correct
     this._removeSpielerFromMannschaft(spieler, false)
@@ -202,6 +207,16 @@ class SpielerListeModel {
         this._updateSpvPreviousPositionOfSpieler(prev_spieler)
       }
     }
+  }
+
+  /**
+   * QTTR FUNCTIONS
+   */
+
+  _setQttrForSpieler(spieler, qttr){
+    spieler.qttr = qttr
+    this._recomputeTtrDifferenzForSpieler(spieler)
+    this._checkTtrDifferenzenForSpieler(spieler)
   }
 
   /**

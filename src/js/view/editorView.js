@@ -74,6 +74,10 @@ class EditorView {
     this.mannschaftViews.forEach(mannschaft => { mannschaft.bindToggleSpvOnSpieler(handler)})
   }
 
+  bindEditQttrOnSpieler(handler) {
+    this.mannschaftViews.forEach(mannschaft => { mannschaft.bindEditQttrOnSpieler(handler)})
+  }
+
   bindReorderSpieler(handler) {
     this.reorderSpielerHandler = handler
   }

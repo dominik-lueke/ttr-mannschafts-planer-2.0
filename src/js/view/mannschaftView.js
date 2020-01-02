@@ -82,6 +82,10 @@ class MannschaftView {
     this.spielerViews.forEach(spieler => { spieler.bindToggleSpvOnSpieler(handler)})
   }
 
+  bindEditQttrOnSpieler(handler) {
+    this.spielerViews.forEach(spieler => { spieler.bindEditQttrOnSpieler(handler)})
+  }
+
   delete() {
     this.html.remove()
   }

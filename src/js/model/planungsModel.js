@@ -45,13 +45,23 @@ class PlanungsModel {
    */
 
   addSpieler(mannschaft, position, name, qttr){
+    // add the spieler
     this.spieler.addSpieler(mannschaft, position, name, qttr)
+    // check if mannschaft is invalid
+    this.mannschaften.checkMannschaftInvalid(mannschaft, this.spieler.getSpielerOfMannschaft(mannschaft))
     // commit
     this._commit()
   }
 
   reorderSpieler(id, new_mannschaft, new_position) {
+    const old_mannschaft = this.spieler.getSpieler(id).mannschaft
+    // reorder the spieler
     this.spieler.reorderSpieler(id, new_mannschaft, new_position)
+    // check if mannschaften are invalid
+    if (old_mannschaft !== new_mannschaft) {
+      this.mannschaften.checkMannschaftInvalid(old_mannschaft, this.spieler.getSpielerOfMannschaft(old_mannschaft))
+      this.mannschaften.checkMannschaftInvalid(new_mannschaft, this.spieler.getSpielerOfMannschaft(new_mannschaft))
+    }
     // commit
     this._commit()
   }
@@ -69,7 +79,15 @@ class PlanungsModel {
   }
 
   deleteSpieler(id) {
+    // check if mannschaft is now invalid
+    this.mannschaften.checkMannschaftInvalid( 
+      this.spieler.getSpieler(id).mannschaft, 
+      this.spieler.getSpielerOfMannschaft(mannschaft)
+    )
+    // delete the spieler
     this.spieler.deleteSpieler(id)
+    // commit
+    this._commit()
   }
 
   /**

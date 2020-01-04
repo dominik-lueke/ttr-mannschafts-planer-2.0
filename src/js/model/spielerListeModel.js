@@ -46,6 +46,17 @@ class SpielerListeModel {
   }
 
   /**
+   * GETTER
+   */
+  getSpieler(id) {
+    return this.liste.find(spieler => spieler.id == id)
+  }
+
+  getSpielerOfMannschaft(nummer) {
+    return this.liste.filter(spieler => spieler.mannschaft == nummer)
+  }
+
+  /**
    * Internal Manipulate Spieler Array Functions
    */
 

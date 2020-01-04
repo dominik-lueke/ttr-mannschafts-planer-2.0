@@ -22,16 +22,20 @@ class MannschaftView {
                 <div class="p-2 text-muted">
                   <small id="mannschaft-${id}-spielwoche">${mannschaft.spielwoche}</small>
                 </div>
+                <div id="mannschaft-${id}-invalid-icon" class="p-2 mannschaft-invalid-icon text-danger">
+                  <span><i class="fa fa-exclamation-triangle"></i></span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       `)
       mannschaftsContainer.append(this.html)
+      const mannschafts_div = $("#mannschaft-" + id)
 
       // Add all Spieler to the Mannschaft
       this.spielerListeContainer = $(`<ul id="mannschaft-${id}-spielerliste" class="list-group list-group-flush connectedSortable spielerliste"></ul>`)
-      $('#mannschaft-' + id).append(this.spielerListeContainer)
+      mannschafts_div.append(this.spielerListeContainer)
       this.spielerViews = []
       mannschaftsspieler.forEach( spieler => {
         this.spielerViews.push( new SpielerView(this.spielerListeContainer, spieler) )
@@ -39,7 +43,7 @@ class MannschaftView {
 
       // Spieler Hinzufügen Form
       // New spieler button in seperate list because we dont want it to be draggable
-      $('#mannschaft-' + id).append(`
+      mannschafts_div.append(`
         <ul class="list-group list-group-flush">
           <li id="mannschaft-${id}-new-spieler" class="list-group-item spieler new-spieler-form">
             <div class="d-flex">
@@ -57,6 +61,18 @@ class MannschaftView {
       $(`#mannschaft-${id}-new-name`).append(this.addSpielerButton)
       $(`#mannschaft-${id}-new-name`).append(this.newNameInput)
       $(`#mannschaft-${id}-new-qttr`).append(this.newQttrInput)
+
+      // add invalid class, invalid-icon, tooltip
+      if ( mannschaft.invalid ) {
+        mannschafts_div.addClass("invalid")
+        mannschafts_div.addClass("mannschaft-invalid")
+        const mannschaft_invalid_icon = $(`#mannschaft-${id}-invalid-icon`)
+        mannschaft_invalid_icon.attr("data-toggle","tooltip")
+        mannschaft_invalid_icon.attr("data-placement","right")
+        mannschaft_invalid_icon.attr("data-html","true")
+        var tooltip_title = `<h6>Fehlende Sollstärke</h6>Mindestens ${mannschaft.sollstaerke} (Stamm-) Spieler benötigt`
+        mannschaft_invalid_icon.attr("title",tooltip_title)
+      }
 
       // add eventlistener to display new spieler form
       this.addSpielerButton.hover(

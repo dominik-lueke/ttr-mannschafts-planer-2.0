@@ -71,12 +71,14 @@ a .spieler-farbe-selector:hover, a .spieler-farbe-selector-active {
   margin: 1px 0 0 0;
 }
 
-.spieler-invalid-icon {
+.spieler-invalid-icon,
+.mannschaft-invalid-icon {
   display: none;
   margin-right: -40px;
 }
 
-.spieler-invalid .spieler-invalid-icon {
+.spieler-invalid .spieler-invalid-icon,
+.mannschaft-invalid .mannschaft-invalid-icon {
   display: inline-block;
 }
 

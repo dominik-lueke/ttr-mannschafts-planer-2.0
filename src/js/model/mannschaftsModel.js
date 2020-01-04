@@ -10,7 +10,7 @@ class MannschaftsModel {
     this.uhrzeit = uhrzeit,
     this.spielwoche = spielwoche,
     this.kommentar = "",
-    this.invalid = false,
+    this.invalid = true,
     this.invalidKommentar = ""
   }
 

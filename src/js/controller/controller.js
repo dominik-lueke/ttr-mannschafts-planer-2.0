@@ -30,8 +30,8 @@ class Controller {
     this.planung.addSpieler(mannschaft, position, name, qttr)
   }
 
-  handleReorderSpieler = (id, new_mannschaft, new_position, spielklasse) => {
-    this.planung.reorderSpieler(id, new_mannschaft, new_position, spielklasse)
+  handleReorderSpieler = (id, new_mannschaft, new_position) => {
+    this.planung.reorderSpieler(id, new_mannschaft, new_position)
   }
 
   handleToggleSpvOnSpieler = (id, spv) => {

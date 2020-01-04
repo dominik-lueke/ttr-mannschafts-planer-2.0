@@ -1,6 +1,6 @@
 class SpielerListeModel {
 
-  constructor(spielklasse) {
+  constructor(spielklasse="") {
     this.spielklasse = spielklasse
     this.liste = []
   }
@@ -9,7 +9,7 @@ class SpielerListeModel {
    *  Public Functions 
    */
 
-  addSpieler(mannschaft, position, name, qttr) {
+  addSpieler(mannschaft=0, position=0, name="", qttr=1) {
     const id = this.liste.length > 0 ? Math.max.apply(null, this.liste.map(spieler => spieler.id)) + 1 : 1
     // add the spieler 
     const spieler = new SpielerModel(id, name, this.spielklasse, qttr)
@@ -62,7 +62,7 @@ class SpielerListeModel {
     insert_spieler.mannschaft = mannschaft
     insert_spieler.position = position
     // Sort this.liste
-    this.liste = this.liste.sort((a,b) => a.compare(b))
+    this._sortSpielerListe()
     // Update secondary spv for all spieler in the same mannschaft with higher positionen if we have a primary spv
     if ( insert_spieler.spv.primary ) {
       this._updateSpvPreviousPositionOfSpieler(insert_spieler, true)
@@ -98,8 +98,8 @@ class SpielerListeModel {
     this.liste
     .filter( spieler => ( spieler.spielklasse == remove_spieler.spielklasse && spieler.mannschaft == old_mannschaft && spieler.position >= old_position ) )
     .forEach( spieler => { spieler.position-- } )
-    // reorder this.liste
-    this.liste = this.liste.sort((a,b) => a.compare(b))
+    // sort this.liste
+    this._sortSpielerListe()
     // recompute ttrdifferenz for the new position
     if (next_spieler) {
       this._recomputeTtrDifferenzForSpieler(next_spieler)
@@ -237,4 +237,8 @@ class SpielerListeModel {
     return ( next_index < this.liste.length ) ? this.liste[next_index] : null
   }
 
+  _sortSpielerListe(){
+    this.liste = this.liste.sort((a,b) => a.compare(b))
+  }
+  
 }

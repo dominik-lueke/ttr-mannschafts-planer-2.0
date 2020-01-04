@@ -1,6 +1,6 @@
 class MannschaftsModel {
 
-  constructor(id, spielklasse, nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche) {
+  constructor(id=0, spielklasse="", nummer=0, liga="", sollstaerke=0, spieltag="", uhrzeit="", spielwoche="") {
     this.id = id
     this.spielklasse = spielklasse
     this.nummer = nummer,

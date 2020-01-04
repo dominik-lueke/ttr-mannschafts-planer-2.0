@@ -1,6 +1,6 @@
 class SpielerModel {
 
-  constructor(id, name, spielklasse, qttr) {
+  constructor(id=0, name="", spielklasse="", qttr=1) {
     this.id = id
     this.name = name
     this.spielklasse = spielklasse

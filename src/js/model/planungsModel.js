@@ -1,6 +1,6 @@
 class PlanungsModel {
 
-  constructor(verein, vereinsNummer, saison, halbserie, qttrDatum, spielklasse) {
+  constructor(verein="", vereinsNummer="", saison="", halbserie="", qttrDatum="", spielklasse="") {
     this.verein = verein
     this.vereinsNummer= vereinsNummer
     this.saison = saison
@@ -29,14 +29,14 @@ class PlanungsModel {
 
   addMannschaft(nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche){
     this.mannschaften.addMannschaft(nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche)
-    // trigger view update
-    this.onMannschaftenChanged(this.mannschaften.liste, this.spieler.liste)
+    // commit
+    this._commit()
   }
 
   deleteMannschaft(id){
     this.mannschaften.deleteMannschaft(id)
-    // trigger view update
-    this.onMannschaftenChanged(this.mannschaften.liste, this.spieler.liste)
+    // commit
+    this._commit()
   }
 
 
@@ -46,32 +46,41 @@ class PlanungsModel {
 
   addSpieler(mannschaft, position, name, qttr){
     this.spieler.addSpieler(mannschaft, position, name, qttr)
-    // trigger view update
-    this.onMannschaftenChanged(this.mannschaften.liste, this.spieler.liste)
+    // commit
+    this._commit()
   }
 
   reorderSpieler(id, new_mannschaft, new_position) {
     this.spieler.reorderSpieler(id, new_mannschaft, new_position)
-    // trigger view update
-    this.onMannschaftenChanged(this.mannschaften.liste, this.spieler.liste)
+    // commit
+    this._commit()
   }
 
   editSpielerSpv(id, spv) {
     this.spieler.editSpielerSpv(id, spv)
-    // trigger view update
-    this.onMannschaftenChanged(this.mannschaften.liste, this.spieler.liste)
+    // commit
+    this._commit()
   }
 
   editSpielerQttr(id, qttr) {
     this.spieler.editSpielerQttr(id, qttr)
-    // trigger view update
-    this.onMannschaftenChanged(this.mannschaften.liste, this.spieler.liste)
+    // commit
+    this._commit()
   }
 
   deleteSpieler(id) {
     this.spieler.deleteSpieler(id)
+  }
+
+  /**
+   *  Private
+   */
+
+   _commit() {
     // trigger view update
     this.onMannschaftenChanged(this.mannschaften.liste, this.spieler.liste)
-  }
+    // store this object
+    localStorage.setItem("localStoragePlanung", JSON.stringify(this))
+   }
 
 }

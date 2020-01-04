@@ -44,7 +44,7 @@ class SpielerModel {
   }
 
   addSpielerToInvalidList(invalid_spieler) {
-    this.invalid = this.invalid.filter(spieler => { spieler.id !== invalid_spieler.id })
+    this.invalid = this.invalid.filter(spieler => spieler.id !== invalid_spieler.id )
     this.invalid.push({
       id: invalid_spieler.id,
       mannschaft: invalid_spieler.mannschaft,

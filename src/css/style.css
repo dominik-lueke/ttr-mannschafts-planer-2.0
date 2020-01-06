@@ -16,16 +16,40 @@ a .spieler-farbe-selector {
   margin: 6px 0px 6px 6px;
 }
 
-.spieler-farbe-warning {
+/* SPIELER FARBE */
+
+.spieler-farbe-green {
+  color: #155724;
+  background-color: #d4edda !important; 
+}
+
+.spieler-farbe-red {
+  color: #721c24;
+  background-color: #f8d7da !important; 
+}
+
+.spieler-farbe-yellow {
   color: #856404;
   background-color: #fff3cd !important; 
 }
 
+.spieler-farbe-blue {
+  color: #0c5460;
+  background-color: #d1ecf1 !important; 
+}
+
+.spieler-farbe-light {
+  color: #818182;
+  background-color: #fefefe !important; 
+}
+
+/* DISPLAY-NONE */
 .display-none {
   display: none;
 }
 
 /* SIDEBAR */
+
 .details-sidebar {
   position: fixed;
   height: 100vh;
@@ -41,6 +65,7 @@ a .spieler-farbe-selector {
 }
 
 /* EDITOR */
+
 .editor-container {
   margin-top: 80px;
 }
@@ -77,6 +102,7 @@ a .spieler-farbe-selector {
 }
 
 /* SPIELER INVALID */
+
 .spieler-invalid {
   color: #dc3545 !important;
   margin: 1px 0 0 0;
@@ -106,6 +132,7 @@ a .spieler-farbe-selector {
 }
 
 /* SPIELER COLUMNS */
+
 .spieler-name {
   overflow: hidden;
   white-space: nowrap;

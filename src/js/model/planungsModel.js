@@ -84,6 +84,12 @@ class PlanungsModel {
     this._commit()
   }
 
+  editSpielerFarbe(id, farbe) {
+    this.spieler.editSpielerFarbe(id, farbe)
+    // commit
+    this._commit()
+  }
+
   deleteSpieler(id) {
     // check if mannschaft is now invalid
     this.mannschaften.checkMannschaftInvalid( 

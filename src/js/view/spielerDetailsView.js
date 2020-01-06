@@ -219,6 +219,13 @@ class SpielerDetailsView {
   /* RES */
 
   /* FARBE */
+  bindClickFarbeButtonOnSpieler(handler){
+    $(".spieler-farbe-selector").click( (event) => { this._changeSpielerFarbe(event, handler) })
+  }
+
+  _changeSpielerFarbe(event, handler) {
+    handler(this.spieler.id, event.target.id.replace("spieler-details-farbe-", ""))
+  }
 
   /* KOMMENTAR */
 

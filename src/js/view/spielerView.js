@@ -9,7 +9,7 @@ class SpielerView {
       this.spvEditable = ( spieler.spv.primary && spieler.spv.secondary == 0 )
       this.invalidSpielerFromHigherMannschaften = spieler.invalidSpielerFromHigherMannschaften
       // Create the HTML Markup
-      this.spieler_div = $(`<li id="spieler-${spieler.spielklasse}-${spieler.id}" class="list-group-item spieler"></li>`)
+      this.spieler_div = $(`<li id="spieler-${spieler.spielklasse}-${spieler.id}" class="list-group-item spieler spieler-farbe-${spieler.farbe}"></li>`)
       this.spieler_flex_div = $(`<div class="d-flex"></div>`)
       this.spieler_flex_div.append( this.spieler_position_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-position" class="p-2 text-muted">${spieler.mannschaft}.${spieler.position}</div>`) )
       this.spieler_flex_div.append( this.spieler_name_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-name" class="p-2 flex-grow-1 link spieler-name">${spieler.name}</div>`) )

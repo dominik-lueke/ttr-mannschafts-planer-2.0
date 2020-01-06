@@ -19,6 +19,10 @@ class SidebarView {
     this.spielerDetailsView.bindEditQttrOnSpieler(handler)
   }
 
+  bindClickFarbeButtonOnSpieler(handler) {
+    this.spielerDetailsView.bindClickFarbeButtonOnSpieler(handler)
+  }
+
   displaySpieler(spieler){
     this.mannschaftDetailsView.hide()
     this.spielerDetailsView.displaySpieler(spieler)

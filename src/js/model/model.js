@@ -4,12 +4,13 @@ class Model {
     const stored_planung = JSON.parse(localStorage.getItem('localStoragePlanung'))
     this.planung = stored_planung ? this._loadPlanungFromJSON(stored_planung) : this._generateSamplePlanung()
 
-    this.sidebar_view_model = {
-      display: {
-        category: "",
-        id: ""
+    this.view = {
+      sidebar: {
+        display: "",
+        id: 0
       }
     }
+
     this.onSidebarViewChanged = {}
   }
 
@@ -26,15 +27,15 @@ class Model {
    */
 
   displaySpielerDetails(id) {
-    this.sidebar_view_model.display.category = "spieler"
-    this.sidebar_view_model.display.id = id
-    this.onSidebarViewChanged(this.sidebar_view_model.display.category, this.sidebar_view_model.display.id)
+    this.view.sidebar.display = "spieler"
+    this.view.sidebar.id = id
+    this.onSidebarViewChanged()
   }
 
   closeSidebar() {
-    this.sidebar_view_model.display.category = ""
-    this.sidebar_view_model.display.id = 0
-    this.onSidebarViewChanged(this.sidebar_view_model.display.category, this.sidebar_view_model.display.id)
+    this.view.sidebar.display = ""
+    this.view.sidebar.id = 0
+    this.onSidebarViewChanged()
   }
 
   /**

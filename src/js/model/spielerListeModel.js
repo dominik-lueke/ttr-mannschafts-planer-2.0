@@ -43,6 +43,11 @@ class SpielerListeModel {
     this._setQttrForSpieler(spieler, qttr)
   }
 
+  editSpielerFarbe(id, farbe) {
+    const spieler = this.liste.find(spieler => spieler.id == id)
+    spieler.farbe = farbe
+  }
+
   deleteSpieler(id) {
     // first remove the spieler from its mannschaft to keep the spieler array correct
     this._removeSpielerFromMannschaft(spieler, false)

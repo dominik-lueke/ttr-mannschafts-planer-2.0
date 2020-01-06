@@ -16,6 +16,8 @@ class SpielerListeModel {
     this.liste.push(spieler)
     // insert the new spieler in the correct (mannschaft, position)
     this._insertSpielerInMannschaft(spieler, mannschaft, position)
+    // return the id
+    return id
   }
 
   reorderSpieler(id, new_mannschaft, new_position) {

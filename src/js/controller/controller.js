@@ -49,7 +49,7 @@ class Controller {
 
   handleAddSpieler = (spielklasse, mannschaft, position, name, qttr) => {
     /* The spielklasse can later be used to have more than one planungs-objcet */
-    this.planung.addSpieler(mannschaft, position, name, qttr)
+    this.model.addSpieler(mannschaft, position, name, qttr)
   }
 
   handleReorderSpieler = (id, new_mannschaft, new_position) => {

@@ -46,11 +46,13 @@ class PlanungsModel {
 
   addSpieler(mannschaft, position, name, qttr){
     // add the spieler
-    this.spieler.addSpieler(mannschaft, position, name, qttr)
+    const new_id = this.spieler.addSpieler(mannschaft, position, name, qttr)
     // check if mannschaft is invalid
     this.mannschaften.checkMannschaftInvalid(mannschaft, this.spieler.getSpielerOfMannschaft(mannschaft))
     // commit
     this._commit()
+    // return new id
+    return new_id
   }
 
   reorderSpieler(id, new_mannschaft, new_position) {

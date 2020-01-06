@@ -141,7 +141,7 @@ class SpielerDetailsView {
 
   _editNameKeyUpHandler(event, handler) {
     event.preventDefault()
-    // On <Enter> we edit qttr
+    // On <Enter> we edit name
     if (event.keyCode === 13) {
       this._editName(handler)
       this.name_input.blur()
@@ -155,7 +155,7 @@ class SpielerDetailsView {
   _editNameFocusOutHandler(event, handler) {
     event.preventDefault()
     var input = this.name_input.val()
-    // If not empty we edit qttr
+    // If not empty we edit name
     if (input !== "") { 
       this._editName(handler)
     // Else we cancel
@@ -235,6 +235,32 @@ class SpielerDetailsView {
   }
 
   /* KOMMENTAR */
+  bindEditKommentarOnSpieler(handler){
+    this.comment_input.on("keyup", (event) => { this._editKommentarKeyUpHandler(event, handler) } )
+    this.comment_input.focusout( () => { this._editKommentarFocusOutHandler(event, handler) } )
+  }
+
+  _editKommentarKeyUpHandler(event, handler) {
+    event.preventDefault()
+    if (event.keyCode === 27) {
+      this.comment_input.val(this.spieler.kommentar)
+      this.comment_input.blur()
+    }
+  }
+
+  _editKommentarFocusOutHandler(event, handler) {
+    event.preventDefault()
+    this._editKommentar(handler)
+  }
+
+  _editKommentar(handler){
+    // Get the inputs
+    var newkommentar = this.comment_input.val()
+    // Fire the handler if necessary
+    if (newkommentar !== this.spieler.comment ) {
+      handler(this.spieler.id, newkommentar)
+    }
+  }
 
   /* LÖSCHEN */
 

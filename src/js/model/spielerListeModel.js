@@ -48,6 +48,11 @@ class SpielerListeModel {
     spieler.farbe = farbe
   }
 
+  editSpielerKommentar(id, kommentar) {
+    const spieler = this.liste.find(spieler => spieler.id == id)
+    spieler.kommentar = kommentar
+  }
+
   deleteSpieler(id) {
     // first remove the spieler from its mannschaft to keep the spieler array correct
     this._removeSpielerFromMannschaft(spieler, false)

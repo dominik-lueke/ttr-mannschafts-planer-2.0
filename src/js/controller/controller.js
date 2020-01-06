@@ -14,10 +14,11 @@ class Controller {
     // Bind Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
-    this.sidebarView.bindEditQttrOnSpieler(this.handleEditQttrOnSpieler)
     this.sidebarView.bindEditNameOnSpieler(this.handleEditNameOnSpieler)
-    this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
+    this.sidebarView.bindEditQttrOnSpieler(this.handleEditQttrOnSpieler)
     this.sidebarView.bindClickFarbeButtonOnSpieler(this.handleClickFarbeButtonOnSidebar)
+    this.sidebarView.bindEditKommentarOnSpieler(this.handleEditKommentarOnSpieler)
+    this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
   }
 
   onHeaderDataChanged = planung => {
@@ -73,6 +74,10 @@ class Controller {
 
   handleClickFarbeButtonOnSidebar = (id, farbe) => {
     this.planung.editSpielerFarbe(id, farbe)
+  }
+
+  handleEditKommentarOnSpieler = (id, kommentar) => {
+    this.planung.editSpielerKommentar(id, kommentar)
   }
 
   handleClickCloseButtonOnSidebar = () => {

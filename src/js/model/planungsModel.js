@@ -90,6 +90,12 @@ class PlanungsModel {
     this._commit()
   }
 
+  editSpielerKommentar(id, kommentar) {
+    this.spieler.editSpielerKommentar(id, kommentar)
+    // commit
+    this._commit()
+  }
+
   deleteSpieler(id) {
     // check if mannschaft is now invalid
     this.mannschaften.checkMannschaftInvalid( 

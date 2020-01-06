@@ -94,8 +94,8 @@ class MannschaftView {
     this.newQttrInput.on("keyup", (event) => { this._addSpielerKeyUpHandler(event, handler); } )
   }
 
-  bindClickOnSpielerName(handler) {
-    this.spielerViews.forEach(spieler => { spieler.bindClickOnSpielerName(handler)})
+  bindClickOnSpieler(handler) {
+    this.spielerViews.forEach(spieler => { spieler.bindClickOnSpieler(handler)})
   }
 
   bindToggleSpvOnSpieler(handler) {

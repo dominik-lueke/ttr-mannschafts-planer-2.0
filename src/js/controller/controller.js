@@ -27,7 +27,7 @@ class Controller {
   onMannschaftenChanged = (mannschaften,spieler) => {
     this.editorView.displayMannschaften(mannschaften,spieler)
     this.editorView.bindAddSpieler(this.handleAddSpieler)
-    this.editorView.bindClickOnSpielerName(this.handleClickOnSpieler)
+    this.editorView.bindClickOnSpieler(this.handleClickOnSpieler)
     this.editorView.bindToggleSpvOnSpieler(this.handleToggleSpvOnSpieler)
     this.editorView.bindReorderSpieler(this.handleReorderSpieler)
     this.onSidebarViewChanged()

@@ -4,7 +4,7 @@ class Model {
     const stored_planung = JSON.parse(localStorage.getItem('localStoragePlanung'))
     this.planung = stored_planung ? this._loadPlanungFromJSON(stored_planung) : this._generateSamplePlanung()
 
-    this.view = {
+    this.view = JSON.parse(localStorage.getItem('localStorageView')) || {
       sidebar: {
         display: "",
         id: 0
@@ -29,13 +29,24 @@ class Model {
   displaySpielerDetails(id) {
     this.view.sidebar.display = "spieler"
     this.view.sidebar.id = id
-    this.onSidebarViewChanged()
+    this._commit()
   }
 
   closeSidebar() {
     this.view.sidebar.display = ""
     this.view.sidebar.id = 0
+    this._commit()
+  }
+
+  /**
+   * PRIVATE
+   */
+
+  _commit() {
+    // trigger view update
     this.onSidebarViewChanged()
+    // store this object
+    localStorage.setItem("localStorageView", JSON.stringify(this.view))
   }
 
   /**

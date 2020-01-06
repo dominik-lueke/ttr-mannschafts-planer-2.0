@@ -9,10 +9,10 @@ class SpielerView {
       this.spvEditable = ( spieler.spv.primary && spieler.spv.secondary == 0 )
       this.invalidSpielerFromHigherMannschaften = spieler.invalidSpielerFromHigherMannschaften
       // Create the HTML Markup
-      this.spieler_div = $(`<li id="spieler-${spieler.spielklasse}-${spieler.id}" class="list-group-item spieler spieler-farbe-${spieler.farbe}"></li>`)
+      this.spieler_div = $(`<li id="spieler-${spieler.spielklasse}-${spieler.id}" class="list-group-item spieler spieler-farbe-${spieler.farbe} link"></li>`)
       this.spieler_flex_div = $(`<div class="d-flex"></div>`)
       this.spieler_flex_div.append( this.spieler_position_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-position" class="p-2 text-muted">${spieler.mannschaft}.${spieler.position}</div>`) )
-      this.spieler_flex_div.append( this.spieler_name_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-name" class="p-2 flex-grow-1 link spieler-name">${spieler.name}</div>`) )
+      this.spieler_flex_div.append( this.spieler_name_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-name" class="p-2 flex-grow-1 spieler-name">${spieler.name}</div>`) )
       this.spieler_flex_div.append( this.spieler_spv_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-spv" class="p-2 spv"></div>`) )
       this.spieler_spv_div.append( this.spieler_spv_badge = $(`<span class="badge badge-danger spv-badge">SPV</span>`) )
       this.spieler_flex_div.append( this.spieler_qttr_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-qttr" class="p-2 ttr-wert text-muted">${spieler.qttr}</div>`) )
@@ -75,8 +75,8 @@ class SpielerView {
 
   /* NAME */
 
-  bindClickOnSpielerName(handler) {
-    this.spieler_name_div.click( (event) => { 
+  bindClickOnSpieler(handler) {
+    this.spieler_div.click( (event) => { 
       handler(this.spieler.id)
     })
   }

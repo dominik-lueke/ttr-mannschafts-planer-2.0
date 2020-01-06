@@ -7,7 +7,7 @@ class SpielerDetailsView {
       <div class="card-header bg-white">
         <div class="d-flex">
           <div class="p-2 text-muted">
-            <i class="fa fa-address-card"></i>
+            <i class="fa fa-2x fa-address-card"></i>
           </div>
           <div class="p-2 flex-grow-1">
             <input id="spieler-details-name-input" type="text" class="form-control form-control-sm" value=""/>
@@ -23,7 +23,7 @@ class SpielerDetailsView {
     // BODY
     this.body = `
       <div class="card-body">
-        <div class="form-row mb-2">
+        <div class="form-row mb-4">
           <div class="col">
             <h6 class="text-muted">QTTR</h6>
             <input id="spieler-details-qttr-input" type="number" class="form-control form-control-sm" value="" >
@@ -34,16 +34,20 @@ class SpielerDetailsView {
             <span id="spieler-details-res-badge" class="badge badge-light spieler-extra-icon" data-toggle="tooltip" data-placement="top" data-html="true" title="Senioren Berechtigung">SBE</span>
           </div>
         </div>
-        <h6 class="text-muted">Farbe</h6>
-        <div class="d-flex">
-          <a><div id="spieler-details-farbe-default" class="alert alert-light text-dark p-2 spieler-farbe-selector">Aa</div></a>
-          <a><div id="spieler-details-farbe-green"   class="alert alert-success p-2 spieler-farbe-selector">Aa</div></a>
-          <a><div id="spieler-details-farbe-red"     class="alert alert-danger p-2 spieler-farbe-selector">Aa</div></a>
-          <a><div id="spieler-details-farbe-yellow"  class="alert alert-warning p-2 spieler-farbe-selector">Aa</div></a>
-          <a><div id="spieler-details-farbe-blue"    class="alert alert-info p-2 spieler-farbe-selector">Aa</div></a>
-          <a><div id="spieler-details-farbe-light"   class="alert alert-light p-2 spieler-farbe-selector">Aa</div></a>
+        <div class="form-row mb-4">
+          <div class="col">
+            <h6 class="text-muted">Farbe</h6>
+            <div class="d-flex">
+              <a><div id="spieler-details-farbe-default" class="alert alert-light text-dark p-2 spieler-farbe-selector">Aa</div></a>
+              <a><div id="spieler-details-farbe-green"   class="alert alert-success p-2 spieler-farbe-selector">Aa</div></a>
+              <a><div id="spieler-details-farbe-red"     class="alert alert-danger p-2 spieler-farbe-selector">Aa</div></a>
+              <a><div id="spieler-details-farbe-yellow"  class="alert alert-warning p-2 spieler-farbe-selector">Aa</div></a>
+              <a><div id="spieler-details-farbe-blue"    class="alert alert-info p-2 spieler-farbe-selector">Aa</div></a>
+              <a><div id="spieler-details-farbe-light"   class="alert alert-light p-2 spieler-farbe-selector">Aa</div></a>
+            </div>
+          </div>
         </div>
-        <div class="form-row mb-2">
+        <div class="form-row mb-4">
           <div class="col">
             <h6 class="text-muted">Kommentar</h6>
             <textarea id= "spieler-details-comment-input" class="form-control" id="exampleFormControlTextarea1" rows="2">Kommentar</textarea>
@@ -183,6 +187,7 @@ class SpielerDetailsView {
       this.qttr_input.blur()
     // On <Escape> we cancel
     } else if (event.keyCode === 27) {
+      this.qttr_input.removeClass("is-invalid") 
       this.qttr_input.val(this.spieler.qttr)
       this.qttr_input.blur()
     }
@@ -196,6 +201,7 @@ class SpielerDetailsView {
       this._editQttr(handler)
     // Else we cancel
     } else {
+      this.qttr_input.removeClass("is-invalid") 
       this.qttr_input.val(this.spieler.qttr)
     }
   }
@@ -208,6 +214,7 @@ class SpielerDetailsView {
       this.qttr_input.addClass("is-invalid") 
     } else {
       // Fire the handler if necessary
+      this.qttr_input.removeClass("is-invalid") 
       if (newqttr !== this.spieler.qttr ) {
         handler(this.spieler.id, newqttr)
       }

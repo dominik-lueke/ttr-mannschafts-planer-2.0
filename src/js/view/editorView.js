@@ -70,8 +70,8 @@ class EditorView {
     this.mannschaftViews.forEach(mannschaft => { mannschaft.bindAddSpieler(handler)})
   }
 
-  bindClickOnSpielerName(handler) {
-    this.mannschaftViews.forEach(mannschaft => { mannschaft.bindClickOnSpielerName(handler)})
+  bindClickOnSpieler(handler) {
+    this.mannschaftViews.forEach(mannschaft => { mannschaft.bindClickOnSpieler(handler)})
   }
 
   bindToggleSpvOnSpieler(handler) {

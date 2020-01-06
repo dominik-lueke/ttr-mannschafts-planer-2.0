@@ -70,12 +70,12 @@ class EditorView {
     this.mannschaftViews.forEach(mannschaft => { mannschaft.bindAddSpieler(handler)})
   }
 
-  bindToggleSpvOnSpieler(handler) {
-    this.mannschaftViews.forEach(mannschaft => { mannschaft.bindToggleSpvOnSpieler(handler)})
+  bindClickOnSpielerName(handler) {
+    this.mannschaftViews.forEach(mannschaft => { mannschaft.bindClickOnSpielerName(handler)})
   }
 
-  bindEditQttrOnSpieler(handler) {
-    this.mannschaftViews.forEach(mannschaft => { mannschaft.bindEditQttrOnSpieler(handler)})
+  bindToggleSpvOnSpieler(handler) {
+    this.mannschaftViews.forEach(mannschaft => { mannschaft.bindToggleSpvOnSpieler(handler)})
   }
 
   bindReorderSpieler(handler) {

@@ -8,7 +8,7 @@ class SpielerModel {
     this.position = 0
     this.qttr = qttr
     this.ttrdifferenz = 0
-    this.farbe = ""
+    this.farbe = "default"
     this.reserve = false
     this.sbe = false
     this.spv = {

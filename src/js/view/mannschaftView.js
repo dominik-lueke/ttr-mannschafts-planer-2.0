@@ -84,8 +84,8 @@ class MannschaftView {
       this.addSpielerButton.click( () => { this._displayAddSpielerForm() } )
       
       // if both inputs are empty -> discard
-      this.newNameInput.focusout(  () => { this._hideEmptyAddSpielerForm() } )
-      this.newQttrInput.focusout(  () => { this._hideEmptyAddSpielerForm() } )
+      this.newNameInput.focusout( () => { this._hideEmptyAddSpielerForm() } )
+      this.newQttrInput.focusout( () => { this._hideEmptyAddSpielerForm() } )
 
   }
 
@@ -94,12 +94,12 @@ class MannschaftView {
     this.newQttrInput.on("keyup", (event) => { this._addSpielerKeyUpHandler(event, handler); } )
   }
 
-  bindToggleSpvOnSpieler(handler) {
-    this.spielerViews.forEach(spieler => { spieler.bindToggleSpvOnSpieler(handler)})
+  bindClickOnSpielerName(handler) {
+    this.spielerViews.forEach(spieler => { spieler.bindClickOnSpielerName(handler)})
   }
 
-  bindEditQttrOnSpieler(handler) {
-    this.spielerViews.forEach(spieler => { spieler.bindEditQttrOnSpieler(handler)})
+  bindToggleSpvOnSpieler(handler) {
+    this.spielerViews.forEach(spieler => { spieler.bindToggleSpvOnSpieler(handler)})
   }
 
   delete() {
@@ -111,7 +111,6 @@ class MannschaftView {
     // On <Enter> we add a new spieler
     if (event.keyCode === 13) {
       this._addSpieler(handler)
-    
     // On <Escape> we cancel
     } else if (event.keyCode === 27) {
       this._hideAddSpielerForm()
@@ -122,11 +121,9 @@ class MannschaftView {
     // Get the inputs
     var newname = this.newNameInput.val()
     var newqttr = parseInt(this.newQttrInput.val(), 10)
-
     // Test if inputs are valid
     if ( newname === "" ) { this.newNameInput.addClass("is-invalid") }
     if ( newqttr !== parseInt(newqttr, 10) || newqttr <= 0 ) { this.newQttrInput.addClass("is-invalid") }
-
     // Add the Spieler to the model in it is valid
     if ( newname !== "" && newqttr === parseInt(newqttr, 10) && newqttr > 0 ) {
       const spielklasse = this.newNameInput.attr("id").split("-")[1]

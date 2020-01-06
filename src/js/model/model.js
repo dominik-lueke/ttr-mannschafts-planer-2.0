@@ -3,7 +3,43 @@ class Model {
   constructor() {
     const stored_planung = JSON.parse(localStorage.getItem('localStoragePlanung'))
     this.planung = stored_planung ? this._loadPlanungFromJSON(stored_planung) : this._generateSamplePlanung()
+
+    this.sidebar_view_model = {
+      display: {
+        category: "",
+        id: ""
+      }
+    }
+    this.onSidebarViewChanged = {}
   }
+
+  /**
+   * EVENT HANDLER
+   */
+
+  bindSidebarViewChanged(callback) {
+    this.onSidebarViewChanged = callback
+  }
+
+  /**
+   * MODEL STATE CHANGE
+   */
+
+  displaySpielerDetails(id) {
+    this.sidebar_view_model.display.category = "spieler"
+    this.sidebar_view_model.display.id = id
+    this.onSidebarViewChanged(this.sidebar_view_model.display.category, this.sidebar_view_model.display.id)
+  }
+
+  closeSidebar() {
+    this.sidebar_view_model.display.category = ""
+    this.sidebar_view_model.display.id = 0
+    this.onSidebarViewChanged(this.sidebar_view_model.display.category, this.sidebar_view_model.display.id)
+  }
+
+  /**
+   * LOAD OR GENERATE PLANUNG
+   */
 
   _loadPlanungFromJSON (stored_planung) {
     const load_planung = new PlanungsModel()

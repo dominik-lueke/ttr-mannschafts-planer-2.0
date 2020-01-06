@@ -4,8 +4,16 @@ a, a:hover,
   cursor: pointer;
 }
 
-a .spieler-farbe-selector:hover, a .spieler-farbe-selector-active {
+a .spieler-farbe-selector.active,
+a .spieler-farbe-selector.active:hover,
+a .spieler-farbe-selector:hover {
   border: 2px solid;
+  margin: 5px -1px 5px 5px;
+}
+
+a .spieler-farbe-selector {
+  border: 1px solid;
+  margin: 6px 0px 6px 6px;
 }
 
 .spieler-farbe-warning {
@@ -17,19 +25,22 @@ a .spieler-farbe-selector:hover, a .spieler-farbe-selector-active {
   display: none;
 }
 
+/* SIDEBAR */
 .details-sidebar {
   position: fixed;
   height: 100vh;
-  top: 75px; /* Stay at the top */
-  right: 0;
+  top: 110px; /* Stay at the top */
+  right: 10px;
   width: 33vw;
+  max-width: 500px;
   z-index: 1;
 }
 
-.details-sidebar-header {
-  padding: 5px 0 5px 5px;  
+.details-sidebar .card {
+  height: calc(100vh - 130px);
 }
 
+/* EDITOR */
 .editor-container {
   margin-top: 80px;
 }

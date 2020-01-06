@@ -1,0 +1,8 @@
+class MannschaftDetailsView {
+  constructor() {
+  }
+
+  hide() {
+    
+  }
+}

@@ -31,6 +31,12 @@ class Model {
     this.displaySpielerDetails(id)
   }
 
+  deleteSpieler(id) {
+    // Important! First close the sidebar, as the delete action will try to update it with the spieler we just deleted
+    this.closeSidebar()
+    this.planung.deleteSpieler(id)
+  }
+
   displaySpielerDetails(id) {
     this.view.sidebar.display = "spieler"
     this.view.sidebar.id = id

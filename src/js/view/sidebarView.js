@@ -27,6 +27,10 @@ class SidebarView {
     this.spielerDetailsView.bindEditKommentarOnSpieler(handler)
   }
 
+  bindClickDeleteButtonOnSpieler(handler) {
+    this.spielerDetailsView.bindClickDeleteButtonOnSpieler(handler)
+  }
+
   displaySpieler(spieler){
     this.mannschaftDetailsView.hide()
     this.spielerDetailsView.displaySpieler(spieler)

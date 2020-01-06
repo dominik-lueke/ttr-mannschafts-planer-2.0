@@ -99,13 +99,15 @@ class PlanungsModel {
   }
 
   deleteSpieler(id) {
-    // check if mannschaft is now invalid
-    this.mannschaften.checkMannschaftInvalid( 
-      this.spieler.getSpieler(id).mannschaft, 
-      this.spieler.getSpielerOfMannschaft(mannschaft)
-    )
+    // get spieler mannschaft
+    const mannschaft_id = this.spieler.getSpieler(id).mannschaft
     // delete the spieler
     this.spieler.deleteSpieler(id)
+    // check if mannschaft is now invalid
+    this.mannschaften.checkMannschaftInvalid( 
+      mannschaft_id, 
+      this.spieler.getSpielerOfMannschaft(mannschaft_id)
+    )
     // commit
     this._commit()
   }

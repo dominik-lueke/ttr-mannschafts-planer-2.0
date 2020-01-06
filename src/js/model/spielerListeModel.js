@@ -56,6 +56,7 @@ class SpielerListeModel {
   }
 
   deleteSpieler(id) {
+    const spieler = this.liste.find(spieler => spieler.id == id)
     // first remove the spieler from its mannschaft to keep the spieler array correct
     this._removeSpielerFromMannschaft(spieler, false)
     // delete the spieler object

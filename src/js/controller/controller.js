@@ -18,6 +18,7 @@ class Controller {
     this.sidebarView.bindEditQttrOnSpieler(this.handleEditQttrOnSpieler)
     this.sidebarView.bindClickFarbeButtonOnSpieler(this.handleClickFarbeButtonOnSidebar)
     this.sidebarView.bindEditKommentarOnSpieler(this.handleEditKommentarOnSpieler)
+    this.sidebarView.bindClickDeleteButtonOnSpieler(this.handleClickDeleteButtonOnSpieler)
     this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
   }
 
@@ -78,6 +79,10 @@ class Controller {
 
   handleEditKommentarOnSpieler = (id, kommentar) => {
     this.planung.editSpielerKommentar(id, kommentar)
+  }
+
+  handleClickDeleteButtonOnSpieler = (id) => {
+    this.model.deleteSpieler(id)
   }
 
   handleClickCloseButtonOnSidebar = () => {

@@ -263,5 +263,8 @@ class SpielerDetailsView {
   }
 
   /* LÖSCHEN */
+  bindClickDeleteButtonOnSpieler(handler){
+    this.delete_button.click( (event) => { handler(this.spieler.id) })
+  }
 
 }

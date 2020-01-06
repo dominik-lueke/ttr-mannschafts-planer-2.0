@@ -33,6 +33,11 @@ class SpielerListeModel {
     this._setPrimarySpvForSpieler(spieler, spv)
   }
 
+  editSpielerName(id, name) {
+    const spieler = this.liste.find(spieler => spieler.id == id)
+    spieler.name = name
+  }
+
   editSpielerQttr(id, qttr) {
     const spieler = this.liste.find(spieler => spieler.id == id)
     this._setQttrForSpieler(spieler, qttr)

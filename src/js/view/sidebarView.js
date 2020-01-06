@@ -11,6 +11,10 @@ class SidebarView {
     //this.mannschaftDetailsView.bindClickCloseButtonOnSidebar(handler)
   }
 
+  bindEditNameOnSpieler(handler) {
+    this.spielerDetailsView.bindEditNameOnSpieler(handler)
+  }
+
   bindEditQttrOnSpieler(handler) {
     this.spielerDetailsView.bindEditQttrOnSpieler(handler)
   }

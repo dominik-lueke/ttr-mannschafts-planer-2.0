@@ -72,6 +72,12 @@ class PlanungsModel {
     this._commit()
   }
 
+  editSpielerName(id, name) {
+    this.spieler.editSpielerName(id, name)
+    // commit
+    this._commit()
+  }
+
   editSpielerQttr(id, qttr) {
     this.spieler.editSpielerQttr(id, qttr)
     // commit

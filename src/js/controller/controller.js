@@ -14,6 +14,7 @@ class Controller {
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
     this.sidebarView.bindEditQttrOnSpieler(this.handleEditQttrOnSpieler)
+    this.sidebarView.bindEditNameOnSpieler(this.handleEditNameOnSpieler)
     this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
   }
 
@@ -55,6 +56,10 @@ class Controller {
 
   handleToggleSpvOnSpieler = (id, spv) => {
     this.planung.editSpielerSpv(id, spv)
+  }
+
+  handleEditNameOnSpieler = (id, name) => {
+    this.planung.editSpielerName(id, name)
   }
 
   handleEditQttrOnSpieler = (id, qttr) => {

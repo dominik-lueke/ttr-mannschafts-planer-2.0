@@ -130,6 +130,44 @@ class SpielerDetailsView {
   }
   
   /* NAME */
+  bindEditNameOnSpieler(handler){
+    this.name_input.on("keyup", (event) => { this._editNameKeyUpHandler(event, handler) } )
+    this.name_input.focusout( () => { this._editNameFocusOutHandler(event, handler) } )
+  }
+
+  _editNameKeyUpHandler(event, handler) {
+    event.preventDefault()
+    // On <Enter> we edit qttr
+    if (event.keyCode === 13) {
+      this._editName(handler)
+      this.name_input.blur()
+    // On <Escape> we cancel
+    } else if (event.keyCode === 27) {
+      this.name_input.val(this.spieler.name)
+      this.name_input.blur()
+    }
+  }
+
+  _editNameFocusOutHandler(event, handler) {
+    event.preventDefault()
+    var input = this.name_input.val()
+    // If not empty we edit qttr
+    if (input !== "") { 
+      this._editName(handler)
+    // Else we cancel
+    } else {
+      this.name_input.val(this.spieler.name)
+    }
+  }
+
+  _editName(handler){
+    // Get the inputs
+    var newname = this.name_input.val()
+    // Fire the handler if necessary
+    if (newname !== this.spieler.name ) {
+      handler(this.spieler.id, newname)
+    }
+  }
 
   /* QTTR */
   bindEditQttrOnSpieler(handler){

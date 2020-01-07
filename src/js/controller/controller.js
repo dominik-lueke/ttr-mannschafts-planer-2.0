@@ -39,6 +39,7 @@ class Controller {
 
   onMannschaftenChanged = (mannschaften,spieler) => {
     this.editorView.displayMannschaften(mannschaften,spieler)
+    this.editorView.bindAddMannschaft(this.handleAddMannschaft)
     this.editorView.bindClickOnMannschaft(this.handleClickOnMannschaft)
     this.editorView.bindAddSpieler(this.handleAddSpieler)
     this.editorView.bindClickOnSpieler(this.handleClickOnSpieler)
@@ -61,9 +62,10 @@ class Controller {
     }
   }
 
-  /* HANDLER */
-
   /* EDITOR HANDLER */
+  handleAddMannschaft = (nummer) => {
+    this.model.addMannschaft(nummer)
+  }
 
   handleAddSpieler = (spielklasse, mannschaft, position, name, qttr) => {
     /* The spielklasse can later be used to have more than one planungs-objcet */
@@ -133,7 +135,7 @@ class Controller {
   }
 
   handleEditSpielwocheOnMannschaft = (id, spielwoche) => {
-    this.planung.editMannschaftUhrzeit(id, spielwoche)
+    this.planung.editMannschaftSpielwoche(id, spielwoche)
   }
 
   handleClickDeleteButtonOnMannschaft = (id) => {

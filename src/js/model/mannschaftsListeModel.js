@@ -9,9 +9,10 @@ class MannschaftsListeModel {
    * PUBLIC
    */
 
-  addMannschaft(nummer=0, liga="", sollstaerke=0, spieltag="", uhrzeit="", spielwoche="") {
+  addMannschaft(nummer=0, liga="Liga", sollstaerke=6, spieltag="Freitag", uhrzeit="19:30", spielwoche="A") {
     const id = this.liste.length > 0 ? Math.max.apply(null, this.liste.map(mannschaft => mannschaft.id)) + 1 : 1
     this.liste.push(new MannschaftsModel(id, this.spielklasse, nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche))
+    return id
   }
 
   deleteMannschaft(id) {

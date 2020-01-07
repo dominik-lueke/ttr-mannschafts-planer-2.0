@@ -26,6 +26,11 @@ class Model {
    * MODEL STATE CHANGE
    */
 
+  addMannschaft(nummer) {
+    const id = this.planung.addMannschaft(nummer)
+    this.displayMannschaftDetails(id)
+  }
+
   addSpieler(mannschaft, position, name, qttr) {
     const id = this.planung.addSpieler(mannschaft, position, name, qttr)
     this.displaySpielerDetails(id)

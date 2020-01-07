@@ -29,9 +29,18 @@ class PlanungsModel {
    */
 
   addMannschaft(nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche){
-    this.mannschaften.addMannschaft(nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche)
+    // add the mannschaft
+    const new_id = this.mannschaften.addMannschaft(nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche)
+    // Check for the last two mannschaften if they are invalid now
+    this.mannschaften.liste
+    .filter(mannschaft => mannschaft.nummer >= this.mannschaften.liste.length - 1)
+    .forEach(mannschaft => {
+      this.mannschaften.checkMannschaftInvalid(mannschaft.nummer, this.spieler.getSpielerOfMannschaft(mannschaft.nummer))
+    })
     // commit
     this._commit()
+    // return new id
+    return new_id
   }
 
   deleteMannschaft(id){

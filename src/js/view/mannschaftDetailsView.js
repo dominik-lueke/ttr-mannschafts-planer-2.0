@@ -25,7 +25,7 @@ class MannschaftDetailsView {
         <h6 class="text-muted">Liga <small>(Mannschaftsstärke)</small></h6>
         <div class="form-row mb-4">
           <div class="col-sm-9">
-            <input id="mannschaft-details-liga-input" type="text" class="form-control form-control-sm" value="" >
+            <input id="mannschaft-details-liga-input" type="text" class="form-control form-control-sm" value="" placeholder="Liga">
           </div>
           <div class="col-sm-3">
             <select id="mannschaft-details-sollstaerke-select" class="form-control form-control-sm">
@@ -47,10 +47,10 @@ class MannschaftDetailsView {
               <option value="Sonntag">Sonntag</option>
             </select>
           </div>
-          <div class="col-sm-4">
-            <input id="mannschaft-details-uhrzeit-input" type="text" class="form-control form-control-sm" placeholder="17:30">
+          <div class="col-sm-3">
+            <input id="mannschaft-details-uhrzeit-input" type="text" class="form-control form-control-sm" placeholder="19:30">
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-3">
           <select id="mannschaft-details-spielwoche-select" class="form-control form-control-sm">
             <option value="A">A</option>
             <option value="B">B</option>
@@ -177,19 +177,11 @@ class MannschaftDetailsView {
 
   _editSollstaerkeChangeHandler(event, handler) {
     event.preventDefault()
-    var input = this.sollstaerke_input.val()
-    // If not empty we edit Liga
-    if (input !== "") { 
-      this._editSollstaerke(handler)
-    // Else we cancel
-    } else {
-      this.sollstaerke_input.val(this.mannschaft.sollstaerke)
-    }
+    var input = parseInt(this.sollstaerke_select.val(), 10)
+    this._editSollstaerke(handler, input)
   }
 
-  _editSollstaerke(handler){
-    // Get the inputs
-    var newSollstaerke= this.sollstaerke_input.val()
+  _editSollstaerke(handler, newSollstaerke){
     // Fire the handler if necessary
     if (newSollstaerke !== this.mannschaft.sollstaerke ) {
       handler(this.mannschaft.id, newSollstaerke)
@@ -199,7 +191,20 @@ class MannschaftDetailsView {
   /* SPIELTAG */
 
   bindEditSpieltagOnMannschaft(handler) {
-    // TODO
+    this.spieltag_select.on("change", (event) => this._editSpieltagChangeHandler(event, handler))
+  }
+
+  _editSpieltagChangeHandler(event, handler) {
+    event.preventDefault()
+    var input = this.spieltag_select.val()
+    this._editSpieltag(handler, input)
+  }
+
+  _editSpieltag(handler, newSpieltag){
+    // Fire the handler if necessary
+    if (newSpieltag !== this.mannschaft.spieltag ) {
+      handler(this.mannschaft.id, newSpieltag)
+    }
   }
 
   /* UHRZEIT */
@@ -246,7 +251,20 @@ class MannschaftDetailsView {
   /* SPIELWOCHE */
 
   bindEditSpielwocheOnMannschaft(handler) {
-    // TODO
+    this.spielwoche_select.on("change", (event) => this._editSpielwocheChangeHandler(event, handler))
+  }
+
+  _editSpielwocheChangeHandler(event, handler) {
+    event.preventDefault()
+    var input = this.spielwoche_select.val()
+    this._editSpielwoche(handler, input)
+  }
+
+  _editSpielwoche(handler, newSpielwoche){
+    // Fire the handler if necessary
+    if (newSpielwoche !== this.mannschaft.spielwoche ) {
+      handler(this.mannschaft.id, newSpielwoche)
+    }
   }
 
   /* DELETE */

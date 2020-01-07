@@ -9,7 +9,7 @@ class EditorView {
             <div class="container">
               <div class="row mannschafts-row">
                 <div class="card mannschaft">
-                  <button class="btn btn-light text-muted">
+                  <button id="add-mannschaft-button" class="btn btn-light text-muted">
                     <i class="fa fa-plus"></i>
                     Mannschaft hinzufügen
                   </button>
@@ -21,6 +21,7 @@ class EditorView {
       </div>
     `)
     this.mannschaftsContainer = $('#mannschafts-container')
+    this.add_mannschaft_button = $('#add-mannschaft-button')
     this.mannschaftViews = []
     this.reorderSpielerHandler = {}
   }
@@ -29,6 +30,7 @@ class EditorView {
     // Delete all nodes execpt the "Mannschaft hinzufügen" button
     this.mannschaftViews.forEach( mannschaft => { mannschaft.delete() })
     this.mannschaftViews = []
+    this.mannschaften = mannschaften
 
     // Create Mannschafts rows for each Mannschaft in state
     mannschaften.forEach(mannschaft => {
@@ -70,6 +72,10 @@ class EditorView {
 
   bindClickOnMannschaft(handler) {
     this.mannschaftViews.forEach(mannschaft => { mannschaft.bindClickOnMannschaft(handler)})
+  }
+
+  bindAddMannschaft(handler) {
+    this.add_mannschaft_button.click( (event) => { handler(this.mannschaften.length + 1)})
   }
 
   /* SPIELER BINDINGS */

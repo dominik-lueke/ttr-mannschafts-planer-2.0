@@ -1,93 +1,102 @@
 class MannschaftView {
   constructor(mannschaftsContainer, mannschaft, mannschaftsspieler) {
-      const id = `${mannschaft.spielklasse}-${mannschaft.nummer}`
-      const romanNumber = this._getRomanNumberOfInteger(`${mannschaft.nummer}`)
-      const displayMannschaftsName = mannschaft.spielklasse + ( romanNumber === "I" ? "" : " " + romanNumber)
-      
-      // Add the row for the Mannschaft
-      this.html = $(`
-        <div class="row mannschafts-row">
-          <div id="mannschaft-${id}" class="card mannschaft">
-            <div class="card-header mannschaft-header">
-              <div class="d-flex justify-content-between">
-                <div class="p-2">
-                  <a href="#" class="text-dark"><h5 id="mannschaft-${id}-name">${displayMannschaftsName}</h5></a>
-                </div>
-                <div class="p-2 text-muted">
-                  <small id="mannschaft-${id}-liga">${mannschaft.liga}</small>
-                </div>
-                <div class="p-2 text-muted">
-                  <small id="mannschaft-${id}-spieltag">${mannschaft.spieltag}, ${mannschaft.uhrzeit} Uhr</small>
-                </div>
-                <div class="p-2 text-muted">
-                  <small id="mannschaft-${id}-spielwoche">${mannschaft.spielwoche}</small>
-                </div>
-                <div id="mannschaft-${id}-invalid-icon" class="p-2 mannschaft-invalid-icon text-danger">
-                  <span><i class="fa fa-exclamation-triangle"></i></span>
-                </div>
+    this.mannschaft = mannschaft
+    const id = `${mannschaft.spielklasse}-${mannschaft.nummer}`
+    // Add the row for the Mannschaft
+    this.html = $(`
+      <div class="row mannschafts-row">
+        <div id="mannschaft-${id}" class="card mannschaft">
+          <div class="card-header mannschaft-header">
+            <div class="d-flex justify-content-between">
+              <div class="p-2">
+                <a class="text-dark"><h5 id="mannschaft-${id}-name">${mannschaft.name}</h5></a>
+              </div>
+              <div class="p-2 text-muted">
+                <small id="mannschaft-${id}-liga">${mannschaft.liga}</small>
+              </div>
+              <div class="p-2 text-muted">
+                <small id="mannschaft-${id}-spieltag">${mannschaft.spieltag}, ${mannschaft.uhrzeit} Uhr</small>
+              </div>
+              <div class="p-2 text-muted">
+                <small id="mannschaft-${id}-spielwoche">${mannschaft.spielwoche}</small>
+              </div>
+              <div id="mannschaft-${id}-invalid-icon" class="p-2 mannschaft-invalid-icon text-danger">
+                <span><i class="fa fa-exclamation-triangle"></i></span>
               </div>
             </div>
           </div>
         </div>
-      `)
-      mannschaftsContainer.append(this.html)
-      const mannschafts_div = $("#mannschaft-" + id)
+      </div>
+    `)
+    mannschaftsContainer.append(this.html)
+    const mannschafts_div = $("#mannschaft-" + id)
+    this.mannschafts_name = $(`#mannschaft-${id}-name`)
 
-      // Add all Spieler to the Mannschaft
-      this.spielerListeContainer = $(`<ul id="mannschaft-${id}-spielerliste" class="list-group list-group-flush connectedSortable spielerliste"></ul>`)
-      mannschafts_div.append(this.spielerListeContainer)
-      this.spielerViews = []
-      mannschaftsspieler.forEach( spieler => {
-        this.spielerViews.push( new SpielerView(this.spielerListeContainer, spieler) )
-      })
+    // Add all Spieler to the Mannschaft
+    this.spielerListeContainer = $(`<ul id="mannschaft-${id}-spielerliste" class="list-group list-group-flush connectedSortable spielerliste"></ul>`)
+    mannschafts_div.append(this.spielerListeContainer)
+    this.spielerViews = []
+    mannschaftsspieler.forEach( spieler => {
+      this.spielerViews.push( new SpielerView(this.spielerListeContainer, spieler) )
+    })
 
-      // Spieler Hinzufügen Form
-      // New spieler button in seperate list because we dont want it to be draggable
-      mannschafts_div.append(`
-        <ul class="list-group list-group-flush">
-          <li id="mannschaft-${id}-new-spieler" class="list-group-item spieler new-spieler-form">
-            <div class="d-flex">
-              <div id="mannschaft-${id}-new-position" class="p-2 text-muted invisible">${mannschaft.nummer}.${mannschaftsspieler.length + 1}</div>
-              <div id="mannschaft-${id}-new-name" class="p-2 flex-grow-1"></div>
-              <div id="mannschaft-${id}-new-qttr" class="p-2 ttr-wert text-muted"></div>
-            </div>
-          </li>
-        </ul>
-      `)
-      this.addSpielerButton = $(`<button id="mannschaft-${id}-addspielerbtn" class="btn btn-light text-muted"><i class="fa fa-plus"></i> Spieler hinzufügen</button>`)
-      this.newNameInput = $(`<input id="mannschaft-${id}-new-name-input" type="text" class="form-control display-none" placeholder="Nachname, Vorname"></input>`)
-      this.newQttrInput = $(`<input id="mannschaft-${id}-new-qttr-input" type="number" class="form-control display-none" placeholder="TTR" min="0" max="3000"></input>`)
-      this.newPositionLabel = $(`#mannschaft-${id}-new-position`)
-      $(`#mannschaft-${id}-new-name`).append(this.addSpielerButton)
-      $(`#mannschaft-${id}-new-name`).append(this.newNameInput)
-      $(`#mannschaft-${id}-new-qttr`).append(this.newQttrInput)
+    // Spieler Hinzufügen Form
+    // New spieler button in seperate list because we dont want it to be draggable
+    mannschafts_div.append(`
+      <ul class="list-group list-group-flush">
+        <li id="mannschaft-${id}-new-spieler" class="list-group-item spieler new-spieler-form">
+          <div class="d-flex">
+            <div id="mannschaft-${id}-new-position" class="p-2 text-muted invisible">${mannschaft.nummer}.${mannschaftsspieler.length + 1}</div>
+            <div id="mannschaft-${id}-new-name" class="p-2 flex-grow-1"></div>
+            <div id="mannschaft-${id}-new-qttr" class="p-2 ttr-wert text-muted"></div>
+          </div>
+        </li>
+      </ul>
+    `)
+    this.addSpielerButton = $(`<button id="mannschaft-${id}-addspielerbtn" class="btn btn-light text-muted"><i class="fa fa-plus"></i> Spieler hinzufügen</button>`)
+    this.newNameInput = $(`<input id="mannschaft-${id}-new-name-input" type="text" class="form-control display-none" placeholder="Nachname, Vorname"></input>`)
+    this.newQttrInput = $(`<input id="mannschaft-${id}-new-qttr-input" type="number" class="form-control display-none" placeholder="TTR" min="0" max="3000"></input>`)
+    this.newPositionLabel = $(`#mannschaft-${id}-new-position`)
+    $(`#mannschaft-${id}-new-name`).append(this.addSpielerButton)
+    $(`#mannschaft-${id}-new-name`).append(this.newNameInput)
+    $(`#mannschaft-${id}-new-qttr`).append(this.newQttrInput)
 
-      // add invalid class, invalid-icon, tooltip
-      if ( mannschaft.invalid ) {
-        mannschafts_div.addClass("invalid")
-        mannschafts_div.addClass("mannschaft-invalid")
-        const mannschaft_invalid_icon = $(`#mannschaft-${id}-invalid-icon`)
-        mannschaft_invalid_icon.attr("data-toggle","tooltip")
-        mannschaft_invalid_icon.attr("data-placement","right")
-        mannschaft_invalid_icon.attr("data-html","true")
-        var tooltip_title = `<h6>Fehlende Sollstärke</h6>Mindestens ${mannschaft.sollstaerke} (Stamm-) Spieler benötigt`
-        mannschaft_invalid_icon.attr("title",tooltip_title)
-      }
+    // add invalid class, invalid-icon, tooltip
+    if ( mannschaft.invalid ) {
+      mannschafts_div.addClass("invalid")
+      mannschafts_div.addClass("mannschaft-invalid")
+      const mannschaft_invalid_icon = $(`#mannschaft-${id}-invalid-icon`)
+      mannschaft_invalid_icon.attr("data-toggle","tooltip")
+      mannschaft_invalid_icon.attr("data-placement","right")
+      mannschaft_invalid_icon.attr("data-html","true")
+      var tooltip_title = `<h6>Fehlende Sollstärke</h6>Mindestens ${mannschaft.sollstaerke} (Stamm-) Spieler benötigt`
+      mannschaft_invalid_icon.attr("title",tooltip_title)
+    }
 
-      // add eventlistener to display new spieler form
-      this.addSpielerButton.hover(
-        () => { this.newPositionLabel.removeClass("invisible") },
-        () => { if ( ! this.addSpielerButton.hasClass('display-none') ) { this.newPositionLabel.addClass("invisible") } }
-      )
+    // add eventlistener to display new spieler form
+    this.addSpielerButton.hover(
+      () => { this.newPositionLabel.removeClass("invisible") },
+      () => { if ( ! this.addSpielerButton.hasClass('display-none') ) { this.newPositionLabel.addClass("invisible") } }
+    )
 
-      // display input form for Name and QTTR instead of button
-      this.addSpielerButton.click( () => { this._displayAddSpielerForm() } )
-      
-      // if both inputs are empty -> discard
-      this.newNameInput.focusout( () => { this._hideEmptyAddSpielerForm() } )
-      this.newQttrInput.focusout( () => { this._hideEmptyAddSpielerForm() } )
+    // display input form for Name and QTTR instead of button
+    this.addSpielerButton.click( () => { this._displayAddSpielerForm() } )
+    
+    // if both inputs are empty -> discard
+    this.newNameInput.focusout( () => { this._hideEmptyAddSpielerForm() } )
+    this.newQttrInput.focusout( () => { this._hideEmptyAddSpielerForm() } )
 
   }
+
+  /* MANNSCHAFT BINDINGS */
+
+  bindClickOnMannschaft(handler) {
+    this.mannschafts_name.click( (event) => { 
+      handler(this.mannschaft.id)
+    })
+  }
+
+  /* SPIELER BINDINGS */
 
   bindAddSpieler(handler) {
     this.newNameInput.on("keyup", (event) => { this._addSpielerKeyUpHandler(event, handler); } )
@@ -159,22 +168,4 @@ class MannschaftView {
     }
   }
 
-  _getRomanNumberOfInteger(i){
-    i = i.replace('15', 'XV');
-    i = i.replace('14', 'XIV');
-    i = i.replace('13', 'XIII');
-    i = i.replace('12', 'XII');
-    i = i.replace('11', 'XI');
-    i = i.replace('10', 'X');
-    i = i.replace('9', 'IX');
-    i = i.replace('8', 'VIII');
-    i = i.replace('7', 'VII');
-    i = i.replace('6', 'VI');
-    i = i.replace('5', 'V');
-    i = i.replace('4', 'IV');
-    i = i.replace('3', 'III');
-    i = i.replace('2', 'II');
-    i = i.replace('1', 'I');
-    return i;
-  }
 }

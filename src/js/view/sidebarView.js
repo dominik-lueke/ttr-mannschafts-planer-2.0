@@ -8,8 +8,29 @@ class SidebarView {
 
   bindClickCloseButtonOnSidebar(handler){
     this.spielerDetailsView.bindClickCloseButtonOnSidebar(handler)
-    //this.mannschaftDetailsView.bindClickCloseButtonOnSidebar(handler)
+    this.mannschaftDetailsView.bindClickCloseButtonOnSidebar(handler)
   }
+
+  /* DISPLAY */
+
+  displaySpieler(spieler){
+    this.mannschaftDetailsView.hide()
+    this.spielerDetailsView.displaySpieler(spieler)
+  }
+
+  displayMannschaft(mannschaft){
+    this.spielerDetailsView.hide()
+    this.mannschaftDetailsView.displayMannschaft(mannschaft)
+  }
+
+  /* HIDE */
+
+  hideSidebar(){
+    this.mannschaftDetailsView.hide()
+    this.spielerDetailsView.hide()
+  }
+
+  /* EDIT SPIELER */
 
   bindEditNameOnSpieler(handler) {
     this.spielerDetailsView.bindEditNameOnSpieler(handler)
@@ -31,13 +52,30 @@ class SidebarView {
     this.spielerDetailsView.bindClickDeleteButtonOnSpieler(handler)
   }
 
-  displaySpieler(spieler){
-    this.mannschaftDetailsView.hide()
-    this.spielerDetailsView.displaySpieler(spieler)
+  /* EDIT MANNSCHAFT */
+
+  bindEditLigaOnMannschaft(handler) {
+    this.mannschaftDetailsView.bindEditLigaOnMannschaft(handler)
   }
 
-  hideSidebar(){
-    this.mannschaftDetailsView.hide()
-    this.spielerDetailsView.hide()
+  bindEditSollstaerkeOnMannschaft(handler) {
+    this.mannschaftDetailsView.bindEditSollstaerkeOnMannschaft(handler)
   }
+
+  bindEditSpieltagOnMannschaft(handler) {
+    this.mannschaftDetailsView.bindEditSpieltagOnMannschaft(handler)
+  }
+
+  bindEditUhrzeitOnMannschaft(handler) {
+    this.mannschaftDetailsView.bindEditUhrzeitOnMannschaft(handler)
+  }
+
+  bindEditSpielwocheOnMannschaft(handler) {
+    this.mannschaftDetailsView.bindEditSpielwocheOnMannschaft(handler)
+  }
+
+  bindClickDeleteButtonOnMannschaft(handler) {
+    this.mannschaftDetailsView.bindClickDeleteButtonOnMannschaft(handler)
+  }
+
 }

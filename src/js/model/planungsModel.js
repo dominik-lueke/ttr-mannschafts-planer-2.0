@@ -1,8 +1,9 @@
 class PlanungsModel {
 
-  constructor(verein="", vereinsNummer="", saison="", halbserie="", qttrDatum="", spielklasse="") {
+  constructor(verein="", verband="", vereinsNummer="", saison="", halbserie="", qttrDatum="", spielklasse="") {
     this.verein = verein
-    this.vereinsNummer= vereinsNummer
+    this.verband = verband
+    this.vereinsNummer = vereinsNummer
     this.saison = saison
     this.halbserie = halbserie
     this.qttrDatum = qttrDatum
@@ -39,6 +40,40 @@ class PlanungsModel {
     this._commit()
   }
 
+  editMannschaftLiga(id, liga) {
+    this.mannschaften.editMannschaftLiga(id, liga)
+    // commit
+    this._commit()
+  }
+
+  editMannschaftSollstaerke(id, sollstaerke) {
+    // edit the sollstaerke
+    this.mannschaften.editMannschaftSollstaerke(id, sollstaerke)
+    // get mannschafts-nummer of mannschafts-id
+    const mannschafts_nummer = (this.mannschaften.getMannschaft(id)).nummer
+    // check if mannschaft is invalid
+    this.mannschaften.checkMannschaftInvalid(mannschafts_nummer, this.spieler.getSpielerOfMannschaft(mannschafts_nummer))
+    // commit
+    this._commit()
+  }
+
+  editMannschaftSpieltag(id, spieltag) {
+    this.mannschaften.editMannschaftSpieltag(id, spieltag)
+    // commit
+    this._commit()
+  }
+
+  editMannschaftUhrzeit(id, uhrzeit) {
+    this.mannschaften.editMannschaftUhrzeit(id, uhrzeit)
+    // commit
+    this._commit()
+  }
+
+  editMannschaftSpielwoche(id, spielwoche) {
+    this.mannschaften.editMannschaftSpielwoche(id, spielwoche)
+    // commit
+    this._commit()
+  }
 
   /**
    * SPIELER

@@ -43,6 +43,12 @@ class Model {
     this._commit()
   }
 
+  displayMannschaftDetails(id) {
+    this.view.sidebar.display = "mannschaft"
+    this.view.sidebar.id = id
+    this._commit()
+  }
+
   closeSidebar() {
     this.view.sidebar.display = ""
     this.view.sidebar.id = 0
@@ -126,7 +132,7 @@ class Model {
   }
 
   _generateSamplePlanung () {
-    const sample_planung = new PlanungsModel("TuRa Elsen", 187012, "2019/20", "Rückrunde", "11.12.2019", "Herren")
+    const sample_planung = new PlanungsModel("TuRa Elsen", "WTTV", 187012, "2019/20", "Rückrunde", "11.12.2019", "Herren")
     /* Fill with sample Data */
     const qttr_max = 1910
     for (var i=1; i<=3; i++) {

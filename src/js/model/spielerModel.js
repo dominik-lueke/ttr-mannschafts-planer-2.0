@@ -44,7 +44,7 @@ class SpielerModel {
   }
 
   addSpielerToInvalidList(invalid_spieler) {
-    this.invalid = this.invalid.filter(spieler => spieler.id !== invalid_spieler.id )
+    this.invalid = this.invalid.filter(spieler => (spieler.id !== invalid_spieler.id) )
     this.invalid.push({
       id: invalid_spieler.id,
       mannschaft: invalid_spieler.mannschaft,
@@ -52,12 +52,12 @@ class SpielerModel {
       name: invalid_spieler.name,
       differenz: this.getTtrDifferenz(invalid_spieler)
     })
-    this.invalidSpielerFromHigherMannschaften = this.invalid.filter(invalid_spieler => invalid_spieler.mannschaft != this.mannschaft).length
+    this.invalidSpielerFromHigherMannschaften = this.invalid.filter(invalid_spieler => (invalid_spieler.mannschaft != this.mannschaft)).length
   }
 
   removeSpielerFromInvalidList(remove_spieler) {
-    this.invalid = this.invalid.filter(invalid_spieler => { invalid_spieler.id !== remove_spieler.id })
-    this.invalidSpielerFromHigherMannschaften = this.invalid.filter(invalid_spieler => invalid_spieler.mannschaft != this.mannschaft).length
+    this.invalid = this.invalid.filter(invalid_spieler => ( invalid_spieler.id !== remove_spieler.id ))
+    this.invalidSpielerFromHigherMannschaften = this.invalid.filter(invalid_spieler => (invalid_spieler.mannschaft != this.mannschaft)).length
   }
 
   resetInvalidList(){

@@ -130,8 +130,8 @@ class SpielerListeModel {
     // handle sperrvermerk before the spieler gets updated
     if ( remove_spieler.spv.primary ) {
       if ( keep_spv ) {
-      // Remove secondary spv from all spieler in the same mannschaft with higher positionen
-      this._updateSpvPreviousPositionOfSpieler(remove_spieler, false)
+        // Remove secondary spv from all spieler in the same mannschaft with higher positionen
+        this._updateSpvPreviousPositionOfSpieler(remove_spieler, false)
       } else {
         // Remove primary spv from this spieler and secondary spv all spieler in the same mannschaft with higher positionen
         this._setPrimarySpvForSpieler(remove_spieler, false)
@@ -218,7 +218,7 @@ class SpielerListeModel {
     of other spieler with lower positionen the spieler itself */
   _removeSpielerFromInvalidLists(remove_spieler){
     this.liste
-    .filter(spieler => ( spieler.invalid.find( invalid_spieler => invalid_spieler.id == remove_spieler.id )))
+    .filter(spieler => ( spieler.invalid.find( invalid_spieler => ( invalid_spieler.id == remove_spieler.id ))))
     .forEach(spieler => {
       spieler.removeSpielerFromInvalidList(remove_spieler)
     })

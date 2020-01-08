@@ -162,3 +162,9 @@ a .spieler-farbe-selector {
   color: #6c757d!important;
   margin-left: -10px;
 }
+
+/* WEBVIEW */
+
+.modal-body {
+  height: 70vh
+}

@@ -40,6 +40,14 @@ class SidebarView {
     this.spielerDetailsView.bindEditQttrOnSpieler(handler)
   }
 
+  bindClickResButtonOnSpieler(handler){
+    this.spielerDetailsView.bindClickResButtonOnSpieler(handler)
+  }
+
+  bindClickSbeButtonOnSpieler(handler){
+    this.spielerDetailsView.bindClickSbeButtonOnSpieler(handler)
+  }
+
   bindClickFarbeButtonOnSpieler(handler) {
     this.spielerDetailsView.bindClickFarbeButtonOnSpieler(handler)
   }

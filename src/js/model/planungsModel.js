@@ -49,6 +49,12 @@ class PlanungsModel {
     this.spieler.deleteMannschaft(mannschafts_nummer, keep_spieler)
     // delete the mannschaft from mannschafts-liste
     this.mannschaften.deleteMannschaft(id)
+    // Check for the last mannschaft if it is (in)valid now
+    this.mannschaften.liste
+    .filter(mannschaft => mannschaft.nummer > this.mannschaften.liste.length - 1)
+    .forEach(mannschaft => {
+      this.mannschaften.checkMannschaftInvalid(mannschaft.nummer, this.spieler.getSpielerOfMannschaft(mannschaft.nummer))
+    })
     // commit
     this._commit()
   }
@@ -130,6 +136,21 @@ class PlanungsModel {
 
   editSpielerQttr(id, qttr) {
     this.spieler.editSpielerQttr(id, qttr)
+    // commit
+    this._commit()
+  }
+
+  editSpielerRes(id, res) {
+    this.spieler.editSpielerRes(id, res)
+    // check if the mannschaft is no (in)valid
+    const mannschaft = this.spieler.getSpieler(id).mannschaft
+    this.mannschaften.checkMannschaftInvalid(mannschaft, this.spieler.getSpielerOfMannschaft(mannschaft))
+    // commit
+    this._commit()
+  }
+
+  editSpielerSbe(id, sbe) {
+    this.spieler.editSpielerSbe(id, sbe)
     // commit
     this._commit()
   }

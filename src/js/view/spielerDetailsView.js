@@ -30,8 +30,8 @@ class SpielerDetailsView {
           </div>
           <div class="col">
             <h6 class="text-muted">Sonderstatus</h6>
-            <span id="spieler-details-sbe-badge" class="badge badge-light spieler-extra-icon" data-toggle="tooltip" data-placement="top" data-html="true" title="Reservespieler">RES</span>
-            <span id="spieler-details-res-badge" class="badge badge-light spieler-extra-icon" data-toggle="tooltip" data-placement="top" data-html="true" title="Senioren Berechtigung">SBE</span>
+            <span id="spieler-details-res-badge" class="badge ml-2 link" data-toggle="tooltip" data-placement="top" title="Reservespieler">RES</span>
+            <span id="spieler-details-sbe-badge" class="badge ml-2 link" data-toggle="tooltip" data-placement="top" title="Senioren Berechtigung">SBE</span>
           </div>
         </div>
         <div class="form-row mb-4">
@@ -81,8 +81,8 @@ class SpielerDetailsView {
     this.name_input = $("#spieler-details-name-input")
     this.close_button = $("#spieler-details-close-button")
     this.qttr_input = $("#spieler-details-qttr-input")
-    this.sbe_badge = $("#spieler-details-sbe-badge")
     this.res_badge = $("#spieler-details-res-badge")
+    this.sbe_badge = $("#spieler-details-sbe-badge")
     this.farbe_selectors = {
       "default": $("#spieler-details-farbe-default"),
       "green":   $("#spieler-details-farbe-green"),
@@ -93,6 +93,17 @@ class SpielerDetailsView {
     }
     this.comment_input = $("#spieler-details-comment-input")
     this.delete_button = $("#spieler-details-delete-button")
+    
+    // ui handler
+    this.res_badge.hover(
+      () => { this.res_badge.toggleClass("badge-light").toggleClass("badge-dark") },
+      () => { this._displayBadge(this.res_badge, this.spieler.reserve) }
+    )
+    this.sbe_badge.hover(
+      () => { this.sbe_badge.toggleClass("badge-light").toggleClass("badge-dark") },
+      () => { this._displayBadge(this.sbe_badge, this.spieler.sbe) }
+    )
+
   }
 
   /* DISPLAY */
@@ -104,23 +115,22 @@ class SpielerDetailsView {
     this.name_input.val(this.spieler.name)
     this.qttr_input.val(this.spieler.qttr)
     this.comment_input.val(this.spieler.kommentar)
-    // Badges
-    if (this.spieler.sbe) {
-      this.sbe_badge.addClass("badge-dark").removeClass("badge-light")
-    } else {
-      this.sbe_badge.addClass("badge-light").removeClass("badge-dark")
-    }
-    if (this.spieler.reserve) {
-      this.res_badge.addClass("badge-dark").removeClass("badge-light")
-    } else {
-      this.res_badge.addClass("badge-light").removeClass("badge-dark")
-    }
+    this._displayBadge(this.res_badge, this.spieler.reserve)
+    this._displayBadge(this.sbe_badge, this.spieler.sbe)
     // Farbe-Selector
     $(".spieler-farbe-selector").removeClass("active")
     if (this.spieler.farbe in this.farbe_selectors){
       this.farbe_selectors[this.spieler.farbe].addClass("active")
     } else {
       this.farbe_selectors["default"].addClass("active")
+    }
+  }
+
+  _displayBadge(badge, value) {
+    if (value) {
+      badge.addClass("badge-dark").removeClass("badge-light")
+    } else {
+      badge.addClass("badge-light").removeClass("badge-dark")
     }
   }
 
@@ -221,9 +231,25 @@ class SpielerDetailsView {
     }
   }
 
-  /* SBE */
-
   /* RES */
+  bindClickResButtonOnSpieler(handler){
+    this.res_badge.click( (event) => { this._changeSpielerRes(event, handler) })
+  }
+
+  _changeSpielerRes(event, handler){
+    event.preventDefault()
+    handler(this.spieler.id, ! this.spieler.reserve)
+  }
+
+  /* SBE */
+  bindClickSbeButtonOnSpieler(handler){
+    this.sbe_badge.click( (event) => { this._changeSpielerSbe(event, handler) })
+  }
+
+  _changeSpielerSbe(event, handler){
+    event.preventDefault()
+    handler(this.spieler.id, ! this.spieler.sbe)
+  }
 
   /* FARBE */
   bindClickFarbeButtonOnSpieler(handler){
@@ -231,6 +257,7 @@ class SpielerDetailsView {
   }
 
   _changeSpielerFarbe(event, handler) {
+    event.preventDefault()
     handler(this.spieler.id, event.target.id.replace("spieler-details-farbe-", ""))
   }
 

@@ -13,6 +13,8 @@ class SpielerView {
       this.spieler_flex_div = $(`<div class="d-flex"></div>`)
       this.spieler_flex_div.append( this.spieler_position_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-position" class="p-2 text-muted">${spieler.mannschaft}.${spieler.position}</div>`) )
       this.spieler_flex_div.append( this.spieler_name_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-name" class="p-2 flex-grow-1 spieler-name">${spieler.name}</div>`) )
+      this.spieler_name_div.append( this.spieler_res_badge = $(`<span class="badge badge-secondary ml-1 display-none">RES</span>`) )
+      this.spieler_name_div.append( this.spieler_sbe_badge = $(`<span class="badge badge-secondary ml-1 display-none">SBE</span>`) )
       this.spieler_flex_div.append( this.spieler_spv_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-spv" class="p-2 spv"></div>`) )
       this.spieler_spv_div.append( this.spieler_spv_badge = $(`<span class="badge badge-danger spv-badge">SPV</span>`) )
       this.spieler_flex_div.append( this.spieler_qttr_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-qttr" class="p-2 ttr-wert text-muted">${spieler.qttr}</div>`) )
@@ -23,6 +25,15 @@ class SpielerView {
 
       // color the ttr-differenz
       $(`#spieler-${spieler.spielklasse}-${spieler.id}-ttrdifferenz`).addClass(ttrdifferenz < 0 ? "text-success" : ttrdifferenz > 0 ? "text-danger" : "")
+
+      // add RES and SBE Badges
+      if ( this.spieler.reserve ) { 
+        this.spieler_res_badge.removeClass("display-none")
+        this.spieler_name_div.addClass("text-muted")
+      }
+      if ( this.spieler.sbe ) { 
+        this.spieler_sbe_badge.removeClass("display-none")
+      }
 
       // add invalid class, invalid-icon, tooltip
       if ( 

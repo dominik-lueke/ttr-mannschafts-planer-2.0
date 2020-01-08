@@ -9,7 +9,6 @@ class Controller {
     // Initial Display
     this.onHeaderDataChanged(this.planung)
     this.onMannschaftenChanged(this.planung.mannschaften.liste, this.planung.spieler.liste)
-    this.onSidebarViewChanged()
 
     // Bind Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
@@ -20,6 +19,8 @@ class Controller {
     // SIDEBAR SPIELER
     this.sidebarView.bindEditNameOnSpieler(this.handleEditNameOnSpieler)
     this.sidebarView.bindEditQttrOnSpieler(this.handleEditQttrOnSpieler)
+    this.sidebarView.bindClickResButtonOnSpieler(this.handleClickResButtonOnSpieler)
+    this.sidebarView.bindClickSbeButtonOnSpieler(this.handleClickSbeButtonOnSpieler)
     this.sidebarView.bindClickFarbeButtonOnSpieler(this.handleClickFarbeButtonOnSpieler)
     this.sidebarView.bindEditKommentarOnSpieler(this.handleEditKommentarOnSpieler)
     this.sidebarView.bindClickDeleteButtonOnSpieler(this.handleClickDeleteButtonOnSpieler)
@@ -102,6 +103,14 @@ class Controller {
 
   handleEditQttrOnSpieler = (id, qttr) => {
     this.planung.editSpielerQttr(id, qttr)
+  }
+
+  handleClickResButtonOnSpieler = (id, res) => {
+    this.planung.editSpielerRes(id, res)
+  }
+
+  handleClickSbeButtonOnSpieler = (id, sbe) => {
+    this.planung.editSpielerSbe(id, sbe)
   }
 
   handleClickFarbeButtonOnSpieler = (id, farbe) => {

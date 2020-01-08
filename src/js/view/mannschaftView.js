@@ -69,7 +69,7 @@ class MannschaftView {
       mannschaft_invalid_icon.attr("data-toggle","tooltip")
       mannschaft_invalid_icon.attr("data-placement","right")
       mannschaft_invalid_icon.attr("data-html","true")
-      var tooltip_title = `<h6>Fehlende Sollstärke</h6>Mindestens ${mannschaft.sollstaerke} (Stamm-) Spieler benötigt`
+      var tooltip_title = `<h6>Fehlende Sollstärke</h6>Mindestens ${mannschaft.sollstaerke}<br/>(Stamm-)Spieler benötigt`
       mannschaft_invalid_icon.attr("title",tooltip_title)
     }
 

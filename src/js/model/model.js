@@ -26,6 +26,8 @@ class Model {
    * MODEL STATE CHANGE
    */
 
+  /* MANNSCHAFTEN */
+
   addMannschaft(nummer) {
     const id = this.planung.addMannschaft(nummer)
     this.displayMannschaftDetails(id)
@@ -36,6 +38,8 @@ class Model {
     this.closeSidebar()
     this.planung.deleteMannschaft(id, keep_spieler)
   }
+  
+  /* SPIELER */
 
   addSpieler(mannschaft, position, name, qttr) {
     const id = this.planung.addSpieler(mannschaft, position, name, qttr)
@@ -47,6 +51,8 @@ class Model {
     this.closeSidebar()
     this.planung.deleteSpieler(id)
   }
+
+  /* SIDEBAR */
 
   displaySpielerDetails(id) {
     this.view.sidebar.display = "spieler"

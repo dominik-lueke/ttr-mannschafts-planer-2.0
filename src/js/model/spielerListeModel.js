@@ -45,6 +45,18 @@ class SpielerListeModel {
     this._setQttrForSpieler(spieler, qttr)
   }
 
+  editSpielerRes(id, res) {
+    const spieler = this.liste.find(spieler => spieler.id == id)
+    spieler.reserve = res
+  }
+
+  editSpielerSbe(id, sbe) {
+    const spieler = this.liste.find(spieler => spieler.id == id)
+    spieler.sbe = sbe
+    // Now check all ttr differenzen of the spieler as the ttr tolerance has changed
+    this._checkTtrDifferenzenForSpieler(spieler)
+  }
+
   editSpielerFarbe(id, farbe) {
     const spieler = this.liste.find(spieler => spieler.id == id)
     spieler.farbe = farbe
@@ -202,6 +214,8 @@ class SpielerListeModel {
     .forEach(spieler => {
       if ( check_spieler.isInvalidBecauseOf(spieler)) {
         check_spieler.addSpielerToInvalidList(spieler)
+      } else {
+        check_spieler.removeSpielerFromInvalidList(spieler)
       }
     })
   }
@@ -217,6 +231,8 @@ class SpielerListeModel {
     .forEach(spieler => {
       if ( spieler.isInvalidBecauseOf(check_spieler) ) {
         spieler.addSpielerToInvalidList(check_spieler)
+      } else {
+        spieler.removeSpielerFromInvalidList(check_spieler)
       }
     })
   }

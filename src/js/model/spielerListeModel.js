@@ -60,7 +60,26 @@ class SpielerListeModel {
     // first remove the spieler from its mannschaft to keep the spieler array correct
     this._removeSpielerFromMannschaft(spieler, false)
     // delete the spieler object
-    this.liste = this.liste.filter(spieler => spieler.id !== id )
+    this.liste = this.liste.filter(spieler => ( spieler.id !== id ) )
+  }
+
+  deleteMannschaft(nummer, keep_spieler){
+    // First decrease the mannschaft of all spieler with greater mannschaft than nummer
+    this.liste
+    .filter(spieler => ( spieler.mannschaft > nummer ))
+    .forEach(spieler => spieler.mannschaft = spieler.mannschaft - 1)
+    // Now handle the spieler of the deleted mannschaft
+    const previous_nummer = nummer - 1
+    this.getSpielerOfMannschaft(nummer).forEach(spieler => {
+      if ( keep_spieler && previous_nummer > 0 ) {
+        // append the spieler of the deleted mannschaft to the previous mannschaft
+        const new_position = this.getSpielerOfMannschaft(previous_nummer).length + 1
+        this.reorderSpieler(spieler.id, previous_nummer, new_position)
+      } else {
+        // delete the spieler
+        this.deleteSpieler(spieler.id)
+      }
+    })
   }
 
   /**

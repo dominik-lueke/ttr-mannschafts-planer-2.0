@@ -43,7 +43,11 @@ class PlanungsModel {
     return new_id
   }
 
-  deleteMannschaft(id){
+  deleteMannschaft(id, keep_spieler){
+    const mannschafts_nummer = (this.mannschaften.getMannschaft(id)).nummer
+    // delete tha mannschaft from spieler-liste
+    this.spieler.deleteMannschaft(mannschafts_nummer, keep_spieler)
+    // delete the mannschaft from mannschafts-liste
     this.mannschaften.deleteMannschaft(id)
     // commit
     this._commit()

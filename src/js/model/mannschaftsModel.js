@@ -16,6 +16,12 @@ class MannschaftsModel {
     this.invalidKommentar = ""
   }
 
+  setNummer(nummer) {
+    this.nummer = nummer
+    const romanNumber = this._getRomanNumberOfInteger(`${this.nummer}`)
+    this.name = this.spielklasse + ( romanNumber === "I" ? "" : " " + romanNumber)
+  }
+  
   /* PRIVATE */
 
   _getRomanNumberOfInteger(i){

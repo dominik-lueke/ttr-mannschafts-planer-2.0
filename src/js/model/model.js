@@ -31,6 +31,12 @@ class Model {
     this.displayMannschaftDetails(id)
   }
 
+  deleteMannschaft(id, keep_spieler) {
+    // Important! First close the sidebar, as the delete action will try to update it with the spieler we just deleted
+    this.closeSidebar()
+    this.planung.deleteMannschaft(id, keep_spieler)
+  }
+
   addSpieler(mannschaft, position, name, qttr) {
     const id = this.planung.addSpieler(mannschaft, position, name, qttr)
     this.displaySpielerDetails(id)

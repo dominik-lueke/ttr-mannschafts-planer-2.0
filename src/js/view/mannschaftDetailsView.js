@@ -69,16 +69,24 @@ class MannschaftDetailsView {
               Mannschaft löschen
             </small>
           </button>
-          <button id="mannschaft-details-delete-keep-spieler-button" class="flex-fill btn btn-outline-success display-none">
+          <button id="mannschaft-details-delete-keep-spieler-button" class="btn btn-outline-success mr-1 flex-fill display-none mannschaft-delete-dialog">
             <small>
               <i class="fa fa-check"></i>
+              <span id="mannschaft-details-delete-keep-spieler-button-text"> </span>
               Spieler behalten
             </small>
           </button>
-          <button id="mannschaft-details-delete-remove-spieler-button" class="flex-fill btn btn-outline-danger display-none">
+          <button id="mannschaft-details-delete-remove-spieler-button" class="btn btn-outline-danger mr-1 ml-1 flex-fill display-none mannschaft-delete-dialog">
             <small>
               <i class="fa fa-trash"></i>
+              <span id="mannschaft-details-delete-remove-spieler-button-text"> </span>
               Spieler auch löschen
+            </small>
+          </button>
+          <button id="mannschaft-details-delete-abort-button" class="btn btn-danger ml-1 flex-fill display-none mannschaft-delete-dialog">
+            <small>
+              <i class="fa fa-times"></i>
+              Abbrechen
             </small>
           </button>
         </div>
@@ -103,7 +111,16 @@ class MannschaftDetailsView {
     this.spielwoche_select = $("#mannschaft-details-spielwoche-select")
     this.delete_button = $("#mannschaft-details-delete-button")
     this.delete_keep_spieler_button = $("#mannschaft-details-delete-keep-spieler-button")
+    this.delete_keep_spieler_button_text = $("#mannschaft-details-delete-keep-spieler-button-text")
     this.delete_remove_spieler_button = $("#mannschaft-details-delete-remove-spieler-button")
+    this.delete_remove_spieler_button_text = $("#mannschaft-details-delete-remove-spieler-button-text")
+    this.delete_abort_button = $("#mannschaft-details-delete-abort-button")
+    this.delete_dialog = $(".mannschaft-delete-dialog")
+    // bind ui handler
+    this.delete_abort_button.click( (event) => {
+      $(".mannschaft-delete-dialog").addClass("display-none")
+      this.delete_button.removeClass("display-none")
+    })
   }
 
   /* DISPLAY */
@@ -119,7 +136,8 @@ class MannschaftDetailsView {
     this.spieltag_select.val(this.mannschaft.spieltag)
     this.uhrzeit_input.val(this.mannschaft.uhrzeit)
     this.spielwoche_select.val(this.mannschaft.spielwoche)
-    
+    this.delete_button.removeClass("display-none")
+    this.delete_dialog.addClass("display-none")
   }
 
   /* HIDE */
@@ -261,7 +279,7 @@ class MannschaftDetailsView {
   }
 
   _editSpielwoche(handler, newSpielwoche){
-    // Fire the handler if necessary
+    // Fire the handler
     if (newSpielwoche !== this.mannschaft.spielwoche ) {
       handler(this.mannschaft.id, newSpielwoche)
     }
@@ -270,7 +288,34 @@ class MannschaftDetailsView {
   /* DELETE */
 
   bindClickDeleteButtonOnMannschaft(handler) {
-    // TODO
+    this.delete_button.click( (event) => { this._clickDeleteButtonHandler(event, handler)})
+    this.delete_keep_spieler_button.click( (event) => { this._clickDeleteConfirmButtonHandler(event, handler, true)})
+    this.delete_remove_spieler_button.click( (event) => { this._clickDeleteConfirmButtonHandler(event, handler, false)})
+  }
+
+  _clickDeleteButtonHandler(event, handler) {
+    // A bit hacky here toget the number of mannschaften and spieler in this mannschaft via jquery...
+    const number_of_mannschaften = $(`#mannschafts-container > .mannschafts-row`).length
+    const spieler_in_mannschaft = $(`#mannschaft-Herren-${this.mannschaft.nummer}-spielerliste li`).length
+    if ( spieler_in_mannschaft == 0) {
+      // directly delete mannschaft if there are no spieler in the mannschaft
+      this._clickDeleteConfirmButtonHandler(event, handler, false)
+    } else {
+      this.delete_button.addClass("display-none")
+      this.delete_dialog.removeClass("display-none")
+      this.delete_keep_spieler_button_text.text(spieler_in_mannschaft)
+      this.delete_remove_spieler_button_text.text(spieler_in_mannschaft)
+      if ( number_of_mannschaften == 1 ) {
+        // do not offer to keep the spieler if this is the only mannschaft
+        this.delete_keep_spieler_button.addClass("display-none")
+      }
+    }
+  }
+
+  _clickDeleteConfirmButtonHandler(event, handler, keep_spieler) {
+    event.preventDefault()
+    // Fire the handler
+    handler(this.mannschaft.id, keep_spieler)
   }
 
   /* CLOSE */

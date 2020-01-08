@@ -16,8 +16,10 @@ class MannschaftsListeModel {
   }
 
   deleteMannschaft(id) {
-    // TODO Also move spieler to previous mannschaft
     this.liste = this.liste.filter(mannschaft => ( mannschaft.id !== id ))
+    // set new nummern for all mannschaften
+    var i = 1
+    this.liste.forEach(mannschaft => { mannschaft.setNummer(i); i++ })
   }
 
   /* EDIT */

@@ -14,6 +14,7 @@ class Controller {
     // Bind Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
+    this.editorView.bindAddMannschaft(this.handleAddMannschaft)
     // SIDEBAR
     this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
     // SIDEBAR SPIELER
@@ -39,7 +40,6 @@ class Controller {
 
   onMannschaftenChanged = (mannschaften,spieler) => {
     this.editorView.displayMannschaften(mannschaften,spieler)
-    this.editorView.bindAddMannschaft(this.handleAddMannschaft)
     this.editorView.bindClickOnMannschaft(this.handleClickOnMannschaft)
     this.editorView.bindAddSpieler(this.handleAddSpieler)
     this.editorView.bindClickOnSpieler(this.handleClickOnSpieler)
@@ -138,8 +138,8 @@ class Controller {
     this.planung.editMannschaftSpielwoche(id, spielwoche)
   }
 
-  handleClickDeleteButtonOnMannschaft = (id) => {
-    this.model.deleteMannschaft(id)
+  handleClickDeleteButtonOnMannschaft = (id, keep_spieler) => {
+    this.model.deleteMannschaft(id, keep_spieler)
   }
 
 }

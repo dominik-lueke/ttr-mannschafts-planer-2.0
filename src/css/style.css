@@ -106,7 +106,6 @@ a .spieler-farbe-selector {
 
 .spieler-invalid {
   color: #dc3545 !important;
-  margin: 1px 0 0 0;
 }
 
 .spieler-invalid-icon,

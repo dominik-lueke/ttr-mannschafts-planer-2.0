@@ -145,15 +145,15 @@ a .spieler-farbe-selector {
 
 /* SPIELER SPV */
 
-.spv-badge {
+.spv {
   display: none;
   padding: .25em .8em;
   cursor: default
 }
 
-.spv-possible .spv-badge,
-.spv-highlight .spv-badge,
-.spv-set .spv-badge {
+.spv-possible .spv,
+.spv-highlight .spv,
+.spv-set .spv {
   display: inline-block
 } 
 

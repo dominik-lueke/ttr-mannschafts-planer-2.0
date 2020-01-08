@@ -6,10 +6,10 @@ class MannschaftView {
     this.html = $(`
       <div class="row mannschafts-row">
         <div id="mannschaft-${id}" class="card mannschaft">
-          <div class="card-header mannschaft-header">
+          <div class="card-header mannschaft-header link">
             <div class="d-flex justify-content-between">
               <div class="p-2">
-                <a class="text-dark"><h5 id="mannschaft-${id}-name">${mannschaft.name}</h5></a>
+                <span class="text-dark"><h5 id="mannschaft-${id}-name">${mannschaft.name}</h5></span>
               </div>
               <div class="p-2 text-muted">
                 <small id="mannschaft-${id}-liga">${mannschaft.liga}</small>
@@ -30,7 +30,7 @@ class MannschaftView {
     `)
     mannschaftsContainer.append(this.html)
     const mannschafts_div = $("#mannschaft-" + id)
-    this.mannschafts_name = $(`#mannschaft-${id}-name`)
+    this.mannschafts_header = mannschafts_div.find(".mannschaft-header")
 
     // Add all Spieler to the Mannschaft
     this.spielerListeContainer = $(`<ul id="mannschaft-${id}-spielerliste" class="list-group list-group-flush connectedSortable spielerliste"></ul>`)
@@ -91,7 +91,7 @@ class MannschaftView {
   /* MANNSCHAFT BINDINGS */
 
   bindClickOnMannschaft(handler) {
-    this.mannschafts_name.click( (event) => { 
+    this.mannschafts_header.click( (event) => { 
       handler(this.mannschaft.id)
     })
   }

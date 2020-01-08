@@ -62,7 +62,7 @@ class SpielerDetailsView {
         <button id="spieler-details-delete-button" class="flex-fill btn btn-outline-danger">
           <small>
             <i class="fa fa-trash"></i>
-            Spieler entfernen
+            Spieler löschen
           </small>
         </button>
         </div>

@@ -13,6 +13,7 @@ class PlanungsModel {
     this.spieler = new SpielerListeModel(this.spielklasse)
 
     this.onMannschaftenChanged = () => {}
+    this.onHeaderDataChanged = () => {}
   }
 
   /**
@@ -23,6 +24,9 @@ class PlanungsModel {
     this.onMannschaftenChanged = callback
   }
 
+  bindHeaderDataChanged(callback) {
+    this.onHeaderDataChanged = callback
+  }
 
   /**
    * MANNSCHAFTEN

@@ -1,7 +1,8 @@
 class Controller {
-  constructor(model, headerView, editorView, sidebarView) {
+  constructor(model, headerView, myTTModalView, editorView, sidebarView) {
     this.model = model
     this.planung = this.model.planung // only one planung at a time right now
+    this.myTTModalView = myTTModalView
     this.headerView = headerView
     this.editorView = editorView
     this.sidebarView = sidebarView
@@ -13,7 +14,10 @@ class Controller {
     // Bind Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
+    this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
     this.editorView.bindAddMannschaft(this.handleAddMannschaft)
+    //this.myTTModalView.bindHandleAufstellungWebviewHtmlRecieved(this.handleAufstellungWebviewHtml)
+    this.myTTModalView.bindClickLadeAufstellungOnMyTTModal(this.handleClickAufstellungLadenButtonOnMyTTModal)
     // SIDEBAR
     this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
     // SIDEBAR SPIELER
@@ -35,8 +39,8 @@ class Controller {
 
   /* UPDATE */
 
-  onHeaderDataChanged = planung => {
-    this.headerView.updateHeader(planung)
+  onHeaderDataChanged = () => {
+    this.headerView.updateHeader(this.planung)
   }
 
   onMannschaftenChanged = (mannschaften,spieler) => {
@@ -61,6 +65,16 @@ class Controller {
     } else {
       this.sidebarView.hideSidebar()
     }
+  }
+
+  /* MYTT MODAL WEBVIEW HANDLER */
+
+  // handleAufstellungWebviewHtml = (html) => {
+  //   this.model.parseWebviewHtml(html)
+  // }
+
+  handleClickAufstellungLadenButtonOnMyTTModal = (html_table, planung) => {
+    this.model.ladeAufstellungFromMyTischtennis(html_table, planung)
   }
 
   /* EDITOR HANDLER */

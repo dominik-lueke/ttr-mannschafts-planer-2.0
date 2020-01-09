@@ -105,7 +105,7 @@ a .spieler-farbe-selector {
 
 .spieler-invalid {
   color: #dc3545 !important;
-  z-index: 2; /* disables flickering of border bottom when hovering of the invalid spieler */
+ z-index: 2; /* disables flickering of border bottom when hovering of the invalid spieler */
 }
 
 .spieler-invalid-icon,
@@ -167,4 +167,8 @@ a .spieler-farbe-selector {
 
 .modal-body {
   height: 70vh
+}
+
+#planung-reload-data-modal-aufstellungen-load-button {
+  width: 150px
 }

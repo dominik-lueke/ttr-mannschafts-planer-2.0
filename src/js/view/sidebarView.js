@@ -2,6 +2,7 @@ class SidebarView {
   constructor() {
     this.sidebar_div = $("#sidebar")
     this.sidebar_div.addClass("details-sidebar")
+    this.sidebar_div.addClass("display-none")
     this.spielerDetailsView = new SpielerDetailsView(this.sidebar_div)
     this.mannschaftDetailsView = new MannschaftDetailsView(this.sidebar_div)
   }
@@ -14,11 +15,13 @@ class SidebarView {
   /* DISPLAY */
 
   displaySpieler(spieler){
+    this.sidebar_div.removeClass("display-none")
     this.mannschaftDetailsView.hide()
     this.spielerDetailsView.displaySpieler(spieler)
   }
 
   displayMannschaft(mannschaft){
+    this.sidebar_div.removeClass("display-none")
     this.spielerDetailsView.hide()
     this.mannschaftDetailsView.displayMannschaft(mannschaft)
   }
@@ -26,6 +29,7 @@ class SidebarView {
   /* HIDE */
 
   hideSidebar(){
+    this.sidebar_div.addClass("display-none")
     this.mannschaftDetailsView.hide()
     this.spielerDetailsView.hide()
   }

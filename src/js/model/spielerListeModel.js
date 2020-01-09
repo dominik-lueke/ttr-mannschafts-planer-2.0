@@ -101,15 +101,28 @@ class SpielerListeModel {
     .forEach(spieler => spieler.mannschaft = spieler.mannschaft - 1)
   }
 
+  clearAllSpielerPositionen(){
+    this.liste.forEach( spieler => { spieler.clearPosition() } )
+  }
+
+  cleanUp(){
+    const cleanup_liste = this.liste.filter( spieler => (spieler.mannschaft == 9999 || spieler.position == 9999))
+    cleanup_liste.forEach( spieler => this.deleteSpieler(spieler.id) )
+  }
+
   /**
    * GETTER
    */
   getSpieler(id) {
-    return this.liste.find(spieler => spieler.id == id)
+    return this.liste.find(spieler => (spieler.id == id))
+  }
+
+  getSpielerByName(name) {
+    return this.liste.find(spieler => ( spieler.name == name) )
   }
 
   getSpielerOfMannschaft(nummer) {
-    return this.liste.filter(spieler => spieler.mannschaft == nummer)
+    return this.liste.filter(spieler => ( spieler.mannschaft == nummer))
   }
 
   /**
@@ -209,10 +222,10 @@ class SpielerListeModel {
     // Check if this spieler is invalid because of any positionen higher than its own
     this.liste
     .filter(spieler => (
-      ( spieler.mannschaft == check_spieler.mannschaft && spieler.position < check_spieler.position ) || ( spieler.mannschaft < check_spieler.mannschaft ) ) &&
-      spieler.qttr < check_spieler.qttr)
+      ( spieler.mannschaft == check_spieler.mannschaft && spieler.position < check_spieler.position ) || ( spieler.mannschaft < check_spieler.mannschaft ) &&
+      spieler.qttr < check_spieler.qttr) )
     .forEach(spieler => {
-      if ( check_spieler.isInvalidBecauseOf(spieler)) {
+      if ( check_spieler.isInvalidBecauseOf(spieler) ) {
         check_spieler.addSpielerToInvalidList(spieler)
       } else {
         check_spieler.removeSpielerFromInvalidList(spieler)
@@ -256,11 +269,14 @@ class SpielerListeModel {
     higher positionen in the same mannschaft */
   _setPrimarySpvForSpieler(spieler, spv) {
     // Set the Spv of this Spieler
+    const old_spv = spieler.spv.primary
     spieler.spv.primary = spv
     // recompute the ttr differenzen and update invalid lists (this will add or remove spieler to invalid lists)
     this._checkTtrDifferenzenForSpieler(spieler)
     // Check if other Spieler in the same Mannschaft and with higher Positionen also need an Spv now
-    this._updateSpvPreviousPositionOfSpieler(spieler, spv)
+    if (old_spv != spv) {
+      this._updateSpvPreviousPositionOfSpieler(spieler, spv)
+    }
   }
 
   /* Recursivly increase (spv_spieler.spv.primary == true) or decrease 
@@ -272,6 +288,7 @@ class SpielerListeModel {
     const prev_spieler = this._getPreviousSpieler(spv_spieler)
     if ( prev_spieler && ( prev_spieler.mannschaft == spv_spieler.mannschaft) ) {
       prev_spieler.spv.secondary += ( spv_spieler.spv.primary || spv_spieler.spv.secondary > 0 ) ? 1 : -1
+      prev_spieler.spv.secondary = ( prev_spieler.spv.secondary < 0 ) ? 0 : prev_spieler.spv.secondary
       if ( ( prev_spieler.invalidSpielerFromHigherMannschaften > 0 ) && ! prev_spieler.spv.primary ) {
         this._setPrimarySpvForSpieler(prev_spieler, spv_spieler.spv.primary)
       } else {

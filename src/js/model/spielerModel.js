@@ -65,6 +65,22 @@ class SpielerModel {
     this.invalidSpielerFromHigherMannschaften = 0
   }
 
+  clearPosition(){
+    this.mannschaft = 9999
+    this.position = 9999
+    this.qttr = 0
+    this.reserve = false
+    this.sbe = false
+    this.spv = {
+      primary: false, // A primary spv is set because the spieler would be invalid without the spv in terms of ttr difference
+      secondary: 0    // A secondary spv is set because the spieler is before on teammate with a primary spv. 
+                      // The number counts how many teammates with primary spv are behind this spieler
+                      // 0 means no secondary spv
+    }
+    this.invalid = [] // Store all players because of which this spieler is invalid
+    this.invalidSpielerFromHigherMannschaften = 0
+  }
+
 
   /**
    * PRIVATE

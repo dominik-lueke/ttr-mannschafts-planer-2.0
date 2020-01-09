@@ -14,6 +14,7 @@
 const app = new Controller(
   new Model(), 
   new HeaderView(), 
+  new MyTTModalView(),
   new EditorView(), 
   new SidebarView()
 )

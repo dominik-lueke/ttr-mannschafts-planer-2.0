@@ -12,7 +12,22 @@ class MyTTModalView {
               </button>
             </div>
             <div class="modal-body">
-              <webview id="planung-reload-data-modal-aufstellungen-webview" style="height: calc(100% - 7em)" src="" preload="./src/js/injection/inject.js">
+              <div class="container mb-2">
+                <div class="row">
+                  <div class="col-sm-1">
+                    <span class="text-muted" id="webview-home-button">
+                      <i class="fa fa-2x fa-home"></i>
+                    </span>
+                  </div>
+                  <div class="col-sm-10 pr-0">
+                      <input id="webview-url" type="text" class="form-control form-control-sm"></input>
+                  </div>
+                  <div class="col-sm-1 pt-1 ">
+                    <span class="text-muted pt-1" id="webview-loading-indicator"></span>
+                  </div>
+                </div>
+              </div>
+              <webview id="planung-reload-data-modal-aufstellungen-webview" style="height: calc(100% - 9em)" src="" preload="./src/js/injection/inject.js">
               </webview>
               <div class="container">
                 <div class="row text-muted">
@@ -27,7 +42,6 @@ class MyTTModalView {
                 <div class="row">
                   <div class="col-sm">
                     <button id="planung-reload-data-modal-aufstellungen-load-button" type="button" class="btn btn-success pull-right" disabled >Aufstellung laden</button>
-                    <span class="indicator pull-right p-2 mr-2"></span>
                   </div>
                 </div>
               </div>
@@ -37,15 +51,25 @@ class MyTTModalView {
       </div>
     `)
     // cache jq elements
+    this.modal = $("#planung-reload-data-modal")
     const webview = document.querySelector('webview')
+    this.loading_indicator = $("#webview-loading-indicator")
+    this.url_input = $("#webview-url")
     this.lade_aufstellung_button = $("#planung-reload-data-modal-aufstellungen-load-button")
-    webview.addEventListener('did-start-loading', () => { this.lade_aufstellung_button.html('<i class="fa fa-circle-o-notch fa-spin"></i>') } )
-    webview.addEventListener('did-stop-loading', () => { this.lade_aufstellung_button.html('Aufstellung laden') } )
-    webview.addEventListener("dom-ready", () => { webview.send("getHtml") } )
+    webview.addEventListener('did-start-loading', () => { 
+      this.loading_indicator.html('<i class="fa fa-circle-o-notch fa-spin"></i>')
+    } )
+    webview.addEventListener('did-stop-loading', () => { 
+      this.loading_indicator.html('<i class="fa fa-refresh"></i>')
+      this.url_input.val( webview.getURL() )
+    })
+    webview.addEventListener("dom-ready", () => {
+      this.url_input.val( webview.getURL() )
+      webview.send("getHtml")
+    } )
     // Process the data from the webview
     webview.addEventListener('ipc-message', (event) => {
       this.aufstellung_html_body = event.channel
-      this.lade_aufstellung_button.html('Aufstellung laden')
       if ( this._parseHtmlBodyForAufstellung(this.aufstellung_html_body, webview) ){
         $("#planung-reload-data-modal-aufstellungen-load-button").removeProp("disabled")
       } else {
@@ -73,7 +97,12 @@ class MyTTModalView {
   }
 
   _ladeAufstellung(handler) {
-    handler(this.aufstellungstable_html, this.planung)
+    this.lade_aufstellung_button.html('<i class="fa fa-circle-o-notch fa-spin"></i>')
+    setTimeout( () => {
+      handler(this.aufstellungstable_html, this.planung)
+      this.lade_aufstellung_button.html('Lade Aufstellung')
+      this.modal.modal('hide')
+    }, 1000)
   }
 
   _parseHtmlBodyForAufstellung(html_body, webview){
@@ -138,7 +167,7 @@ class MyTTModalView {
     // mannschaften + spieler
     const aufstellungstable = el.find(".panel-body > table.table-mytt").first()
     const mannschaften = parseInt(aufstellungstable.find("tr").last().find("td").first().text().split(".")[0],10)
-    const spieler = aufstellungstable.find("tr").length - mannschaften + 1
+    const spieler = aufstellungstable.find("tbody tr").length - mannschaften + 1
     if (aufstellungstable.length == 1 && ! Number.isNaN(mannschaften) && ! Number.isNaN(spieler) ) {
       this.aufstellungstable_html = "<table>" + aufstellungstable.html() + "</table>"
       $("#planung-reload-data-modal-aufstellungen-mannschaften span").text(mannschaften + " Mannschaften gefunden")

@@ -1,8 +1,8 @@
 class Controller {
-  constructor(model, headerView, myTTModalView, editorView, sidebarView) {
+  constructor(model, headerView, editorView, sidebarView) {
     this.model = model
     this.planung = this.model.planung // only one planung at a time right now
-    this.myTTModalView = myTTModalView
+    this.myTTModalView = new MyTTModalView()
     this.headerView = headerView
     this.editorView = editorView
     this.sidebarView = sidebarView

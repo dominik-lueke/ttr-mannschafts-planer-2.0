@@ -172,3 +172,9 @@ a .spieler-farbe-selector {
 #planung-reload-data-modal-aufstellungen-load-button {
   width: 150px
 }
+
+/* OVERLAY ICON */
+
+.overlay-icon {
+  margin-left: -0.5em;
+}

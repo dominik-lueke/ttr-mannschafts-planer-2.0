@@ -13,8 +13,7 @@
 
 const app = new Controller(
   new Model(), 
-  new HeaderView(), 
-  new MyTTModalView(),
+  new HeaderView(),
   new EditorView(), 
   new SidebarView()
 )

@@ -8,9 +8,15 @@ class PlanungsModel {
     this.halbserie = halbserie
     this.qttrDatum = qttrDatum
     this.spielklasse = spielklasse
+    this.url = {
+      verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue"),
+      saison: this.saison.replace("/","-").substring(2),
+      halbserie: this.halbserie.replace("Vorrunde","vr").replace("Rückrunde","rr"),
+      spielklasse: this.spielklasse.substring(0,1) // Only works for Herren H and Damen D
+    }
     this.mytt = {
       aufstellung: {
-        url: ""
+        url: `https://mytischtennis.de/clicktt/${this.verband}/${this.url.saison}/verein/${this.vereinsNummer}/${this.url.verein}/mannschaftsmeldungendetails/${this.url.spielklasse}/${this.url.halbserie}/`
       }
     }
 
@@ -198,6 +204,105 @@ class PlanungsModel {
     )
     // commit
     this._commit()
+  }
+
+  /**
+   * JSON LOAD
+   */
+  loadFromJSON (planung_json, update_aufstellung=false) {
+    const current_anzahl_mannschaften = this.mannschaften.liste.length
+    if (update_aufstellung){
+      this.spieler.clearAllSpielerPositionen()
+    }
+    for (var key in planung_json) {
+      if (planung_json.hasOwnProperty(key)) {
+
+        /* Load MannschaftsListe */
+        if ( key == "mannschaften") {
+          const mannschaftsListe = this.mannschaften
+          /* Set Spielklasse */
+          if (planung_json.hasOwnProperty("spielklasse") ) {
+            mannschaftsListe.spielklasse = planung_json.spielklasse
+          }
+          if ( planung_json.mannschaften.hasOwnProperty("liste") ) {
+            /* Load Mannschaften */
+            planung_json.mannschaften.liste.forEach( (mannschaft) => {
+              /* Create Mannschaft */
+              var new_mannschaft = null
+              if ( ! update_aufstellung) {
+                new_mannschaft = new MannschaftsModel()
+                mannschaftsListe.liste.push(new_mannschaft)
+              } else if ("nummer" in mannschaft) {
+                if ( (mannschaft.nummer <= this.mannschaften.liste.length) ) {
+                  new_mannschaft = this.mannschaften.getMannschaftByNummer(mannschaft.nummer)
+                } else {
+                  const new_mannschaft_id = this.addMannschaft(mannschaft.nummer)
+                  new_mannschaft = this.mannschaften.getMannschaft(new_mannschaft_id)
+                }
+              }
+              if (new_mannschaft != null){
+                /* Set properties */
+                for (var mannschafts_key in mannschaft){
+                  if (mannschaft.hasOwnProperty(mannschafts_key)){
+                    new_mannschaft[mannschafts_key] = mannschaft[mannschafts_key]
+                  }
+                }
+              }
+            })
+          }
+
+        /* Load SpielerListe */
+        } else if (key == "spieler") {
+          const spielerListe = this.spieler
+          /* Set Spielklasse */
+          if ( planung_json.hasOwnProperty("spielklasse") ) {
+            spielerListe.spielklasse = planung_json.spielklasse
+          }
+          /* Load Spieler */
+          if ( planung_json.spieler.hasOwnProperty("liste") ) {
+            planung_json.spieler.liste.forEach( (spieler) => {
+              /* Create Spieler */
+              var new_spieler = undefined
+              if ( ! update_aufstellung ) {
+                new_spieler = new SpielerModel()
+                spielerListe.liste.push(new_spieler)
+              } else if ("mytt_id" in spieler) {
+                new_spieler = this.spieler.getSpielerByMyTTId(spieler.mytt_id)
+                if ( typeof new_spieler === 'undefined' && "name" in spieler) {
+                  new_spieler = this.spieler.getSpielerByName(spieler.name)
+                  if ( typeof new_spieler === 'undefined' ) {
+                    const new_spieler_id = this.spieler.addSpieler(spieler.mannschaft, spieler.position, spieler.name)
+                    new_spieler = this.spieler.getSpieler(new_spieler_id)
+                  }
+                }
+              }
+              /* Set properties */
+              if ( !( typeof new_spieler === 'undefined') ){
+                for (var spieler_key in new_spieler){
+                  if (spieler.hasOwnProperty(spieler_key)){
+                    new_spieler[spieler_key] = spieler[spieler_key]
+                  }
+                }
+              }
+            })
+          }
+
+        /* Set other planungs properties */ 
+        } else {
+          this[key] = planung_json[key]
+        }
+      }
+    }
+    if ( update_aufstellung ) {
+      this.spieler.cleanUp()
+      this.spieler.validate()
+      for (var i = current_anzahl_mannschaften; i > planung_json.mannschaften.liste.length; i--) {
+        this.mannschaften.deleteMannschaftByNummer(i)
+      }
+      this.validateAllMannschaften()
+    }
+    this._commit()
+    return this
   }
 
   /**

@@ -77,9 +77,8 @@ class Controller {
     return this.myTTParser.parseMyTTAufstellung(url, html)
   }
 
-  handleClickAufstellungLadenButtonOnMyTTModal = (planung) => {
-    this.model.loadPlanungFromJSON(planung, this.planung, true)
-    this.planung._commit()
+  handleClickAufstellungLadenButtonOnMyTTModal = (planung_json) => {
+    this.planung.loadFromJSON(planung_json, true)
   }
 
   /* EDITOR HANDLER */

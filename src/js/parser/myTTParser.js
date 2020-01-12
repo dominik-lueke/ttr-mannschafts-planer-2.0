@@ -37,7 +37,7 @@ class MyTTParser {
     const url_split = url.split("/") 
     // Expect like "https://www.mytischtennis.de/clicktt/WTTV/19-20/verein/187012/TuRa-Elsen/mannschaftsmeldungendetails/H/vr/"
     // url_split = [https:,,www.mytischtennis.de,clicktt,WTTV,19-20,verein,187012,TuRa-Elsen,mannschaftsmeldungendetails,H,vr,]
-    if (url_split.length == 13){
+    if (url_split.length <= 13){
       // saison
       if ( (url_split[5]).match(/\d\d-\d\d/g) !== null ) {
         planung.saison = "20" + url_split[5].replace("-","/")

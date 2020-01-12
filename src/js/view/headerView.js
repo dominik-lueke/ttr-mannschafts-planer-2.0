@@ -1,5 +1,5 @@
 class HeaderView {
-  constructor(planung) {
+  constructor() {
     // The header element
     $('#header').append(`
       <div class="d-flex bg-dark text-white text-center fixed-top">
@@ -21,13 +21,13 @@ class HeaderView {
         </div>
       </div>
     `)
-    this.planung = planung
-    this.mytt_aufstellung_url = planung.mytt.aufstellung.url
+    this.planung = {}
+    this.mytt_aufstellung_url = ""
     this.reload_data_button = $("#planung-reload-data-button")
     this.reload_data_button.click( (event) => {
       $("#webview-url").val(this.mytt_aufstellung_url)
       const webview = $("#planung-reload-data-modal-aufstellungen-webview")
-      if ( webview.attr("src") === "") {
+      if ( webview.attr("src") !== this.mytt_aufstellung_url ) {
         webview.attr("src", this.mytt_aufstellung_url)
       }
     })
@@ -35,6 +35,7 @@ class HeaderView {
 
   updateHeader(planung) {
     this.planung = planung
+    this.mytt_aufstellung_url = planung.mytt.aufstellung.url
     $('#planung-verein').text(planung.verein);
     $('#planung-verein').attr("title", `Vereins-Nr.: ${planung.vereinsNummer}`);
     $('#planung-verband').text(planung.verband);

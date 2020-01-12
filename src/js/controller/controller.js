@@ -4,7 +4,7 @@ class Controller {
     this.model = new Model()
     this.planung = this.model.planung // only one planung at a time right now
     // Views
-    this.headerView = new HeaderView(this.planung)
+    this.headerView = new HeaderView()
     this.editorView = new EditorView()
     this.sidebarView = new SidebarView()
     this.myTTModalView = new MyTTModalView()

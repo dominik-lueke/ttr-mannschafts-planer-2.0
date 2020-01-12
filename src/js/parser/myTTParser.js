@@ -16,7 +16,8 @@ class MyTTParser {
       },
       mytt: {
         aufstellung: {
-          url: url
+          url: url,
+          status: "ok"
         }
       }
     }

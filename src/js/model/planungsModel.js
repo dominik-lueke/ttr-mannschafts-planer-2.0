@@ -16,7 +16,8 @@ class PlanungsModel {
     }
     this.mytt = {
       aufstellung: {
-        url: this._getAufstellungsUrl()
+        url: this._getAufstellungsUrl(),
+        status: "offline"
       }
     }
 

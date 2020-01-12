@@ -110,6 +110,15 @@ class SpielerListeModel {
     cleanup_liste.forEach( spieler => this.deleteSpieler(spieler.id) )
   }
 
+  validate(){
+    this.liste.forEach(spieler => {
+      // recompute ttrdifferenz
+      this._recomputeTtrDifferenzForSpieler(spieler)
+      // check if any ttrdifferenzen are invalids
+      this._checkTtrDifferenzenForSpieler(spieler)
+    })
+  }
+
   /**
    * GETTER
    */
@@ -119,6 +128,10 @@ class SpielerListeModel {
 
   getSpielerByName(name) {
     return this.liste.find(spieler => ( spieler.name == name) )
+  }
+
+  getSpielerByMyTTId(mytt_id) {
+    return this.liste.find(spieler => ( spieler.mytt_id == mytt_id) )
   }
 
   getSpielerOfMannschaft(nummer) {

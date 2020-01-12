@@ -1,12 +1,16 @@
 class Controller {
-  constructor(model, headerView, editorView, sidebarView) {
-    this.model = model
+  constructor() {
+    // Model
+    this.model = new Model()
     this.planung = this.model.planung // only one planung at a time right now
+    // Views
+    this.headerView = new HeaderView(this.planung)
+    this.editorView = new EditorView()
+    this.sidebarView = new SidebarView()
     this.myTTModalView = new MyTTModalView()
-    this.headerView = headerView
-    this.editorView = editorView
-    this.sidebarView = sidebarView
-
+    // Parser
+    this.myTTParser = new MyTTParser()
+    
     // Initial Display
     this.onHeaderDataChanged(this.planung)
     this.onMannschaftenChanged(this.planung.mannschaften.liste, this.planung.spieler.liste)
@@ -16,7 +20,7 @@ class Controller {
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
     this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
     this.editorView.bindAddMannschaft(this.handleAddMannschaft)
-    //this.myTTModalView.bindHandleAufstellungWebviewHtmlRecieved(this.handleAufstellungWebviewHtml)
+    this.myTTModalView.bindAufstellungsHtmlParser( this.parseAufstellungHtml )
     this.myTTModalView.bindClickLadeAufstellungOnMyTTModal(this.handleClickAufstellungLadenButtonOnMyTTModal)
     // SIDEBAR
     this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
@@ -69,12 +73,13 @@ class Controller {
 
   /* MYTT MODAL WEBVIEW HANDLER */
 
-  // handleAufstellungWebviewHtml = (html) => {
-  //   this.model.parseWebviewHtml(html)
-  // }
+  parseAufstellungHtml = (url, html) => {
+    return this.myTTParser.parseMyTTAufstellung(url, html)
+  }
 
-  handleClickAufstellungLadenButtonOnMyTTModal = (html_table, planung) => {
-    this.model.ladeAufstellungFromMyTischtennis(html_table, planung)
+  handleClickAufstellungLadenButtonOnMyTTModal = (planung) => {
+    this.model.loadPlanungFromJSON(planung, this.planung, true)
+    this.planung._commit()
   }
 
   /* EDITOR HANDLER */

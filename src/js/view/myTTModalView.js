@@ -2,7 +2,7 @@ class MyTTModalView {
 
   constructor() {
     $("#myTTModal").append(`
-      <div class="modal fade" id="planung-reload-data-modal" tabindex="-1" role="dialog" aria-labelledby="planung-reload-data-modal-label" aria-hidden="true">
+      <div class="modal fade" id="planung-reload-data-modal" tabindex="-1" role="dialog" aria-labelledby="planung-reload-data-modal-label" aria-hidden="true" data-backdrop="static" >
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -31,12 +31,7 @@ class MyTTModalView {
               </webview>
               <div class="container">
                 <div class="row text-muted">
-                  <p class="ml-2">
-                    <small id="planung-reload-data-modal-aufstellungen-verein"><span></span> <i class="fa"></i></small>
-                    <small id="planung-reload-data-modal-aufstellungen-serie"><span></span> <i class="fa"></i></small>
-                    <small id="planung-reload-data-modal-aufstellungen-spielklasse"><span></span> <i class="fa"></i></small><br/>
-                    <small id="planung-reload-data-modal-aufstellungen-mannschaften"><span ></span> <i class="fa"></i></small>
-                    <small id="planung-reload-data-modal-aufstellungen-spieler"><span></span> <i class="fa"></i></small>
+                  <p id="planung-status-row" class="ml-2">
                   </p>
                 </div>
                 <div class="row">
@@ -56,7 +51,14 @@ class MyTTModalView {
     this.loading_indicator = $("#webview-loading-indicator")
     this.url_input = $("#webview-url")
     this.lade_aufstellung_button = $("#planung-reload-data-modal-aufstellungen-load-button")
+    // properties
+    this.planung = {}
+    // functions
+    this.parseAufstellungsHtml = {}
+    // webview event listener
     webview.addEventListener('did-start-loading', () => { 
+      //$("#planung-status-row").html(`<small>Lade Informationen</small> <div class="spinner-grow spinner-grow-sm" role="status"><span class="sr-only">Lade Informationen...</span></div`)
+      this.lade_aufstellung_button.prop("disabled", true)
       this.loading_indicator.html('<i class="fa fa-circle-o-notch fa-spin"></i>')
     } )
     webview.addEventListener('did-stop-loading', () => { 
@@ -67,30 +69,23 @@ class MyTTModalView {
       this.url_input.val( webview.getURL() )
       webview.send("getHtml")
     } )
-    // Process the data from the webview
     webview.addEventListener('ipc-message', (event) => {
-      this.aufstellung_html_body = event.channel
-      if ( this._parseHtmlBodyForAufstellung(this.aufstellung_html_body, webview) ){
-        $("#planung-reload-data-modal-aufstellungen-load-button").removeProp("disabled")
-      } else {
-        $("#planung-reload-data-modal-aufstellungen-load-button").prop("disabled", true)
-      }
-      //this.aufstellungWebviewHtmlHandler(html);
+      // Process the data from the webview
+      $("#planung-status-row").html(`<small>Suche nach einer Aufstellung</small> <div class="spinner-grow spinner-grow-sm" role="status"><span class="sr-only">Lade Informationen...</span></div`)
+      setTimeout( () => {
+        this.planung = this.parseAufstellungsHtml(webview.getURL(), event.channel);
+        if ( this.displayWebviewStatus() ){
+          this.lade_aufstellung_button.removeProp("disabled")
+        } else {
+          this.lade_aufstellung_button.prop("disabled", true)
+        }
+      }, 1000)
     });
-    this.aufstellungstable_html = ""
-    this.planung = {
-      verein: "",
-      vereinsNummer: "",
-      verband: "",
-      saison: "",
-      halbserie: "",
-      spielklasse: "",
-    }
   }
 
-  // bindHandleAufstellungWebviewHtmlRecieved(handler) {
-  //   this.aufstellungWebviewHtmlHandler = handler
-  // }
+  bindAufstellungsHtmlParser(parser) {
+    this.parseAufstellungsHtml = parser
+  }
 
   bindClickLadeAufstellungOnMyTTModal(handler) {
     this.lade_aufstellung_button.click((event) => { this._ladeAufstellung(handler) })
@@ -99,89 +94,58 @@ class MyTTModalView {
   _ladeAufstellung(handler) {
     this.lade_aufstellung_button.html('<i class="fa fa-circle-o-notch fa-spin"></i>')
     setTimeout( () => {
-      handler(this.aufstellungstable_html, this.planung)
+      handler(this.planung)
       this.lade_aufstellung_button.html('Lade Aufstellung')
       this.modal.modal('hide')
     }, 1000)
   }
 
-  _parseHtmlBodyForAufstellung(html_body, webview){
+  displayWebviewStatus(){
     var aufstellungFound = true
-
-    /* First Processing of result */
-    var el = $('<div></div>');
-    el.html(`<html><head><title>titleTest</title></head><body>${html_body}</body></html>`);
-
-    // serie + verband
-    const url_split = webview.getURL().split("/") 
-    // Expect like "https://www.mytischtennis.de/clicktt/WTTV/19-20/verein/187012/TuRa-Elsen/mannschaftsmeldungendetails/H/vr/"
-    // url_split = [https:,,www.mytischtennis.de,clicktt,WTTV,19-20,verein,187012,TuRa-Elsen,mannschaftsmeldungendetails,H,vr,]
-    var saison = ""
-    var halbserie = ""
-    var verband = ""
-    if (url_split.length == 13){
-      // saison
-      if ( (url_split[5]).match(/\d\d-\d\d/g) !== null ) {
-        saison = "20" + url_split[5].replace("-","/")
-      }
-      // serie
-      halbserie = url_split[11].replace("rr", "Rückrunde").replace("vr","Vorrunde")
-      // verband
-      verband = url_split[4]
-    }
-    if (saison !== "" && (halbserie == "Vorrunde" || halbserie == "Rückrunde")) {
-      this.planung.saison = saison
-      this.planung.halbserie = halbserie
-      $("#planung-reload-data-modal-aufstellungen-serie span").text(halbserie + " " + saison)
-      $("#planung-reload-data-modal-aufstellungen-serie i").addClass("fa-check").addClass("text-success").removeClass("fa-times").removeClass("text-danger")
+    var statusHtml = ""
+    // verein + + vereinsNummer + verband
+    if ("verein" in this.planung && "vereinsNummer" in this.planung && "verband" in this.planung) {
+      statusHtml += `${this.planung.verein} (${this.planung.vereinsNummer} - ${this.planung.verband}) ${this._getStatusIcon(true) } `
     } else {
-      this.planung.saison = ""
-      this.planung.halbserie = ""
-      $("#planung-reload-data-modal-aufstellungen-serie span").text("Keine Saison gefunden")
-      $("#planung-reload-data-modal-aufstellungen-serie i").addClass("fa-times").addClass("text-danger").removeClass("fa-check").removeClass("text-success")
+      statusHtml += `Kein Verein gefunden ${this._getStatusIcon(false) } `
       aufstellungFound = false
     }
-    
-    // verein + spielklasse + vereinsNummer
-    const verein_spielklasse = el.find(".panel-body > h3").first().text().split(", ") // "TuRa Elsen, Herren"
-    const vereinsNummer = el.find(".panel-body > h5").first().text().split(", ")[0].split(": ")[1] // "VNr.: 187012, Gründungsjahr: 1947"
-    if (verein_spielklasse.length == 2 && vereinsNummer.match(/\d\d\d\d\d\d/g) !== null && verband !== ""){
-      this.planung.verein = verein_spielklasse[0]
-      this.planung.vereinsNummer = vereinsNummer
-      this.planung.verband = verband
-      $("#planung-reload-data-modal-aufstellungen-verein span").text(`${this.planung.verein} (VNR.:${this.planung.vereinsNummer} - ${this.planung.verband})`)
-      $("#planung-reload-data-modal-aufstellungen-verein i").addClass("fa-check").addClass("text-success").removeClass("fa-times").removeClass("text-danger")
-      this.planung.spielklasse = verein_spielklasse[1]
-      $("#planung-reload-data-modal-aufstellungen-spielklasse span").text(this.planung.spielklasse)
-      $("#planung-reload-data-modal-aufstellungen-spielklasse i").addClass("fa-check").addClass("text-success").removeClass("fa-times").removeClass("text-danger")
+    // saison
+    if ("saison" in this.planung && "halbserie" in this.planung) {
+      statusHtml += `${this.planung.halbserie} ${this.planung.saison} ${this._getStatusIcon(true) } `
     } else {
-      this.planung.verein = ""
-      $("#planung-reload-data-modal-aufstellungen-verein span").text("Kein Verein gefunden" )
-      $("#planung-reload-data-modal-aufstellungen-verein i").addClass("fa-times").addClass("text-danger").removeClass("fa-check").removeClass("text-success")
-      this.planung.spielklasse = ""
-      $("#planung-reload-data-modal-aufstellungen-spielklasse span").text("Keine Spielklasse gefunden")
-      $("#planung-reload-data-modal-aufstellungen-spielklasse i").addClass("fa-times").addClass("text-danger").removeClass("fa-check").removeClass("text-success")
+      statusHtml += `Keine Saison gefunden ${this._getStatusIcon(false) } `
       aufstellungFound = false
     }
-
-    // mannschaften + spieler
-    const aufstellungstable = el.find(".panel-body > table.table-mytt").first()
-    const mannschaften = parseInt(aufstellungstable.find("tr").last().find("td").first().text().split(".")[0],10)
-    const spieler = aufstellungstable.find("tbody tr").length - mannschaften + 1
-    if (aufstellungstable.length == 1 && ! Number.isNaN(mannschaften) && ! Number.isNaN(spieler) ) {
-      this.aufstellungstable_html = "<table>" + aufstellungstable.html() + "</table>"
-      $("#planung-reload-data-modal-aufstellungen-mannschaften span").text(mannschaften + " Mannschaften gefunden")
-      $("#planung-reload-data-modal-aufstellungen-mannschaften i").addClass("fa-check").addClass("text-success").removeClass("fa-times").removeClass("text-danger")
-      $("#planung-reload-data-modal-aufstellungen-spieler span").text(spieler + " Spieler gefunden")
-      $("#planung-reload-data-modal-aufstellungen-spieler i").addClass("fa-check").addClass("text-success").removeClass("fa-times").removeClass("text-danger")
+    // spielklasse
+    if ("spielklasse" in this.planung){
+      statusHtml += `${this.planung.spielklasse} ${this._getStatusIcon(true) } `
     } else {
-      $("#planung-reload-data-modal-aufstellungen-mannschaften span").text("Keine Mannschaften gefunden")
-      $("#planung-reload-data-modal-aufstellungen-mannschaften i").addClass("fa-times").addClass("text-danger").removeClass("fa-check").removeClass("text-success")
-      $("#planung-reload-data-modal-aufstellungen-spieler span").text("Keine Spieler gefunden")
-      $("#planung-reload-data-modal-aufstellungen-spieler i").addClass("fa-times").addClass("text-danger").removeClass("fa-check").removeClass("text-success")
+      statusHtml += `Keine Spielklasse gefunden ${this._getStatusIcon(false) } `
       aufstellungFound = false
     }
-
+    statusHtml += "<br/>"
+    // mannschaften
+    if (this.planung.mannschaften.liste.length > 0) {
+      statusHtml += `${this.planung.mannschaften.liste.length} Mannschaften gefunden ${this._getStatusIcon(true) } `
+    } else {
+      statusHtml += `Keine Mannschaften gefunden ${this._getStatusIcon(false) } `
+      aufstellungFound = false
+    }
+    // spieler
+    if (this.planung.spieler.liste.length > 0) {
+      statusHtml += `${this.planung.spieler.liste.length} Spieler gefunden ${this._getStatusIcon(true) } `
+    } else {
+      statusHtml += `Keine Spieler gefunden ${this._getStatusIcon(false) } `
+      aufstellungFound = false
+    }
+    $("#planung-status-row").html(`<small>${statusHtml}</small>`)
     return aufstellungFound
+  }
+
+  _getStatusIcon(positive) {
+    const icon = positive ? "check" : "times"
+    const color = positive ? "success" : "danger"
+    return `<i class="fa fa-${icon} text-${color}"></i>`
   }
 }

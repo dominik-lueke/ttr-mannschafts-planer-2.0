@@ -4,8 +4,8 @@ class MannschaftsModel {
     this.id = id
     this.spielklasse = spielklasse
     this.nummer = nummer
-    const romanNumber = this._getRomanNumberOfInteger(`${this.nummer}`)
-    this.name = this.spielklasse + ( romanNumber === "I" ? "" : " " + romanNumber)
+    this.romanNumber = this._getRomanNumberOfInteger(`${this.nummer}`)
+    this.name = this.spielklasse + ( this.romanNumber === "I" ? "" : " " + this.romanNumber)
     this.liga = liga,
     this.sollstaerke = sollstaerke,
     this.spieltag = spieltag,

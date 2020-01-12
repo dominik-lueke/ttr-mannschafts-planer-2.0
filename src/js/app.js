@@ -11,9 +11,4 @@
 * --------------
 */
 
-const app = new Controller(
-  new Model(), 
-  new HeaderView(),
-  new EditorView(), 
-  new SidebarView()
-)
+const app = new Controller()

@@ -8,6 +8,11 @@ class PlanungsModel {
     this.halbserie = halbserie
     this.qttrDatum = qttrDatum
     this.spielklasse = spielklasse
+    this.mytt = {
+      aufstellung: {
+        url: ""
+      }
+    }
 
     this.mannschaften = new MannschaftsListeModel(this.spielklasse)
     this.spieler = new SpielerListeModel(this.spielklasse)
@@ -96,6 +101,16 @@ class PlanungsModel {
     this.mannschaften.editMannschaftSpielwoche(id, spielwoche)
     // commit
     this._commit()
+  }
+
+  validateMannschaft(nummer) {
+    this.mannschaften.checkMannschaftInvalid(nummer, this.spieler.getSpielerOfMannschaft(nummer))
+  }
+
+  validateAllMannschaften() {
+    this.mannschaften.liste.forEach(mannschaft => {
+      this.validateMannschaft(mannschaft.nummer)
+    })
   }
 
   /**
@@ -192,6 +207,7 @@ class PlanungsModel {
    _commit() {
     // trigger view update
     this.onMannschaftenChanged(this.mannschaften.liste, this.spieler.liste)
+    this.onHeaderDataChanged(this)
     // store this object
     localStorage.setItem("localStoragePlanung", JSON.stringify(this))
    }

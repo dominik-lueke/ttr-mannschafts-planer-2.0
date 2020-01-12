@@ -1,5 +1,5 @@
 class HeaderView {
-  constructor() {
+  constructor(planung) {
     // The header element
     $('#header').append(`
       <div class="d-flex bg-dark text-white text-center fixed-top">
@@ -21,18 +21,20 @@ class HeaderView {
         </div>
       </div>
     `)
-    this.url = "https://www.mytischtennis.de/clicktt/WTTV/19-20/verein/187012/TuRa-Elsen/mannschaftsmeldungendetails/H/vr/"
+    this.planung = planung
+    this.mytt_aufstellung_url = planung.mytt.aufstellung.url
     this.reload_data_button = $("#planung-reload-data-button")
     this.reload_data_button.click( (event) => {
-      $("#webview-url").val(this.url)
+      $("#webview-url").val(this.mytt_aufstellung_url)
       const webview = $("#planung-reload-data-modal-aufstellungen-webview")
       if ( webview.attr("src") === "") {
-        webview.attr("src", this.url)
+        webview.attr("src", this.mytt_aufstellung_url)
       }
     })
   }
 
   updateHeader(planung) {
+    this.planung = planung
     $('#planung-verein').text(planung.verein);
     $('#planung-verein').attr("title", `Vereins-Nr.: ${planung.vereinsNummer}`);
     $('#planung-verband').text(planung.verband);

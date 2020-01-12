@@ -169,6 +169,10 @@ a .spieler-farbe-selector {
   height: 70vh
 }
 
+#planung-status-row {
+  min-height: 3em;
+}
+
 #planung-reload-data-modal-aufstellungen-load-button {
   width: 150px
 }

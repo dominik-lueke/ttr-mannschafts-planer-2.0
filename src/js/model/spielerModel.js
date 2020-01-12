@@ -2,6 +2,7 @@ class SpielerModel {
 
   constructor(id=0, name="", spielklasse="", qttr=1) {
     this.id = id
+    this.mytt_id = 0
     this.name = name
     this.spielklasse = spielklasse
     this.mannschaft = 0

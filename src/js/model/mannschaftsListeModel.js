@@ -22,6 +22,13 @@ class MannschaftsListeModel {
     this.liste.forEach(mannschaft => { mannschaft.setNummer(i); i++ })
   }
 
+  deleteMannschaftByNummer(nummer) {
+    const mannschaft = this.getMannschaftByNummer(nummer)
+    if (mannschaft != null){
+      this.deleteMannschaft(mannschaft.id)
+    }
+  }
+
   /* EDIT */
 
   editMannschaftLiga(id, liga) {
@@ -63,6 +70,10 @@ class MannschaftsListeModel {
 
   getMannschaft(id) {
     return this.liste.find(mannschaft => mannschaft.id == id)
+  }
+
+  getMannschaftByNummer(nummer) {
+    return this.liste.find(mannschaft => mannschaft.nummer == nummer)
   }
 
 }

@@ -177,6 +177,11 @@ a .spieler-farbe-selector {
   width: 150px
 }
 
+#webview-home-button,
+#webview-loading-indicator .fa-refresh {
+  cursor: pointer;
+}
+
 /* OVERLAY ICON */
 
 .overlay-icon {

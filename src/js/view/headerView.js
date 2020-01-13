@@ -46,12 +46,11 @@ class HeaderView {
         icon: $("#header-ttrwerte-status-icon i.fa"),
       }
     }
+  }
+
+  bindClickOnReloadDataButon(handler) {
     this.reload_data_button.click( (event) => {
-      $("#webview-url").val(this.mytt_aufstellung_url)
-      const webview = $("#planung-reload-data-modal-aufstellungen-webview")
-      if ( webview.attr("src") !== this.mytt_aufstellung_url ) {
-        webview.attr("src", this.mytt_aufstellung_url)
-      }
+      handler(this.planung.mytt.aufstellung.url)
     })
   }
 

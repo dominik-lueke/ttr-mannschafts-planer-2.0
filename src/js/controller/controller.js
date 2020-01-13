@@ -20,6 +20,7 @@ class Controller {
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
     this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
     this.editorView.bindAddMannschaft(this.handleAddMannschaft)
+    this.headerView.bindClickOnReloadDataButon(this.handleClickOnReloadDataButton)
     this.myTTModalView.bindAufstellungsHtmlParser( this.parseAufstellungHtml )
     this.myTTModalView.bindClickLadeAufstellungOnMyTTModal(this.handleClickAufstellungLadenButtonOnMyTTModal)
     // SIDEBAR
@@ -45,6 +46,7 @@ class Controller {
 
   onHeaderDataChanged = () => {
     this.headerView.updateHeader(this.planung)
+    this.myTTModalView.setHomeUrl(this.planung.mytt.aufstellung.url)
   }
 
   onMannschaftenChanged = (mannschaften,spieler) => {
@@ -69,6 +71,12 @@ class Controller {
     } else {
       this.sidebarView.hideSidebar()
     }
+  }
+
+  /* HEADER HANDLER */
+
+  handleClickOnReloadDataButton = (url) => {
+    this.myTTModalView.loadUrl(url)
   }
 
   /* MYTT MODAL WEBVIEW HANDLER */

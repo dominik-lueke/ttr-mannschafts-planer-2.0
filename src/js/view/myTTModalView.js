@@ -12,19 +12,15 @@ class MyTTModalView {
               </button>
             </div>
             <div class="modal-body">
-              <div class="container mb-2">
-                <div class="row">
-                  <div class="col-sm-1">
-                    <span class="text-muted" id="webview-home-button">
-                      <i class="fa fa-2x fa-home"></i>
-                    </span>
-                  </div>
-                  <div class="col-sm-10 pr-0">
-                      <input id="webview-url" type="text" class="form-control form-control-sm"></input>
-                  </div>
-                  <div class="col-sm-1 pt-1 ">
-                    <span class="text-muted pt-1" id="webview-loading-indicator"></span>
-                  </div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text text-muted" id="webview-home-button">
+                    <i class="fa fa-home"></i>
+                  </span>
+                </div>
+                <input id="webview-url" type="url" pattern="https?://.+" class="form-control form-control-sm"></input>
+                <div class="input-group-append">
+                  <span class="input-group-text text-muted" id="webview-loading-indicator"></span>
                 </div>
               </div>
               <webview id="planung-reload-data-modal-aufstellungen-webview" style="height: calc(100% - 9em)" src="" preload="./src/js/injection/inject.js">
@@ -47,33 +43,38 @@ class MyTTModalView {
     `)
     // cache jq elements
     this.modal = $("#planung-reload-data-modal")
-    const webview = document.querySelector('webview')
+    this.webview = document.querySelector('webview')
     this.loading_indicator = $("#webview-loading-indicator")
     this.url_input = $("#webview-url")
+    this.home_button = $("#webview-home-button")
+    this.refresh_button = this.loading_indicator
     this.lade_aufstellung_button = $("#planung-reload-data-modal-aufstellungen-load-button")
     // properties
     this.planung = {}
+    this.home_url = ""
     // functions
     this.parseAufstellungsHtml = {}
     // webview event listener
-    webview.addEventListener('did-start-loading', () => { 
+    this.webview.addEventListener('did-start-loading', () => { 
       //$("#planung-status-row").html(`<small>Lade Informationen</small> <div class="spinner-grow spinner-grow-sm" role="status"><span class="sr-only">Lade Informationen...</span></div`)
       this.lade_aufstellung_button.prop("disabled", true)
       this.loading_indicator.html('<i class="fa fa-circle-o-notch fa-spin"></i>')
+      this.loading_indicator.attr("title","")
     } )
-    webview.addEventListener('did-stop-loading', () => { 
+    this.webview.addEventListener('did-stop-loading', () => { 
       this.loading_indicator.html('<i class="fa fa-refresh"></i>')
-      this.url_input.val( webview.getURL() )
+      this.loading_indicator.attr("title", "Neu laden")
+      this.url_input.val( this.webview.getURL() )
     })
-    webview.addEventListener("dom-ready", () => {
-      this.url_input.val( webview.getURL() )
-      webview.send("getHtml")
+    this.webview.addEventListener("dom-ready", () => {
+      this.url_input.val( this.webview.getURL() )
+      this.webview.send("getHtml")
     } )
-    webview.addEventListener('ipc-message', (event) => {
+    this.webview.addEventListener('ipc-message', (event) => {
       // Process the data from the webview
       $("#planung-status-row").html(`<small>Suche nach einer Aufstellung</small> <div class="spinner-grow spinner-grow-sm" role="status"><span class="sr-only">Lade Informationen...</span></div`)
       setTimeout( () => {
-        this.planung = this.parseAufstellungsHtml(webview.getURL(), event.channel);
+        this.planung = this.parseAufstellungsHtml(this.webview.getURL(), event.channel);
         if ( this.displayWebviewStatus() ){
           this.lade_aufstellung_button.removeProp("disabled")
         } else {
@@ -81,6 +82,23 @@ class MyTTModalView {
         }
       }, 1000)
     });
+    // webview url controls
+    this.home_button.click( (event) => {
+      this.loadUrl(this.home_url, true)
+    })
+    this.refresh_button.click( (event) => {
+      if (this.refresh_button.find(".fa-refresh").length == 1) {
+        this.loadUrl(this.webview.getAttribute("src"), true)
+      }
+    })
+    this.url_input.on("keyup", (event) => { 
+      event.preventDefault()
+      // On <Enter> we edit qttr
+      if (event.keyCode === 13) {
+        this.loadUrl(this.url_input.val(), false)
+        this.url_input.blur()
+      }
+    })
   }
 
   bindAufstellungsHtmlParser(parser) {
@@ -89,6 +107,18 @@ class MyTTModalView {
 
   bindClickLadeAufstellungOnMyTTModal(handler) {
     this.lade_aufstellung_button.click((event) => { this._ladeAufstellung(handler) })
+  }
+
+  setHomeUrl(url) {
+    this.home_url = url
+    this.home_button.attr("title", this.home_url)
+  }
+
+  loadUrl(url, reload=false) {
+    if ( this.webview.getAttribute("src") !== url || reload ) {
+      this.url_input.val(url)
+      this.webview.setAttribute("src", url)
+    }
   }
 
   _ladeAufstellung(handler) {

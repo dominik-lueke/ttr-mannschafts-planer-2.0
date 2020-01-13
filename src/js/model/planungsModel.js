@@ -10,14 +10,19 @@ class PlanungsModel {
     this.spielklasse = spielklasse
     this.url = {
       verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue"),
-      saison: this.getPreviousSaison().replace("/","-").substring(2),
-      halbserie: this.getPreviousHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
+      saison: this._getPreviousSaison().replace("/","-").substring(2),
+      halbserie: this._getOtherHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
       spielklasse: this.spielklasse.substring(0,1) // Only works for Herren H and Damen D
     }
     this.mytt = {
       aufstellung: {
         url: this._getAufstellungsUrl(),
         status: "offline"
+      },
+      qttr: {
+        url: "TODO",
+        status: "offline",
+        date: new Date(0,0)
       }
     }
 
@@ -38,6 +43,36 @@ class PlanungsModel {
 
   bindHeaderDataChanged(callback) {
     this.onHeaderDataChanged = callback
+  }
+
+  /**
+   * PLANUNG
+   */
+
+  _getOtherHalbserie(){
+    return this.halbserie == "Vorrunde" ? "Rückrunde" : "Vorrunde"
+  }
+
+  _getPreviousSaison(){
+    var prevSaisonRaw = `${parseInt( this.saison.replace("/",""),10) - 101}`
+    return this.halbserie == "Vorrunde" ? [prevSaisonRaw.slice(0,4),"/",prevSaisonRaw.slice(4)].join('') : this.saison
+  }
+
+  _getNextSaison(){
+    var nextSaisonRaw = `${parseInt( this.saison.replace("/",""),10) + 101}`
+    return this.halbserie == "Vorrunde" ? [nextSaisonRaw.slice(0,4),"/",nextSaisonRaw.slice(4)].join('') : this.saison
+  }
+
+  increaseSerie(){
+    this.halbserie = this._getOtherHalbserie()
+    this.saison = this._getNextSaison()
+    this._commit()
+  }
+
+  decreaseSerie(){
+    this.halbserie = this._getOtherHalbserie()
+    this.saison = this._getPreviousSaison()
+    this._commit()
   }
 
   /**
@@ -208,20 +243,9 @@ class PlanungsModel {
   }
 
   /**
-   * GETTER
-   */
-  getPreviousHalbserie(){
-    return this.halbserie == "Vorrunde" ? "Rückrunde" : "Vorrunde"
-  }
-
-  getPreviousSaison(){
-    var prevSaisonRaw = `${parseInt( this.saison.replace("/",""),10) - 101}`
-    return this.halbserie == "Vorrunde" ? [prevSaisonRaw.slice(0,4),"/",prevSaisonRaw.slice(4)].join('') : this.saison
-  }
-
-  /**
    * JSON LOAD
    */
+
   loadFromJSON (planung_json, update_aufstellung=false) {
     const current_anzahl_mannschaften = this.mannschaften.liste.length
     if (update_aufstellung){
@@ -334,14 +358,14 @@ class PlanungsModel {
   _updateUrlStrings() {
     this.url = {
       verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue"),
-      saison: this.getPreviousSaison().replace("/","-").substring(2),
-      halbserie: this.getPreviousHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
+      saison: this._getPreviousSaison().replace("/","-").substring(2),
+      halbserie: this._getOtherHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
       spielklasse: this.spielklasse.substring(0,1) // Only works for Herren H and Damen D
     }
     this.mytt.aufstellung.url = this._getAufstellungsUrl()
   }
 
   _getAufstellungsUrl() {
-    return `https://mytischtennis.de/clicktt/${this.verband}/${this.url.saison}/verein/${this.vereinsNummer}/${this.url.verein}/mannschaftsmeldungendetails/${this.url.spielklasse}/${this.url.halbserie}/`
+    return `https://www.mytischtennis.de/clicktt/${this.verband}/${this.url.saison}/verein/${this.vereinsNummer}/${this.url.verein}/mannschaftsmeldungendetails/${this.url.spielklasse}/${this.url.halbserie}/`
   }
 }

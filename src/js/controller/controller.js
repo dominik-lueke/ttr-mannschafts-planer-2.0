@@ -79,6 +79,9 @@ class Controller {
 
   handleClickAufstellungLadenButtonOnMyTTModal = (planung_json) => {
     this.planung.loadFromJSON(planung_json, true)
+    // Assume if we load the Aufstellung of a Serie, we want to start planning the next 
+    // Load RR-2019/20 -> Plan VR-2020/21
+    this.planung.increaseSerie()
   }
 
   /* EDITOR HANDLER */

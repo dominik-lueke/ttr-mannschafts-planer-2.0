@@ -182,3 +182,7 @@ a .spieler-farbe-selector {
 .overlay-icon {
   margin-left: -0.5em;
 }
+
+span.badge {
+  cursor: default;
+}

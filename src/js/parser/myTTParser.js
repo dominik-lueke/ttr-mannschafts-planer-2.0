@@ -18,6 +18,10 @@ class MyTTParser {
         aufstellung: {
           url: url,
           status: "ok"
+        },
+        qttr: {
+          status: "ok",
+          date: null
         }
       }
     }
@@ -38,18 +42,26 @@ class MyTTParser {
     const url_split = url.split("/") 
     // Expect like "https://www.mytischtennis.de/clicktt/WTTV/19-20/verein/187012/TuRa-Elsen/mannschaftsmeldungendetails/H/vr/"
     // url_split = [https:,,www.mytischtennis.de,clicktt,WTTV,19-20,verein,187012,TuRa-Elsen,mannschaftsmeldungendetails,H,vr,]
+    var qttr_month
+    var qttr_year
     if (url_split.length <= 13){
       // saison
       if ( (url_split[5]).match(/\d\d-\d\d/g) !== null ) {
         planung.saison = "20" + url_split[5].replace("-","/")
+        qttr_year = parseInt(planung.saison.slice(0,4),10)
       }
       // serie
       const halbserie = url_split[11].replace("rr", "Rückrunde").replace("vr","Vorrunde")
       if (halbserie == "Vorrunde" || halbserie == "Rückrunde") {
         planung.halbserie = halbserie
+        qttr_month = halbserie == "Vorrunde" ? 4 : 11 // 4 -> Mai; 11 -> Dez
       }
       // verband
       planung.verband = url_split[4]
+      // qttr-date
+      planung.mytt.qttr.date = new Date(qttr_year, qttr_month, 11)
+      const qttr_age_in_days = ( Date.now() - planung.mytt.qttr.date ) / (1000*60*60*24)
+      planung.mytt.qttr.status = qttr_age_in_days <= 90 ? "ok" : "outdated"
     }
     return planung
   }
@@ -61,7 +73,7 @@ class MyTTParser {
    */
   parseMyTTAufstellungsHtml(html, planung) {
     var jq = $('<div></div>');
-    jq.html(`<html><head><title>titleTest</title></head><body>${html}</body></html>`);
+    jq.html(`<html><head></head><body>${html}</body></html>`);
     // verein, spielklasse, verband, vereinsNummer
     const verein_spielklasse = jq.find(".panel-body > h3").first().text().split(", ") // "TuRa Elsen, Herren"
     const vereinsNummer = jq.find(".panel-body > h5").first().text().split(", ")[0].split(": ")[1] // "VNr.: 187012, Gründungsjahr: 1947"

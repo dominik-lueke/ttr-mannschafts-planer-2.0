@@ -19,8 +19,8 @@ class PlanungsModel {
         url: this._getAufstellungsUrl(),
         status: "offline"
       },
-      qttr: {
-        url: "TODO",
+      ttrwerte: {
+        url: this._getTtrRanglisteUrl(),
         status: "offline",
         date: new Date(0,0)
       }
@@ -367,5 +367,9 @@ class PlanungsModel {
 
   _getAufstellungsUrl() {
     return `https://www.mytischtennis.de/clicktt/${this.verband}/${this.url.saison}/verein/${this.vereinsNummer}/${this.url.verein}/mannschaftsmeldungendetails/${this.url.spielklasse}/${this.url.halbserie}/`
+  }
+
+  _getTtrRanglisteUrl() {
+    return `https://www.mytischtennis.de/community/ranking?vereinid=${this.vereinsNummer},${this.verband}&ttrQuartalorAktuell=quartal`
   }
 }

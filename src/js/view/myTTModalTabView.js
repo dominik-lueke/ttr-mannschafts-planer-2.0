@@ -1,7 +1,7 @@
 class MyTTModalTabView {
   constructor(container, id) {
     container.find("ul.nav").append(`
-      <li class="nav-item">
+      <li class="nav-item pl-1">
         <a class="nav-link" id="myttmodal-${id}-tab" href="#myttmodal-${id}-pane" data-toggle="tab" role="tab" aria-controls="myttmodal-${id}-tab" aria-selected="true">${id}</a>
       </li>
     `)
@@ -71,7 +71,6 @@ class MyTTModalTabView {
       setTimeout( () => {
         this.planung = this.parseHtml(this.webview.getURL(), event.channel);
         const parse_result = this.getParseResult(this.planung)
-        console.log(parse_result)
         this.status_row.html(`<small>${parse_result.html}</small>`)
         if ( parse_result.result ){
           this.load_button.removeProp("disabled")
@@ -95,6 +94,12 @@ class MyTTModalTabView {
       if (event.keyCode === 13) {
         this.loadUrl(this.url_input.val(), false)
         this.url_input.blur()
+      }
+    })
+    //tab activation
+    this.tab.on('shown.bs.tab', (event) => {
+      if (this.webview.getAttribute("src") == "") {
+        this.loadUrl(this.home_url)
       }
     })
   }

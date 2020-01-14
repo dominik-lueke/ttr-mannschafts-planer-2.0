@@ -12,7 +12,7 @@ class MyTTModalView {
               </button>
             </div>
             <div id="myttmodal-tab-container" class="modal-body">
-              <ul class="nav nav-tabs pl-2" role="tablist">
+              <ul class="nav nav-tabs" role="tablist">
               </ul>
               <div class="tab-content">
               </div>

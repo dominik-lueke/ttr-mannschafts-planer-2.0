@@ -22,7 +22,7 @@ class Controller {
     this.editorView.bindAddMannschaft(this.handleAddMannschaft)
     this.headerView.bindClickOnReloadDataButon(this.handleClickOnReloadDataButton)
     this.myTTModalView.bindHtmlParser("aufstellung", this.parseAufstellungHtml)
-    this.myTTModalView.bindParseResultAnalyzer("aufstellung", this.getParseResult)
+    this.myTTModalView.bindParseResultAnalyzer("aufstellung", this.getAufstellungsParseResult)
     this.myTTModalView.bindClickOnLoadButtonOnMyTTModalTab("aufstellung", this.handleClickAufstellungLadenButtonOnMyTTModal)
     // SIDEBAR
     this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
@@ -48,6 +48,7 @@ class Controller {
   onHeaderDataChanged = () => {
     this.headerView.updateHeader(this.planung)
     this.myTTModalView.setHomeUrl("aufstellung", this.planung.mytt.aufstellung.url)
+    this.myTTModalView.setHomeUrl("ttrwerte", this.planung.mytt.ttrwerte.url)
   }
 
   onMannschaftenChanged = (mannschaften,spieler) => {
@@ -86,7 +87,7 @@ class Controller {
     return this.myTTParser.parseMyTTAufstellung(url, html)
   }
 
-  getParseResult = (planung) => {
+  getAufstellungsParseResult = (planung) => {
     return this.myTTParser.getResultOfMyTTAufstellungsParser(planung)
   }
 

@@ -19,7 +19,7 @@ class MyTTParser {
           url: url,
           status: "ok"
         },
-        qttr: {
+        ttrwerte: {
           status: "ok",
           date: null
         }
@@ -59,9 +59,9 @@ class MyTTParser {
       // verband
       planung.verband = url_split[4]
       // qttr-date
-      planung.mytt.qttr.date = new Date(qttr_year, qttr_month, 11)
-      const qttr_age_in_days = ( Date.now() - planung.mytt.qttr.date ) / (1000*60*60*24)
-      planung.mytt.qttr.status = qttr_age_in_days <= 90 ? "ok" : "outdated"
+      planung.mytt.ttrwerte.date = new Date(qttr_year, qttr_month, 11)
+      const qttr_age_in_days = ( Date.now() - planung.mytt.ttrwerte.date ) / (1000*60*60*24)
+      planung.mytt.ttrwerte.status = qttr_age_in_days <= 90 ? "ok" : "outdated"
     }
     return planung
   }

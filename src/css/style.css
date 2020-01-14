@@ -165,20 +165,30 @@ a .spieler-farbe-selector {
 
 /* WEBVIEW */
 
-.modal-body {
-  height: 70vh
+#myTTModal .tab-pane {
+  height: calc(70vh - 5em);
+  min-height: calc(550px - 5em);
 }
 
-#planung-status-row {
+#myTTModal .nav-link {
+  color: var(--dark-grey) !important;
+}
+
+.modal-body {
+  height: 70vh;
+  min-height: 550px;
+}
+
+.myttmodal-status {
   min-height: 3em;
 }
 
-#planung-reload-data-modal-aufstellungen-load-button {
+.myttmodal-load-button {
   width: 150px
 }
 
-#webview-home-button,
-#webview-loading-indicator .fa-refresh {
+.myttmodal-home-button,
+.myttmodal-loading-indicator .fa-refresh {
   cursor: pointer;
 }
 

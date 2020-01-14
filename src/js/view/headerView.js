@@ -59,6 +59,8 @@ class HeaderView {
     this.mytt_aufstellung_url = planung.mytt.aufstellung.url
     $('#planung-verein').text(planung.verein);
     $('#planung-verein').attr("title", `Vereins-Nr.: ${planung.vereinsNummer}`);
+    $('#planung-verein').tooltip('dispose')
+    $('#planung-verein').tooltip()
     $('#planung-verband').text(planung.verband);
     $('#planung-serie').text(planung.halbserie + " " + planung.saison);
     $('#planung-spielklasse').text(planung.spielklasse);

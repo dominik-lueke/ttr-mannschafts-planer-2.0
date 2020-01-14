@@ -149,4 +149,53 @@ class MyTTParser {
     }
     return planung
   }
+
+  getResultOfMyTTAufstellungsParser(planung){
+    var aufstellungFound = true
+    var statusHtml = ""
+    // verein + + vereinsNummer + verband
+    if ("verein" in planung && "vereinsNummer" in planung && "verband" in planung) {
+      statusHtml += `${planung.verein} (${planung.vereinsNummer} - ${planung.verband}) ${this._getStatusIcon(true) } `
+    } else {
+      statusHtml += `Kein Verein gefunden ${this._getStatusIcon(false) } `
+      aufstellungFound = false
+    }
+    // saison
+    if ("saison" in planung && "halbserie" in planung) {
+      statusHtml += `${planung.halbserie} ${planung.saison} ${this._getStatusIcon(true) } `
+    } else {
+      statusHtml += `Keine Saison gefunden ${this._getStatusIcon(false) } `
+      aufstellungFound = false
+    }
+    // spielklasse
+    if ("spielklasse" in planung){
+      statusHtml += `${planung.spielklasse} ${this._getStatusIcon(true) } `
+    } else {
+      statusHtml += `Keine Spielklasse gefunden ${this._getStatusIcon(false) } `
+      aufstellungFound = false
+    }
+    statusHtml += "<br/>"
+    // mannschaften
+    if (planung.mannschaften.liste.length > 0) {
+      statusHtml += `${planung.mannschaften.liste.length} Mannschaften gefunden ${this._getStatusIcon(true) } `
+    } else {
+      statusHtml += `Keine Mannschaften gefunden ${this._getStatusIcon(false) } `
+      aufstellungFound = false
+    }
+    // spieler
+    if (planung.spieler.liste.length > 0) {
+      statusHtml += `${planung.spieler.liste.length} Spieler gefunden ${this._getStatusIcon(true) } `
+    } else {
+      statusHtml += `Keine Spieler gefunden ${this._getStatusIcon(false) } `
+      aufstellungFound = false
+    }
+    return { result: aufstellungFound, html: statusHtml }
+  }
+
+  _getStatusIcon(positive) {
+    const icon = positive ? "check" : "times"
+    const color = positive ? "success" : "danger"
+    return `<i class="fa fa-${icon} text-${color}"></i>`
+  }
+
 }

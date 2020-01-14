@@ -21,8 +21,9 @@ class Controller {
     this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
     this.editorView.bindAddMannschaft(this.handleAddMannschaft)
     this.headerView.bindClickOnReloadDataButon(this.handleClickOnReloadDataButton)
-    this.myTTModalView.bindAufstellungsHtmlParser( this.parseAufstellungHtml )
-    this.myTTModalView.bindClickLadeAufstellungOnMyTTModal(this.handleClickAufstellungLadenButtonOnMyTTModal)
+    this.myTTModalView.bindHtmlParser("aufstellung", this.parseAufstellungHtml)
+    this.myTTModalView.bindParseResultAnalyzer("aufstellung", this.getParseResult)
+    this.myTTModalView.bindClickOnLoadButtonOnMyTTModalTab("aufstellung", this.handleClickAufstellungLadenButtonOnMyTTModal)
     // SIDEBAR
     this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
     // SIDEBAR SPIELER
@@ -46,7 +47,7 @@ class Controller {
 
   onHeaderDataChanged = () => {
     this.headerView.updateHeader(this.planung)
-    this.myTTModalView.setHomeUrl(this.planung.mytt.aufstellung.url)
+    this.myTTModalView.setHomeUrl("aufstellung", this.planung.mytt.aufstellung.url)
   }
 
   onMannschaftenChanged = (mannschaften,spieler) => {
@@ -76,13 +77,17 @@ class Controller {
   /* HEADER HANDLER */
 
   handleClickOnReloadDataButton = (url) => {
-    this.myTTModalView.loadUrl(url)
+    this.myTTModalView.loadUrl("aufstellung", url)
   }
 
   /* MYTT MODAL WEBVIEW HANDLER */
 
   parseAufstellungHtml = (url, html) => {
     return this.myTTParser.parseMyTTAufstellung(url, html)
+  }
+
+  getParseResult = (planung) => {
+    return this.myTTParser.getResultOfMyTTAufstellungsParser(planung)
   }
 
   handleClickAufstellungLadenButtonOnMyTTModal = (planung_json) => {
@@ -93,6 +98,7 @@ class Controller {
   }
 
   /* EDITOR HANDLER */
+
   handleAddMannschaft = (nummer) => {
     this.model.addMannschaft(nummer)
   }

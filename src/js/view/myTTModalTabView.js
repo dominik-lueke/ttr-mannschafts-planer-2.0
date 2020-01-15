@@ -46,6 +46,7 @@ class MyTTModalTabView {
     this.status_row = $(`#myttmodal-${id}-status`)
     // properties
     this.planung = {}
+    this.parse_result = {}
     this.home_url = ""
     // functions
     this.parseHtml = {}
@@ -55,24 +56,34 @@ class MyTTModalTabView {
       this.load_button.prop("disabled", true)
       this.loading_indicator.html('<i class="fa fa-circle-o-notch fa-spin"></i>')
       this.loading_indicator.attr("title","")
+      this.status_row.html("")
     } )
     this.webview.addEventListener('did-stop-loading', () => { 
       this.loading_indicator.html('<i class="fa fa-refresh"></i>')
       this.loading_indicator.attr("title", "Neu laden")
       this.url_input.val( this.webview.getURL() )
+      // try to load again more time if the planung has not been recieved e.g because the webview waits for ajax calls
+      setTimeout( () => {
+        if ( "ttrrangliste_still_loading" in this.planung || this.parse_result.result) {
+          this.url_input.val( this.webview.getURL() )
+          this.webview.send("getHtml")
+        }
+      }, 1000)
+
     })
-    this.webview.addEventListener("dom-ready", () => {
+    this.stop_get_html = false
+    this.webview.addEventListener('dom-ready', () => {
       this.url_input.val( this.webview.getURL() )
       this.webview.send("getHtml")
     } )
     this.webview.addEventListener('ipc-message', (event) => {
       // Process the data from the webview
-      this.status_row.html(`<small>Suche ${id}</small> <div class="spinner-grow spinner-grow-sm" role="status"><span class="sr-only">Lade Informationen...</span></div`)
+      this.status_row.html(`<small>Suche ${id}</small> <div class="spinner-grow spinner-grow-sm" role="status"><span class="sr-only">Lade Informationen...</span></div>`)
       setTimeout( () => {
         this.planung = this.parseHtml(this.webview.getURL(), event.channel);
-        const parse_result = this.getParseResult(this.planung)
-        this.status_row.html(`<small>${parse_result.html}</small>`)
-        if ( parse_result.result ){
+        this.parse_result = this.getParseResult(this.planung)
+        this.status_row.html(`<small>${this.parse_result.html}</small>`)
+        if ( this.parse_result.result ){
           this.load_button.removeProp("disabled")
         } else {
           this.load_button.prop("disabled", true)

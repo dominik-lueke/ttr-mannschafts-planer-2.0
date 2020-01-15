@@ -14,16 +14,15 @@ class PlanungsModel {
       halbserie: this._getOtherHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
       spielklasse: this.spielklasse.substring(0,1) // Only works for Herren H and Damen D
     }
-    this.mytt = {
-      aufstellung: {
-        url: this._getAufstellungsUrl(),
-        status: "offline"
-      },
-      ttrwerte: {
-        url: this._getTtrRanglisteUrl(),
-        status: "offline",
-        date: new Date(0,0)
-      }
+    this.aufstellung = {
+      url: this._getAufstellungsUrl(),
+      status: "offline"
+    }
+    this.ttrwerte = {
+      url: this._getTtrRanglisteUrl(),
+      status: "offline",
+      date: new Date(0,0),
+      aktuell: "Q-TTR"
     }
 
     this.mannschaften = new MannschaftsListeModel(this.spielklasse)
@@ -247,6 +246,7 @@ class PlanungsModel {
    */
 
   loadFromJSON (planung_json, update_aufstellung=false) {
+    var qttr_values_changed = false
     const current_anzahl_mannschaften = this.mannschaften.liste.length
     if (update_aufstellung){
       this.spieler.clearAllSpielerPositionen()
@@ -300,14 +300,14 @@ class PlanungsModel {
             planung_json.spieler.liste.forEach( (spieler) => {
               /* Create Spieler */
               var new_spieler = undefined
-              if ( ! update_aufstellung ) {
-                new_spieler = new SpielerModel()
-                spielerListe.liste.push(new_spieler)
-              } else if ("mytt_id" in spieler) {
-                new_spieler = this.spieler.getSpielerByMyTTId(spieler.mytt_id)
-                if ( typeof new_spieler === 'undefined' && "name" in spieler) {
-                  new_spieler = this.spieler.getSpielerByName(spieler.name)
-                  if ( typeof new_spieler === 'undefined' ) {
+              // try to find spieler by mytt_id
+              new_spieler = this.spieler.getSpielerByMyTTId(spieler.mytt_id)
+              if ( typeof new_spieler === 'undefined' && "name" in spieler) {
+                // try to find spieler by name
+                new_spieler = this.spieler.getSpielerByName(spieler.name)
+                if ( typeof new_spieler === 'undefined' ) {
+                  if ( update_aufstellung ) {
+                    // spieler not there yet and we want to update the aufstellung, create a new one
                     const new_spieler_id = this.spieler.addSpieler(spieler.mannschaft, spieler.position, spieler.name)
                     new_spieler = this.spieler.getSpieler(new_spieler_id)
                   }
@@ -318,6 +318,7 @@ class PlanungsModel {
                 for (var spieler_key in new_spieler){
                   if (spieler.hasOwnProperty(spieler_key)){
                     new_spieler[spieler_key] = spieler[spieler_key]
+                    qttr_values_changed = qttr_values_changed || spieler_key == "qttr"
                   }
                 }
               }
@@ -337,6 +338,9 @@ class PlanungsModel {
         this.mannschaften.deleteMannschaftByNummer(i)
       }
       this.validateAllMannschaften()
+    }
+    if (qttr_values_changed && ! update_aufstellung) {
+      this.spieler.validate()
     }
     this._commit()
     return this
@@ -362,7 +366,8 @@ class PlanungsModel {
       halbserie: this._getOtherHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
       spielklasse: this.spielklasse.substring(0,1) // Only works for Herren H and Damen D
     }
-    this.mytt.aufstellung.url = this._getAufstellungsUrl()
+    this.aufstellung.url = this._getAufstellungsUrl()
+    this.ttrwerte.url = this._getTtrRanglisteUrl()
   }
 
   _getAufstellungsUrl() {

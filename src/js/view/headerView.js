@@ -50,13 +50,13 @@ class HeaderView {
 
   bindClickOnReloadDataButon(handler) {
     this.reload_data_button.click( (event) => {
-      handler(this.planung.mytt.aufstellung.url)
+      handler(this.planung.aufstellung.url)
     })
   }
 
   updateHeader(planung) {
     this.planung = planung
-    this.mytt_aufstellung_url = planung.mytt.aufstellung.url
+    this.mytt_aufstellung_url = planung.aufstellung.url
     $('#planung-verein').text(planung.verein);
     $('#planung-verein').attr("title", `Vereins-Nr.: ${planung.vereinsNummer}`);
     $('#planung-verein').tooltip('dispose')
@@ -68,7 +68,7 @@ class HeaderView {
   }
 
   _updateMyTTStatusIcons() {
-    switch (this.planung.mytt.aufstellung.status) {
+    switch (this.planung.aufstellung.status) {
       case "offline":
         this.mytt_status.aufstellung.badge.addClass("text-muted")
         this.mytt_status.aufstellung.icon.addClass("fa-times-circle").removeClass("fa-check-circle").removeClass("fa-warning")
@@ -90,8 +90,8 @@ class HeaderView {
       default:
         break
     }
-    const ttrwerte_date_string = `${this.planung.mytt.ttrwerte.date.getDate()}.${this.planung.mytt.ttrwerte.date.getMonth()+1}.${this.planung.mytt.ttrwerte.date.getFullYear()}`
-    switch (this.planung.mytt.ttrwerte.status) {
+    const ttrwerte_date_string = `${this.planung.ttrwerte.date.getDate()}.${this.planung.ttrwerte.date.getMonth()+1}.${this.planung.ttrwerte.date.getFullYear()}`
+    switch (this.planung.ttrwerte.status) {
       case "offline":
         this.mytt_status.ttrwerte.badge.addClass("text-muted")
         this.mytt_status.ttrwerte.icon.addClass("fa-times-circle").removeClass("fa-check-circle").removeClass("fa-warning")

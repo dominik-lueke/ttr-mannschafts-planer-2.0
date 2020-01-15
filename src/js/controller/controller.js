@@ -24,6 +24,9 @@ class Controller {
     this.myTTModalView.bindHtmlParser("aufstellung", this.parseAufstellungHtml)
     this.myTTModalView.bindParseResultAnalyzer("aufstellung", this.getAufstellungsParseResult)
     this.myTTModalView.bindClickOnLoadButtonOnMyTTModalTab("aufstellung", this.handleClickAufstellungLadenButtonOnMyTTModal)
+    this.myTTModalView.bindHtmlParser("ttrwerte", this.parseTtrRanglisteHtml)
+    this.myTTModalView.bindParseResultAnalyzer("ttrwerte", this.getTtrRanglisteParseResult)
+    this.myTTModalView.bindClickOnLoadButtonOnMyTTModalTab("ttrwerte", this.handleClickTTRWerteLadenButtonOnMyTTModal)
     // SIDEBAR
     this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
     // SIDEBAR SPIELER
@@ -47,8 +50,8 @@ class Controller {
 
   onHeaderDataChanged = () => {
     this.headerView.updateHeader(this.planung)
-    this.myTTModalView.setHomeUrl("aufstellung", this.planung.mytt.aufstellung.url)
-    this.myTTModalView.setHomeUrl("ttrwerte", this.planung.mytt.ttrwerte.url)
+    this.myTTModalView.setHomeUrl("aufstellung", this.planung.aufstellung.url)
+    this.myTTModalView.setHomeUrl("ttrwerte", this.planung.ttrwerte.url)
   }
 
   onMannschaftenChanged = (mannschaften,spieler) => {
@@ -87,8 +90,16 @@ class Controller {
     return this.myTTParser.parseMyTTAufstellung(url, html)
   }
 
+  parseTtrRanglisteHtml = (url, html) => {
+    return this.myTTParser.parseMyTTTtrRangliste(url, html)
+  }
+
   getAufstellungsParseResult = (planung) => {
     return this.myTTParser.getResultOfMyTTAufstellungsParser(planung)
+  }
+
+  getTtrRanglisteParseResult = (planung) => {
+    return this.myTTParser.getResultOfMyTTTtrRanglisteParser(planung, this.planung.verein)
   }
 
   handleClickAufstellungLadenButtonOnMyTTModal = (planung_json) => {
@@ -96,6 +107,10 @@ class Controller {
     // Assume if we load the Aufstellung of a Serie, we want to start planning the next 
     // Load RR-2019/20 -> Plan VR-2020/21
     this.planung.increaseSerie()
+  }
+
+  handleClickTTRWerteLadenButtonOnMyTTModal = (planung_json) => {
+    this.planung.loadFromJSON(planung_json)
   }
 
   /* EDITOR HANDLER */

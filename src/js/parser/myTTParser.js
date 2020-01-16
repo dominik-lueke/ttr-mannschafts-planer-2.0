@@ -129,7 +129,7 @@ class MyTTParser {
             var status_text = td.text().trim().split(",")
             status_text.forEach(status => {
               spieler.sbe = spieler.sbe || status == "SBE"
-              spieler.res = spieler.res || status == "RES"
+              spieler.reserve = spieler.reserve || status == "RES"
               spieler.spv.primary = spieler.spv.primary || status == "SPV"
             })
             break;

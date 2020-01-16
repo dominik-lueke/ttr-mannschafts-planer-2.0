@@ -70,11 +70,14 @@ class Controller {
     if (display == "spieler") {
       const spieler = this.planung.spieler.getSpieler(id)
       this.sidebarView.displaySpieler(spieler)
+      this.editorView.focusSpieler(spieler)
     } else if (display == "mannschaft") {
       const mannschaft = this.planung.mannschaften.getMannschaft(id)
       this.sidebarView.displayMannschaft(mannschaft)
+      this.editorView.focusMannschaft(mannschaft)
     } else {
       this.sidebarView.hideSidebar()
+      this.editorView.removeFocus()
     }
   }
 

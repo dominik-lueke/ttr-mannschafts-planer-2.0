@@ -64,6 +64,12 @@ a .spieler-farbe-selector {
   height: calc(100vh - 130px);
 }
 
+.sidebar-details-icon {
+  width: 2rem;
+  height: 2rem;
+  line-height: 2rem;
+}
+
 /* EDITOR */
 
 .editor-container {
@@ -101,6 +107,10 @@ a .spieler-farbe-selector {
   min-height: 25px;
 }
 
+.mannschaft-focused .mannschaft-header {
+  background-color: rgba(0,0,0,0.1);
+}
+
 /* SPIELER INVALID */
 
 .spieler-invalid {
@@ -125,6 +135,10 @@ a .spieler-farbe-selector {
 
 .spieler.highlight-invalid .spieler-name {
   font-weight: bold;
+}
+
+.spieler-focused {
+   filter: brightness(95%);
 }
 
 /* SPIELER COLUMNS */

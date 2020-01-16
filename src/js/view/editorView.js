@@ -96,4 +96,21 @@ class EditorView {
     this.reorderSpielerHandler = handler
   }
 
+  /* FOCUS WITH OPEN OR CLOSED SIDEBAR */
+
+  focusSpieler(spieler){
+    this.removeFocus()
+    $(`#spieler-${spieler.spielklasse}-${spieler.id}`).addClass("spieler-focused")
+  }
+
+  focusMannschaft(mannschaft){
+    this.removeFocus()
+    $(`#mannschaft-${mannschaft.spielklasse}-${mannschaft.nummer}`).addClass("mannschaft-focused")
+  }
+
+  removeFocus(){
+    $(".spieler-focused").removeClass("spieler-focused")
+    $(".mannschaft-focused").removeClass("mannschaft-focused")
+  }
+
 }

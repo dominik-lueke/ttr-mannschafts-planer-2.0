@@ -6,8 +6,8 @@ class SpielerDetailsView {
     this.header = `
       <div class="card-header bg-white">
         <div class="d-flex">
-          <div class="p-2 text-muted">
-            <i class="fa fa-2x fa-address-card"></i>
+          <div class="pt-2 pr-1 text-muted">
+            <div id="spieler-details-icon" class="rounded-circle text-center bg-secondary text-white sidebar-details-icon"><span></span></div>
           </div>
           <div class="p-2 flex-grow-1">
             <input id="spieler-details-name-input" type="text" class="form-control form-control-sm" value=""/>
@@ -25,7 +25,7 @@ class SpielerDetailsView {
       <div class="card-body">
         <div class="form-row mb-4">
           <div class="col">
-            <h6 class="text-muted">QTTR</h6>
+            <h6 class="text-muted">TTR-Wert</h6>
             <input id="spieler-details-qttr-input" type="number" class="form-control form-control-sm" value="" >
           </div>
           <div class="col">
@@ -78,6 +78,7 @@ class SpielerDetailsView {
     container.append(this.html)
     // cache jq elements
     this.card_div = $(`#spieler-details-view`)
+    this.spieler_icon = $("#spieler-details-icon span")
     this.name_input = $("#spieler-details-name-input")
     this.close_button = $("#spieler-details-close-button")
     this.qttr_input = $("#spieler-details-qttr-input")
@@ -93,7 +94,6 @@ class SpielerDetailsView {
     }
     this.comment_input = $("#spieler-details-comment-input")
     this.delete_button = $("#spieler-details-delete-button")
-    
     // ui handler
     this.res_badge.hover(
       () => { this.res_badge.toggleClass("badge-light").toggleClass("badge-dark") },
@@ -111,6 +111,8 @@ class SpielerDetailsView {
     this.spieler = spieler
     // Show this view
     this.card_div.removeClass("display-none")
+    // Icon
+    this.spieler_icon.text(this._getSpielerInitialen())
     // Normal Inputs
     this.name_input.val(this.spieler.name)
     this.qttr_input.val(this.spieler.qttr)
@@ -124,6 +126,12 @@ class SpielerDetailsView {
     } else {
       this.farbe_selectors["default"].addClass("active")
     }
+  }
+
+  _getSpielerInitialen() {
+    var initialen = ""
+    this.spieler.name.split(", ").reverse().forEach(subname => { initialen += subname.charAt(0).toUpperCase()})
+    return initialen
   }
 
   _displayBadge(badge, value) {

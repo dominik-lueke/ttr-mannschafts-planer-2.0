@@ -5,11 +5,11 @@ class MannschaftDetailsView {
     this.header = `
       <div class="card-header bg-white">
         <div class="d-flex">
-          <div class="p-2 text-muted">
-            <i class="fa fa-2x fa-users"></i>
+          <div class="pt-1 pr-1 text-muted">
+            <div id="mannschaft-details-icon" class="rounded-circle text-center bg-secondary text-white sidebar-details-icon"><span></span></div>
           </div>
           <div class="p-2 flex-grow-1">
-            <h4 id="mannschaft-details-name-header"></h4>
+            <h5 id="mannschaft-details-name-header"></h5>
           </div>
           <div class="pl-2 pt-2 pr-0">
             <button id="mannschaft-details-close-button" type="button" class="close" aria-label="Close">
@@ -104,6 +104,7 @@ class MannschaftDetailsView {
     this.card_div = $(`#mannschaft-details-view`)
     this.name_header = $("#mannschaft-details-name-header")
     this.close_button = $("#mannschaft-details-close-button")
+    this.mannschaft_icon = $("#mannschaft-details-icon span")
     this.liga_input = $("#mannschaft-details-liga-input")
     this.sollstaerke_select = $("#mannschaft-details-sollstaerke-select")
     this.spieltag_select = $("#mannschaft-details-spieltag-select")
@@ -130,6 +131,7 @@ class MannschaftDetailsView {
     // Show this view
     this.card_div.removeClass("display-none")
     // Display values
+    this.mannschaft_icon.text(this.mannschaft.romanNumber)
     this.name_header.text(this.mannschaft.name)
     this.liga_input.val(this.mannschaft.liga)
     this.sollstaerke_select.val(this.mannschaft.sollstaerke)

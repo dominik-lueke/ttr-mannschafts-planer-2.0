@@ -1,12 +1,11 @@
 class PlanungsModel {
 
-  constructor(verein="", verband="", vereinsNummer="", saison="", halbserie="", qttrDatum="", spielklasse="") {
+  constructor(verein="", verband="", vereinsNummer="", saison="", halbserie="", spielklasse="") {
     this.verein = verein
     this.verband = verband
     this.vereinsNummer = vereinsNummer
     this.saison = saison
     this.halbserie = halbserie
-    this.qttrDatum = qttrDatum
     this.spielklasse = spielklasse
     this.url = {
       verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue"),
@@ -331,6 +330,11 @@ class PlanungsModel {
         }
       }
     }
+    // Special case for TTR Date
+    if ("ttrwerte" in planung_json && "date" in planung_json.ttrwerte) {
+      this.ttrwerte.date = new Date(planung_json.ttrwerte.date)
+    }
+    // Check if we need to recompute aufstellung
     if ( update_aufstellung ) {
       this.spieler.cleanUp()
       this.spieler.validate()

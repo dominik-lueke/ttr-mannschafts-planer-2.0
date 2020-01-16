@@ -131,6 +131,7 @@ class SpielerListeModel {
   }
 
   getSpielerByMyTTId(mytt_id) {
+    if (mytt_id == 0) { return undefined }
     return this.liste.find(spieler => ( spieler.mytt_id == mytt_id) )
   }
 

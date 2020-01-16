@@ -2,14 +2,14 @@ class Model {
 
   constructor() {
     const stored_planung = JSON.parse(localStorage.getItem('localStoragePlanung'))
-    this.planung = this._generateSamplePlanung() // stored_planung ? (new PlanungsModel()).loadFromJSON(stored_planung, false) : 
+    this.planung = stored_planung ? (new PlanungsModel()).loadFromJSON(stored_planung, true) : this._generateSamplePlanung() // 
 
     this.view = JSON.parse(localStorage.getItem('localStorageView')) || {
       sidebar: {
         display: "",
         id: 0
       }
-    }
+    } // 
 
     this.onSidebarViewChanged = {}
   }
@@ -91,7 +91,7 @@ class Model {
    */
 
   _generateSamplePlanung () {
-    const sample_planung = new PlanungsModel("TuRa Elsen", "WTTV", 187012, "2019/20", "Rückrunde", "11.12.2019", "Herren")
+    const sample_planung = new PlanungsModel("TuRa Elsen", "WTTV", 187012, "2019/20", "Rückrunde", "Herren")
     /* Fill with sample Data */
     const qttr_max = 1910
     for (var i=1; i<=3; i++) {

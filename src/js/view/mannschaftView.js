@@ -1,5 +1,5 @@
 class MannschaftView {
-  constructor(mannschaftsContainer, mannschaft, mannschaftsspieler) {
+  constructor(mannschaftsContainer, mannschaft, mannschaftsspieler, letzte_mannschaft) {
     this.mannschaft = mannschaft
     const id = `${mannschaft.spielklasse}-${mannschaft.nummer}`
     // Add the row for the Mannschaft
@@ -69,7 +69,8 @@ class MannschaftView {
       mannschaft_invalid_icon.attr("data-toggle","tooltip")
       mannschaft_invalid_icon.attr("data-placement","right")
       mannschaft_invalid_icon.attr("data-html","true")
-      var tooltip_title = `<h6>Fehlende Sollstärke</h6>Mindestens ${mannschaft.sollstaerke}<br/>(Stamm-)Spieler benötigt`
+      const stammspieler_str = mannschaft.nummer !== letzte_mannschaft ? "Stammspieler": "Spieler"
+      var tooltip_title = `<h6>Fehlende Sollstärke</h6>Mind. ${mannschaft.sollstaerke} ${stammspieler_str} benötigt`
       mannschaft_invalid_icon.attr("title",tooltip_title)
     }
 

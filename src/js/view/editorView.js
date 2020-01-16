@@ -35,7 +35,7 @@ class EditorView {
     // Create Mannschafts rows for each Mannschaft in state
     mannschaften.forEach(mannschaft => {
       const mannschaftsspieler = spieler.filter(spieler => spieler.mannschaft === mannschaft.nummer).sort((a,b) => { return a.position - b.position })
-      this.mannschaftViews.push( new MannschaftView(this.mannschaftsContainer, mannschaft, mannschaftsspieler) )
+      this.mannschaftViews.push( new MannschaftView(this.mannschaftsContainer, mannschaft, mannschaftsspieler, mannschaften.length) )
     })
 
     // Activate sorting

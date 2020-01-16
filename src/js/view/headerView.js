@@ -90,6 +90,7 @@ class HeaderView {
       default:
         break
     }
+
     const ttrwerte_date_string = `${this.planung.ttrwerte.date.getDate()}.${this.planung.ttrwerte.date.getMonth()+1}.${this.planung.ttrwerte.date.getFullYear()}`
     switch (this.planung.ttrwerte.status) {
       case "offline":
@@ -102,7 +103,6 @@ class HeaderView {
         this.mytt_status.ttrwerte.badge.removeClass("text-muted")
         this.mytt_status.ttrwerte.icon.removeClass("fa-times-circle").addClass("fa-check-circle").removeClass("fa-warning")
         this.mytt_status.ttrwerte.icon.removeClass("text-muted").addClass("text-success").removeClass("text-warning")
-        
         this.mytt_status.ttrwerte.div.attr("title", `Die geladenen TTR-Werte sind vom ${ttrwerte_date_string}`)
         break
       case "outdated":

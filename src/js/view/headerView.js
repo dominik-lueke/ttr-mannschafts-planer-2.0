@@ -91,7 +91,6 @@ class HeaderView {
         break
     }
 
-    const ttrwerte_date_string = `${this.planung.ttrwerte.date.getDate()}.${this.planung.ttrwerte.date.getMonth()+1}.${this.planung.ttrwerte.date.getFullYear()}`
     switch (this.planung.ttrwerte.status) {
       case "offline":
         this.mytt_status.ttrwerte.badge.addClass("text-muted")
@@ -103,13 +102,13 @@ class HeaderView {
         this.mytt_status.ttrwerte.badge.removeClass("text-muted")
         this.mytt_status.ttrwerte.icon.removeClass("fa-times-circle").addClass("fa-check-circle").removeClass("fa-warning")
         this.mytt_status.ttrwerte.icon.removeClass("text-muted").addClass("text-success").removeClass("text-warning")
-        this.mytt_status.ttrwerte.div.attr("title", `Die geladenen TTR-Werte sind vom ${ttrwerte_date_string}`)
+        this.mytt_status.ttrwerte.div.attr("title", `Die geladenen TTR-Werte sind vom ${this.planung.ttrwerte.datestring}`)
         break
       case "outdated":
         this.mytt_status.ttrwerte.badge.removeClass("text-muted")
         this.mytt_status.ttrwerte.icon.removeClass("fa-times-circle").removeClass("fa-check-circle").addClass("fa-warning")
         this.mytt_status.ttrwerte.icon.removeClass("text-muted").removeClass("text-success").addClass("text-warning")
-        this.mytt_status.ttrwerte.div.attr("title", `Das Datum der geladenen TTR-Werte (${ttrwerte_date_string}) liegt über 90 Tage zurück`)
+        this.mytt_status.ttrwerte.div.attr("title", `Das Datum der geladenen TTR-Werte (${this.planung.ttrwerte.datestring}) liegt über 90 Tage zurück`)
         break
       default:
         break

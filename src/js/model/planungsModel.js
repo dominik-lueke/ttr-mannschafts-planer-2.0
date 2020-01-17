@@ -21,7 +21,8 @@ class PlanungsModel {
       url: this._getTtrRanglisteUrl(),
       status: "offline",
       date: new Date(0,0),
-      aktuell: "Q-TTR"
+      aktuell: "Q-TTR",
+      datestring: ""
     }
 
     this.mannschaften = new MannschaftsListeModel(this.spielklasse)

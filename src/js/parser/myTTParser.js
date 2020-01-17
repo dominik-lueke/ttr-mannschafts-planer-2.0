@@ -25,7 +25,8 @@ class MyTTParser {
       ttrwerte: {
         status: "ok",
         date: null,
-        aktuell: "Q-TTR"
+        aktuell: "Q-TTR",
+        datestring: ""
       }
     }
     /* get information from url */
@@ -220,7 +221,8 @@ class MyTTParser {
         url: url,
         status: "ok",
         date: null,
-        aktuell: "Aktuell"
+        aktuell: "Aktuell",
+        datestring: ""
       }
     }
     /* get information from url */
@@ -268,6 +270,7 @@ class MyTTParser {
       })
     }
     planung.ttrwerte.date = ttr_date
+    planung.ttrwerte.datestring = `${planung.ttrwerte.date.getDate()}.${planung.ttrwerte.date.getMonth()+1}.${planung.ttrwerte.date.getFullYear()}`
     const qttr_age_in_days = ( Date.now() - planung.ttrwerte.date ) / (1000*60*60*24)
     planung.ttrwerte.status = qttr_age_in_days <= 90 ? "ok" : "outdated"
     // spieler
@@ -349,8 +352,8 @@ class MyTTParser {
       ttrranglisteFound = false
     }
     // aktuelle oder qttr werte
-    if ("ttrwerte" in planung && "aktuell" in planung.ttrwerte) {
-      statusHtml += `Stichtag: ${planung.ttrwerte.aktuell} ${this._getStatusIcon("success") } `
+    if ("ttrwerte" in planung && "aktuell" in planung.ttrwerte && "datestring" in planung.ttrwerte) {
+      statusHtml += `Stichtag: ${planung.ttrwerte.datestring} (${planung.ttrwerte.aktuell}) ${this._getStatusIcon("success") } `
     } else {
       statusHtml += `Keine TTR-Werte gefunden ${this._getStatusIcon("danger") } `
     }

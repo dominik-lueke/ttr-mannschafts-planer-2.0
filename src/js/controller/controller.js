@@ -27,6 +27,9 @@ class Controller {
     this.myTTModalView.bindHtmlParser("ttrwerte", this.parseTtrRanglisteHtml)
     this.myTTModalView.bindParseResultAnalyzer("ttrwerte", this.getTtrRanglisteParseResult)
     this.myTTModalView.bindClickOnLoadButtonOnMyTTModalTab("ttrwerte", this.handleClickTTRWerteLadenButtonOnMyTTModal)
+    this.myTTModalView.bindHtmlParser("bilanzen", this.parseBilanzenHtml)
+    this.myTTModalView.bindParseResultAnalyzer("bilanzen", this.getBilanzenParseResult)
+    this.myTTModalView.bindClickOnLoadButtonOnMyTTModalTab("bilanzen", this.handleClickBilanzenLadenButtonOnMyTTModal)
     // SIDEBAR
     this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
     // SIDEBAR SPIELER
@@ -52,6 +55,7 @@ class Controller {
     this.headerView.updateHeader(this.planung)
     this.myTTModalView.setHomeUrl("aufstellung", this.planung.aufstellung.url)
     this.myTTModalView.setHomeUrl("ttrwerte", this.planung.ttrwerte.url)
+    this.myTTModalView.setHomeUrl("bilanzen", this.planung.bilanzen.url)
   }
 
   onMannschaftenChanged = (mannschaften,spieler) => {
@@ -97,12 +101,20 @@ class Controller {
     return this.myTTParser.parseMyTTTtrRangliste(url, html)
   }
 
+  parseBilanzenHtml = (url, html) => {
+    return this.myTTParser.parseMyTTBilanzen(url, html)
+  }
+
   getAufstellungsParseResult = (planung) => {
     return this.myTTParser.getResultOfMyTTAufstellungsParser(planung)
   }
 
   getTtrRanglisteParseResult = (planung) => {
     return this.myTTParser.getResultOfMyTTTtrRanglisteParser(planung, this.planung.verein)
+  }
+
+  getBilanzenParseResult = (planung) => {
+    return this.myTTParser.getResultOfMyTTBilanzenParser(planung, this.planung.verein)
   }
 
   handleClickAufstellungLadenButtonOnMyTTModal = (planung_json) => {
@@ -113,6 +125,10 @@ class Controller {
   }
 
   handleClickTTRWerteLadenButtonOnMyTTModal = (planung_json) => {
+    this.planung.loadFromJSON(planung_json)
+  }
+
+  handleClickBilanzenLadenButtonOnMyTTModal = (planung_json) => {
     this.planung.loadFromJSON(planung_json)
   }
 

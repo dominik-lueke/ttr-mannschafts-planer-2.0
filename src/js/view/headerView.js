@@ -20,13 +20,14 @@ class HeaderView {
               <span class="badge badge-dark p-1 text-muted">CLICK-TT</span>
               <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
             </div>
-            <div id="header-ttrwerte-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="">
+            <div id="header-ttrwerte-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="" class="mr-2">
               <span class="badge badge-dark p-1 text-muted">TTR</span>
               <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
             </div>
-            <!--
-            <span class="badge badge-dark p-1">11:9</span><sub><i class="fa fa-times-circle text-danger overlay-icon"></i></sub>
-            -->
+            <div id="header-bilanzen-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="">
+              <span class="badge badge-dark p-1 text-muted">11:9</span>
+              <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
+            </div>
           </div>
         </div>
       </div>
@@ -44,6 +45,11 @@ class HeaderView {
         div: $("#header-ttrwerte-status-icon"),
         badge: $("#header-ttrwerte-status-icon .badge"),
         icon: $("#header-ttrwerte-status-icon i.fa"),
+      },
+      bilanzen: {
+        div: $("#header-bilanzen-status-icon"),
+        badge: $("#header-bilanzen-status-icon .badge"),
+        icon: $("#header-bilanzen-status-icon i.fa"),
       }
     }
   }
@@ -96,7 +102,7 @@ class HeaderView {
         this.mytt_status.ttrwerte.badge.addClass("text-muted")
         this.mytt_status.ttrwerte.icon.addClass("fa-times-circle").removeClass("fa-check-circle").removeClass("fa-warning")
         this.mytt_status.ttrwerte.icon.addClass("text-muted").removeClass("text-success").removeClass("text-warning")
-        this.mytt_status.ttrwerte.div.attr("title", "Es wurden keine TTR-Werte von myTischtennis geladen")
+        this.mytt_status.ttrwerte.div.attr("title", "Es wurden noch keine TTR-Werte von myTischtennis geladen")
         break
       case "ok":
         this.mytt_status.ttrwerte.badge.removeClass("text-muted")
@@ -113,8 +119,32 @@ class HeaderView {
       default:
         break
     }
+
+    switch (this.planung.bilanzen.status) {
+      case "offline":
+        this.mytt_status.bilanzen.badge.addClass("text-muted")
+        this.mytt_status.bilanzen.icon.addClass("fa-times-circle").removeClass("fa-check-circle").removeClass("fa-warning")
+        this.mytt_status.bilanzen.icon.addClass("text-muted").removeClass("text-success").removeClass("text-warning")
+        this.mytt_status.bilanzen.div.attr("title", "Es wurden noch keine Bilanzen von myTischtennis geladen")
+        break
+      case "ok":
+        this.mytt_status.bilanzen.badge.removeClass("text-muted")
+        this.mytt_status.bilanzen.icon.removeClass("fa-times-circle").addClass("fa-check-circle").removeClass("fa-warning")
+        this.mytt_status.bilanzen.icon.removeClass("text-muted").addClass("text-success").removeClass("text-warning")
+        this.mytt_status.bilanzen.div.attr("title", `Die geladenen Bilanzen sind von der ${this.planung.bilanzen.latest}`)
+        break
+      case "outdated":
+        this.mytt_status.bilanzen.badge.removeClass("text-muted")
+        this.mytt_status.bilanzen.icon.removeClass("fa-times-circle").removeClass("fa-check-circle").addClass("fa-warning")
+        this.mytt_status.bilanzen.icon.removeClass("text-muted").removeClass("text-success").addClass("text-warning")
+        this.mytt_status.bilanzen.div.attr("title", `Die aktuellsten Bilanzen sind von der ${this.planung.bilanzen.latest}`)
+        break
+      default:
+        break
+    }
+
     // activate tooltips
-    ["aufstellung", "ttrwerte"].forEach( key => {
+    ["aufstellung", "ttrwerte", "bilanzen"].forEach( key => {
       this.mytt_status[key].div.tooltip('dispose')
       this.mytt_status[key].div.tooltip()
     })

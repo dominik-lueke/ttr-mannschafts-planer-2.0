@@ -25,7 +25,8 @@ class MyTTModalView {
     this.tab_container = $("#myttmodal-tab-container")
     this.tabs = {
       "aufstellung": new MyTTModalTabView(this.tab_container, "Aufstellung", true),
-      "ttrwerte": new MyTTModalTabView(this.tab_container, "TTR-Werte")
+      "ttrwerte": new MyTTModalTabView(this.tab_container, "TTR-Werte"),
+      "bilanzen": new MyTTModalTabView(this.tab_container, "Bilanzen")
     }
     this.tabs["aufstellung"].show()
   }

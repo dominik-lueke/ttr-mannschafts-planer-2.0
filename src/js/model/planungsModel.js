@@ -24,6 +24,11 @@ class PlanungsModel {
       aktuell: "Q-TTR",
       datestring: ""
     }
+    this.bilanzen = {
+      url: this._getBilanzenUrl(),
+      status: "offline",
+      latest: ""
+    }
 
     this.mannschaften = new MannschaftsListeModel(this.spielklasse)
     this.spieler = new SpielerListeModel(this.spielklasse)
@@ -373,6 +378,7 @@ class PlanungsModel {
     }
     this.aufstellung.url = this._getAufstellungsUrl()
     this.ttrwerte.url = this._getTtrRanglisteUrl()
+    this.bilanzen.url = this._getBilanzenUrl()
   }
 
   _getAufstellungsUrl() {
@@ -381,5 +387,9 @@ class PlanungsModel {
 
   _getTtrRanglisteUrl() {
     return `https://www.mytischtennis.de/community/ranking?vereinid=${this.vereinsNummer},${this.verband}&ttrQuartalorAktuell=quartal`
+  }
+
+  _getBilanzenUrl() {
+    return `https://www.mytischtennis.de/clicktt/${this.verband}/${this.url.saison}/verein/${this.vereinsNummer}/${this.url.verein}/bilanzen/${this.url.spielklasse}/${this.url.halbserie}/`
   }
 }

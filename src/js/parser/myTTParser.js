@@ -386,7 +386,6 @@ class MyTTParser {
         liste: []
       },
       bilanzen: {
-        url: url,
         status: "ok",
         latest: ""
       }
@@ -415,17 +414,17 @@ class MyTTParser {
       }
       // saison
       if ( (url_split[5]).match(/\d\d-\d\d/g) !== null ) {
-        planung.saison = "20" + url_split[5].replace("-","/")
+        planung.bilanzsaison = "20" + url_split[5].replace("-","/")
       }
       // serie
       const halbserie = url_split[10].replace("rr", "Rückrunde").replace("vr","Vorrunde")
       if (halbserie == "Vorrunde" || halbserie == "Rückrunde") {
-        planung.halbserie = halbserie
+        planung.bilanzhalbserie = halbserie
       }
       // verband
       planung.verband = url_split[4]
     }
-    planung.bilanzen.latest = `${planung.halbserie} ${planung.saison}`
+    planung.bilanzen.latest = `${planung.bilanzhalbserie} ${planung.bilanzsaison}`
     return planung
   }
 
@@ -444,7 +443,7 @@ class MyTTParser {
       planung.verein = verein_verband[0]
       planung.vereinsNummer = parseInt(vereinsNummer, 10)
     }
-    const saison_id = `${planung.halbserie}-${planung.saison}`
+    const saison_id = `${planung.bilanzhalbserie}-${planung.bilanzsaison}`
     //loop over all mannschaften
     const mannschaften_tables = jq.find("table#gamestatsTable")
     for (var i = 0; i < mannschaften_tables.length; i++) {
@@ -477,8 +476,8 @@ class MyTTParser {
                 break
               }
               var rang = rang_text.split(".")
-              spieler.mannschaft = parseInt( rang[0], 10)
-              spieler.position = parseInt( rang[1], 10)
+              var einsatz_mannschaft = parseInt( rang[0], 10)
+              var einsatz_position = parseInt( rang[1], 10)
               // init bilanz for this spieler for this saison
               spieler_mannschafts_bilanz = {
                 einsatz_mannschaft: mannschaft
@@ -536,9 +535,9 @@ class MyTTParser {
           } else {
             // Init the spieler bilanzen
             spieler.bilanzen[saison_id] = {
-              saison: planung.saison,
-              halbserie: planung.halbserie,
-              position: `${spieler.mannschaft}.${spieler.position}`,
+              saison: planung.bilanzsaison,
+              halbserie: planung.bilanzhalbserie,
+              position: `${einsatz_mannschaft}.${einsatz_position}`,
               bilanzen: []
             }
             spieler.bilanzen[saison_id].bilanzen.push(spieler_mannschafts_bilanz)
@@ -567,8 +566,8 @@ class MyTTParser {
       bilanzenFound = false
     }
     // saison
-    if ("saison" in planung && "halbserie" in planung) {
-      statusHtml += `${planung.halbserie} ${planung.saison} ${this._getStatusIcon("success") } `
+    if ("bilanzsaison" in planung && "bilanzhalbserie" in planung) {
+      statusHtml += `${planung.bilanzhalbserie} ${planung.bilanzsaison} ${this._getStatusIcon("success") } `
     } else {
       statusHtml += `Keine Saison gefunden ${this._getStatusIcon("danger") } `
       bilanzenFound = false

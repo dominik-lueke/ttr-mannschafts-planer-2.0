@@ -322,8 +322,15 @@ class PlanungsModel {
               if ( !( typeof new_spieler === 'undefined') ){
                 for (var spieler_key in new_spieler){
                   if (spieler.hasOwnProperty(spieler_key)){
-                    new_spieler[spieler_key] = spieler[spieler_key]
-                    qttr_values_changed = qttr_values_changed || spieler_key == "qttr"
+                    // Special case for bilanzen where we extend the hashmap
+                    if (spieler_key === 'bilanzen') {
+                      for (var saison_key in spieler[spieler_key] ){
+                        new_spieler[spieler_key][saison_key] = spieler[spieler_key][saison_key]
+                      }
+                    } else {
+                        new_spieler[spieler_key] = spieler[spieler_key]
+                        qttr_values_changed = qttr_values_changed || spieler_key == "qttr"
+                    }
                   }
                 }
               }
@@ -352,7 +359,6 @@ class PlanungsModel {
     if (qttr_values_changed && ! update_aufstellung) {
       this.spieler.validate()
     }
-    console.log(this)
     this._commit()
     return this
   }

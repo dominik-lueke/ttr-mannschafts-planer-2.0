@@ -22,7 +22,7 @@ class SpielerDetailsView {
     `
     // BODY
     this.body = `
-      <div class="card-body">
+      <div id="spieler-details-view-body" class="card-body">
         <div class="form-row mb-4">
           <div class="col">
             <h6 class="text-muted">TTR-Wert</h6>
@@ -125,6 +125,72 @@ class SpielerDetailsView {
       this.farbe_selectors[this.spieler.farbe].addClass("active")
     } else {
       this.farbe_selectors["default"].addClass("active")
+    }
+    // Bilanzen
+    $('#spieler-details-view-body-bilanzen-form-row').remove()
+    if ( Object.keys(this.spieler.bilanzen).length !== 0 ) {
+      $('#spieler-details-view-body').append(`
+        <div id="spieler-details-view-body-bilanzen-form-row" class="form-row mb-4">
+          <div class="col">
+            <h6 class="text-muted">Bilanzen</h6>
+            <div id="spieler-details-view-body-bilanzen">
+            </div>
+          </div>
+        </div>
+      `)
+      var bilanzen_container = $('#spieler-details-view-body-bilanzen')
+      var sorted_saison_keys = Object.keys(this.spieler.bilanzen).sort( (a,b) => {
+        // Sort halbserien descending
+        var a_sort_halbserie = a.split("-")[0]
+        var a_sort_saison = parseInt(a.split("-")[1].replace("/",0), 10)
+        var b_sort_halbserie = b.split("-")[0]
+        var b_sort_saison = parseInt(b.split("-")[1].replace("/",0), 10)
+        if ( (a_sort_saison - b_sort_saison) === 0 ){
+          return a_sort_halbserie.localeCompare(b_sort_halbserie) // Vorrunde > Rückrunde
+        } else {
+          return b_sort_saison - a_sort_saison
+        }
+      })
+      sorted_saison_keys.forEach( saison_key => {
+        var saison = this.spieler.bilanzen[saison_key]
+        bilanzen_container.append(`<h7 class="text-muted">${saison.saison} ${saison.halbserie} <small>(Position ${saison.position})</small></h7>`)
+        var saison_table = $(`
+          <table class="table table-sm mt-2">
+            <thead class="thead-light">
+              <tr>
+                <th>Mannschaft</th>
+                <th>Einsätze</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>ges.</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>`
+        )
+        var bilanzen_tablebody = saison_table.find('tbody')
+        saison.bilanzen.forEach( mannschaft => {
+          bilanzen_tablebody.append(`
+            <tr>
+              <td>${mannschaft.einsatz_mannschaft}</td>
+              <td>${mannschaft.einsaetze}</td>
+              <td>${mannschaft[1]}</td>
+              <td>${mannschaft[2]}</td>
+              <td>${mannschaft[3]}</td>
+              <td>${mannschaft[4]}</td>
+              <td>${mannschaft[5]}</td>
+              <td>${mannschaft[6]}</td>
+              <td>${mannschaft.gesamt}</td>
+            </tr>
+          `)
+        })
+        bilanzen_container.append(saison_table)
+      })
     }
   }
 

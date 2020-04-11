@@ -70,6 +70,10 @@ a .spieler-farbe-selector {
   line-height: 2rem;
 }
 
+.details-sidebar .card .card-body {
+  overflow-y: auto;
+}
+
 /* EDITOR */
 
 .editor-container {

@@ -1,6 +1,7 @@
 class Model {
 
   constructor() {
+
     const stored_planung = JSON.parse(localStorage.getItem('localStoragePlanung'))
     this.planung = stored_planung ? (new PlanungsModel()).loadFromJSON(stored_planung, true) : this._generateSamplePlanung() // 
 

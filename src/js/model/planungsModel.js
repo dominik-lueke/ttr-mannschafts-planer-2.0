@@ -352,6 +352,7 @@ class PlanungsModel {
     if (qttr_values_changed && ! update_aufstellung) {
       this.spieler.validate()
     }
+    console.log(this)
     this._commit()
     return this
   }
@@ -390,6 +391,6 @@ class PlanungsModel {
   }
 
   _getBilanzenUrl() {
-    return `https://www.mytischtennis.de/clicktt/${this.verband}/${this.url.saison}/verein/${this.vereinsNummer}/${this.url.verein}/bilanzen/${this.url.spielklasse}/${this.url.halbserie}/`
+    return `https://www.mytischtennis.de/clicktt/${this.verband}/${this.url.saison}/verein/${this.vereinsNummer}/${this.url.verein}/bilanzen/${this.url.halbserie}/`
   }
 }

@@ -122,15 +122,7 @@ class MyTTParser {
             // <a role="button" tabindex="0" href="#" data-bind="playerPopover: { personId: 'NU1234567', clubNr: '123456' }" data-original-title="" title="">Nachname, Vorname</a>
             const a = td.find("a")
             spieler.name = a.text().trim()
-            const data_bind_attr = JSON.parse( 
-              ( typeof a.attr("data-bind") !== typeof undefined && a.attr("data-bind") !== false ) ? 
-                a.attr("data-bind")
-                .replace("playerPopover: ","")
-                .replace("personId","\"personId\"")
-                .replace("clubNr", "\"clubNr\"")
-                .replace(/'/g,"\"") : "{}"
-            )
-            spieler.mytt_id = parseInt( ( "personId" in data_bind_attr ? data_bind_attr.personId : "").replace("NU",""), 10) 
+            spieler.mytt_id = this._getMyTTIdOfJqAWithDataBind(a)
             break;
           case 3: //hidden
             break;
@@ -377,9 +369,236 @@ class MyTTParser {
     return { result: ttrranglisteFound, html: statusHtml }
   }
 
+
+  /**
+   * BILANZEN
+   */
+
+  /**
+   * return a json object that can be loaded as or into a PlanungsModel or {} if parsing fails
+   * @param {*} url MyTischtennisUrl
+   * @param {*} html The html belonging to the url
+   */
+  parseMyTTBilanzen(url, html) {
+    // init return value
+    var planung = {
+      spieler: {
+        liste: []
+      },
+      bilanzen: {
+        url: url,
+        status: "ok",
+        latest: ""
+      }
+    }
+    /* get information from url */
+    planung = this.parseMyTTBilanzenUrl(url, planung)
+    /* get information from html */
+    planung = this.parseMyTTBilanzenHtml(html, planung)
+    /* return */
+    return planung
+  }
+
+  /**
+   * Extract the saison, halbserie and verband from a vaild myTischtennis Bilanzen URL
+   * @param {*} url 
+   * @param {*} planung 
+   */
+  parseMyTTBilanzenUrl(url, planung){
+    const url_split = url.split("/") 
+    // Expect like "https://www.mytischtennis.de/clicktt/WTTV/19-20/verein/187012/TuRa-Elsen/bilanzen/rr"
+    // url_split = [https:,,www.mytischtennis.de,clicktt,WTTV,19-20,verein,187012,TuRa-Elsen,bilanzen,rr]
+    if (url_split.length <= 13){
+      // verband
+      if (url_split.length > 4) {
+        planung.verband = url_split[4]
+      }
+      // saison
+      if ( (url_split[5]).match(/\d\d-\d\d/g) !== null ) {
+        planung.saison = "20" + url_split[5].replace("-","/")
+      }
+      // serie
+      const halbserie = url_split[10].replace("rr", "Rückrunde").replace("vr","Vorrunde")
+      if (halbserie == "Vorrunde" || halbserie == "Rückrunde") {
+        planung.halbserie = halbserie
+      }
+      // verband
+      planung.verband = url_split[4]
+    }
+    planung.bilanzen.latest = `${planung.halbserie} ${planung.saison}`
+    return planung
+  }
+
+  /**
+   * Return the given planungs json filled with the found information in the mytischtennis bilanzen html (mannschaften, spieler, etc)
+   * @param {*} url 
+   * @param {*} planung 
+   */
+  parseMyTTBilanzenHtml(html, planung) {
+    var jq = $('<div></div>');
+    jq.html(`<html><head></head><body>${html}</body></html>`);
+    // verein
+    const verein_verband = jq.find(".panel-body > h1").first().html().split(" <small>") // "TuRa Elsen <small>WTTV</small>"
+    const vereinsNummer = jq.find(".panel-body > h5").first().text().split(", ")[0].split(": ")[1] // "VNr.: 187012, Gründungsjahr: 1947"
+    if (verein_verband.length == 2 && vereinsNummer.match(/\d\d\d\d\d\d/g) !== null){
+      planung.verein = verein_verband[0]
+      planung.vereinsNummer = parseInt(vereinsNummer, 10)
+    }
+    const saison_id = `${planung.halbserie}-${planung.saison}`
+    //loop over all mannschaften
+    const mannschaften_tables = jq.find("table#gamestatsTable")
+    for (var i = 0; i < mannschaften_tables.length; i++) {
+      var mannschaften_table = $(mannschaften_tables[i])
+      // get the spielklasse of the current bilanzen table from the preceding h3
+      var mannschaften_table_header = mannschaften_table.prev("h3").find("a").html() // TuRa Elsen Herren II <i/> (Rückrunde)
+      var mannschaft = mannschaften_table_header.replace(planung.verein, "").split("<i")[0].trim() // Herren II
+      var spielklasse = mannschaft.split(" ")[0] // Herren
+
+      // loop over all rows in the table
+      var bilanzen_trs = mannschaften_table.children("tbody").children("tr:not(.collapse)") // only get first level trs
+      for (var j = 0; j < bilanzen_trs.length; j++) {
+        var bilanzen_tr = $(bilanzen_trs[j])
+        // initialize the spieler
+        var spieler = {
+          spielklasse: spielklasse,
+          bilanzen: { }
+        }
+        var spieler_mannschafts_bilanz = {}
+        // loop over all tds in the row
+        var spieler_tds = bilanzen_tr.children("td") // get the tds for the spieler
+        for (var k = 0; k < spieler_tds.length; k++) {
+          var spieler_td = $(spieler_tds[k])
+          var spieler_is_valid = true
+          switch (k) {
+            case 0: //rang
+              var rang_text = spieler_td.text().trim()
+              if (!rang_text || /^\s*$/.test(rang_text)) {  // skip if the rang is empty and we have no spieler
+                spieler_is_valid = false
+                break
+              }
+              var rang = rang_text.split(".")
+              spieler.mannschaft = parseInt( rang[0], 10)
+              spieler.position = parseInt( rang[1], 10)
+              // init bilanz for this spieler for this saison
+              spieler_mannschafts_bilanz = {
+                einsatz_mannschaft: mannschaft
+              }
+              break;
+            case 1: // name + mytt_id
+              // <a role="button" tabindex="0" href="#" data-bind="playerPopover: { personId: 'NU1234567', clubNr: '123456' }" data-original-title="" title="">Nachname, Vorname</a>
+              const a = spieler_td.find("a")
+              spieler.name = a.text().trim()
+              spieler.mytt_id = this._getMyTTIdOfJqAWithDataBind(a)
+              break;
+            case 2: //Einsätze
+              const einsaetze = parseInt( spieler_td.text().trim() )
+              spieler_mannschafts_bilanz.einsaetze = einsaetze
+              break
+            case 3: // Bilanz gg Position 1
+              const bilanz1 = spieler_td.text().trim()
+              spieler_mannschafts_bilanz[1] = bilanz1
+              break
+            case 4: // Bilanz gg Position 2
+              const bilanz2 = spieler_td.text().trim()
+              spieler_mannschafts_bilanz[2] = bilanz2
+              break
+            case 5: // Bilanz gg Position 3
+              const bilanz3 = spieler_td.text().trim()
+              spieler_mannschafts_bilanz[3] = bilanz3
+              break
+            case 6: // Bilanz gg Position 4
+              const bilanz4 = spieler_td.text().trim()
+              spieler_mannschafts_bilanz[4] = bilanz4
+              break
+            case 7: // Bilanz gg Position 5
+              const bilanz5 = spieler_td.text().trim()
+              spieler_mannschafts_bilanz[5] = bilanz5
+              break
+            case 8: // Bilanz gg Position 6
+              const bilanz6 = spieler_td.text().trim()
+              spieler_mannschafts_bilanz[6] = bilanz6
+              break
+            case 9: // Bilanz gesamt
+              const bilanzgesamt = spieler_td.text().trim().replace(/\s+/g, '');
+              spieler_mannschafts_bilanz.gesamt = bilanzgesamt
+              break
+            default:
+              break
+          }
+          if (!spieler_is_valid) { break }
+        }
+        if (spieler_is_valid){
+          // Now we can check if we already had this spieler
+          // if yes, we start to fill the already found spieler with the current bilanzen
+          var found_spieler = planung.spieler.liste.find(findspieler => (findspieler.mytt_id == spieler.mytt_id))
+          if ( found_spieler ) {
+            found_spieler.bilanzen[saison_id].bilanzen.push(spieler_mannschafts_bilanz)
+          } else {
+            // Init the spieler bilanzen
+            spieler.bilanzen[saison_id] = {
+              saison: planung.saison,
+              halbserie: planung.halbserie,
+              position: `${spieler.mannschaft}.${spieler.position}`,
+              bilanzen: []
+            }
+            spieler.bilanzen[saison_id].bilanzen.push(spieler_mannschafts_bilanz)
+            planung.spieler.liste.push(spieler)
+          }
+        }
+      }
+    }
+    return planung
+  }
+
+  /**
+   * Analyze the planungs object and return 
+   * {result: [true|false], html: <html-string to display}
+   * the result is true if the planungs object is a loadable aufstellung
+   * @param {*} planung 
+   */
+  getResultOfMyTTBilanzenParser(planung){
+    var bilanzenFound = true
+    var statusHtml = ""
+    // verein + + vereinsNummer + verband
+    if ("verein" in planung && "vereinsNummer" in planung && "verband" in planung) {
+      statusHtml += `${planung.verein} (${planung.vereinsNummer} - ${planung.verband}) ${this._getStatusIcon("success") } `
+    } else {
+      statusHtml += `Kein Verein gefunden ${this._getStatusIcon("danger") } `
+      bilanzenFound = false
+    }
+    // saison
+    if ("saison" in planung && "halbserie" in planung) {
+      statusHtml += `${planung.halbserie} ${planung.saison} ${this._getStatusIcon("success") } `
+    } else {
+      statusHtml += `Keine Saison gefunden ${this._getStatusIcon("danger") } `
+      bilanzenFound = false
+    }
+    statusHtml += "<br/>"
+    // spieler
+    if (planung.spieler.liste.length > 0) {
+      statusHtml += `${planung.spieler.liste.length} Spieler gefunden ${this._getStatusIcon("success") } `
+    } else {
+      statusHtml += `Keine Spieler gefunden ${this._getStatusIcon("danger") } `
+      bilanzenFound = false
+    }
+    return { result: bilanzenFound, html: statusHtml }
+  }
+
   /**
    * PRIVATE
    */
+
+  _getMyTTIdOfJqAWithDataBind(jq_a) {
+    const data_bind_attr = JSON.parse( 
+      ( typeof jq_a.attr("data-bind") !== typeof undefined && jq_a.attr("data-bind") !== false ) ? 
+        jq_a.attr("data-bind")
+        .replace("playerPopover: ","")
+        .replace("personId","\"personId\"")
+        .replace("clubNr", "\"clubNr\"")
+        .replace(/'/g,"\"") : "{}"
+    )
+    return parseInt( ( "personId" in data_bind_attr ? data_bind_attr.personId : "").replace("NU",""), 10)
+  }
 
   _getStatusIcon(status) {
     const icon = status == "success" ? "check" : status == "danger" ? "times" : status == "warning" ? "warning" : ""

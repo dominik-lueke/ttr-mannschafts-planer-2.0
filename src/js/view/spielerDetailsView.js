@@ -7,7 +7,7 @@ class SpielerDetailsView {
       <div class="card-header bg-white">
         <div class="d-flex">
           <div class="pt-2 pr-1 text-muted">
-            <div id="spieler-details-icon" class="rounded-circle text-center bg-secondary text-white sidebar-details-icon"><span></span></div>
+            <div id="spieler-details-icon" class="rounded-circle text-center text-white sidebar-details-icon" data-toggle="tooltip" data-placement="top"><span></span></div>
           </div>
           <div class="p-2 flex-grow-1">
             <input id="spieler-details-name-input" type="text" class="form-control form-control-sm" value=""/>
@@ -78,7 +78,8 @@ class SpielerDetailsView {
     container.append(this.html)
     // cache jq elements
     this.card_div = $(`#spieler-details-view`)
-    this.spieler_icon = $("#spieler-details-icon span")
+    this.spieler_icon_div = $("#spieler-details-icon")
+    this.spieler_icon = this.spieler_icon_div.children("span")
     this.qttr_info_icon = $("#qttr-info-icon")
     this.name_input = $("#spieler-details-name-input")
     this.close_button = $("#spieler-details-close-button")
@@ -114,6 +115,17 @@ class SpielerDetailsView {
     this.card_div.removeClass("display-none")
     // Icon
     this.spieler_icon.text(this._getSpielerInitialen())
+    if (spieler.mytt_id === 0){
+      this.spieler_icon_div.addClass("bg-secondary").removeClass("bg-success")
+      this.spieler_icon_div.attr("title", "Spieler wurde manuell angelegt")
+      this.spieler_icon_div.tooltip('dispose').tooltip();
+      this.name_input.removeAttr("disabled")
+    } else {
+      this.spieler_icon_div.addClass("bg-success").removeClass("bg-secondary")
+      this.spieler_icon_div.attr("title", "Spieler wurde von myTischtennis.de geladen")
+      this.spieler_icon_div.tooltip('dispose').tooltip();
+      this.name_input.attr("disabled","disabled")
+    }
     // Qttr-Info
     this.qttr_info_icon.attr("title", spieler.qttrinfo)
     this.qttr_info_icon.tooltip('dispose').tooltip();

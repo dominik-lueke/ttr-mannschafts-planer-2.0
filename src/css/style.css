@@ -74,6 +74,10 @@ a .spieler-farbe-selector {
   overflow-y: auto;
 }
 
+#spieler-details-icon span {
+  cursor: default;
+}
+
 /* EDITOR */
 
 .editor-container {

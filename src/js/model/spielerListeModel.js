@@ -317,6 +317,8 @@ class SpielerListeModel {
 
   _setQttrForSpieler(spieler, qttr){
     spieler.qttr = qttr
+    var today = new Date(Date.now())
+    spieler.qttrinfo = `Manuell eingetragen am ${today.getDate()}.${today.getMonth()+1}.${today.getFullYear()}`
     this._recomputeTtrDifferenzForSpieler(spieler)
     this._checkTtrDifferenzenForSpieler(spieler)
   }

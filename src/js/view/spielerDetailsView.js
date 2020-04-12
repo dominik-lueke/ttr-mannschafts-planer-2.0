@@ -25,7 +25,7 @@ class SpielerDetailsView {
       <div id="spieler-details-view-body" class="card-body">
         <div class="form-row mb-4">
           <div class="col">
-            <h6 class="text-muted">TTR-Wert</h6>
+            <h6 class="text-muted">TTR-Wert <small><i id="qttr-info-icon" class="fa fa-info-circle" data-toggle="tooltip" data-html="true" data-placement="right" title="QTTR-Info"></i></small></h6>
             <input id="spieler-details-qttr-input" type="number" class="form-control form-control-sm" value="" >
           </div>
           <div class="col">
@@ -79,6 +79,7 @@ class SpielerDetailsView {
     // cache jq elements
     this.card_div = $(`#spieler-details-view`)
     this.spieler_icon = $("#spieler-details-icon span")
+    this.qttr_info_icon = $("#qttr-info-icon")
     this.name_input = $("#spieler-details-name-input")
     this.close_button = $("#spieler-details-close-button")
     this.qttr_input = $("#spieler-details-qttr-input")
@@ -113,6 +114,9 @@ class SpielerDetailsView {
     this.card_div.removeClass("display-none")
     // Icon
     this.spieler_icon.text(this._getSpielerInitialen())
+    // Qttr-Info
+    this.qttr_info_icon.attr("title", spieler.qttrinfo)
+    this.qttr_info_icon.tooltip('dispose').tooltip();
     // Normal Inputs
     this.name_input.val(this.spieler.name)
     this.qttr_input.val(this.spieler.qttr)

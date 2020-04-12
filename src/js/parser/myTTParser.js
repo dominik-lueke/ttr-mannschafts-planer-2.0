@@ -142,6 +142,8 @@ class MyTTParser {
            "mannschaft" in spieler && ! isNaN(spieler.mannschaft) && 
            "position" in spieler &&  ! isNaN(spieler.position)
       ) {
+        // set qttr_date of spieler
+        spieler.qttrinfo = `TTR-Stichtag: ${planung.ttrwerte.datestring}<br/>(${planung.ttrwerte.aktuell})`
         planung.spieler.liste.push(spieler)
         if ( spieler.mannschaft > planung.mannschaften.liste.length ) {
           planung.mannschaften.liste.push( {
@@ -319,6 +321,8 @@ class MyTTParser {
            "qttr" in spieler && ! isNaN(spieler.qttr) && 
            "mytt_id" in spieler && ! isNaN(spieler.mytt_id)
       ) {
+        // set qttr_date of spieler
+        spieler.qttrinfo = `TTR-Stichtag: ${planung.ttrwerte.datestring}<br/>(${planung.ttrwerte.aktuell})`
         planung.spieler.liste.push(spieler)
       }
       // Only set verein here when all spieler have the same verein, else the planung will be invalid

@@ -8,6 +8,8 @@ class SpielerModel {
     this.mannschaft = 0
     this.position = 0
     this.qttr = qttr
+    var today = new Date(Date.now())
+    this.qttrinfo = `Manuell eingetragen am ${today.getDate()}.${today.getMonth()+1}.${today.getFullYear()}`
     this.ttrdifferenz = 0
     this.farbe = "default"
     this.reserve = false

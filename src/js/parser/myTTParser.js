@@ -413,16 +413,16 @@ class MyTTParser {
         planung.verband = url_split[4]
       }
       // saison
-      if ( (url_split[5]).match(/\d\d-\d\d/g) !== null ) {
+      if (url_split.length > 5 && (url_split[5]).match(/\d\d-\d\d/g) !== null ) {
         planung.bilanzsaison = "20" + url_split[5].replace("-","/")
       }
       // serie
-      const halbserie = url_split[10].replace("rr", "Rückrunde").replace("vr","Vorrunde")
-      if (halbserie == "Vorrunde" || halbserie == "Rückrunde") {
-        planung.bilanzhalbserie = halbserie
+      if (url_split.length > 10) {
+        const halbserie = url_split[10].replace("rr", "Rückrunde").replace("vr","Vorrunde")
+        if (halbserie == "Vorrunde" || halbserie == "Rückrunde") {
+          planung.bilanzhalbserie = halbserie
+        }
       }
-      // verband
-      planung.verband = url_split[4]
     }
     planung.bilanzen.saisons.push(`${planung.bilanzhalbserie} ${planung.bilanzsaison}`)
     return planung
@@ -439,7 +439,7 @@ class MyTTParser {
     // verein
     const verein_verband = jq.find(".panel-body > h1").first().html().split(" <small>") // "TuRa Elsen <small>WTTV</small>"
     const vereinsNummer = jq.find(".panel-body > h5").first().text().split(", ")[0].split(": ")[1] // "VNr.: 187012, Gründungsjahr: 1947"
-    if (verein_verband.length == 2 && vereinsNummer.match(/\d\d\d\d\d\d/g) !== null){
+    if (verein_verband.length == 2 && vereinsNummer && vereinsNummer.match(/\d\d\d\d\d\d/g) !== null){
       planung.verein = verein_verband[0]
       planung.vereinsNummer = parseInt(vereinsNummer, 10)
     }
@@ -555,14 +555,14 @@ class MyTTParser {
    * the result is true if the planungs object is a loadable aufstellung
    * @param {*} planung 
    */
-  getResultOfMyTTBilanzenParser(planung){
+  getResultOfMyTTBilanzenParser(planung, target_verein){
     var bilanzenFound = true
     var statusHtml = ""
     // verein + + vereinsNummer + verband
-    if ("verein" in planung && "vereinsNummer" in planung && "verband" in planung) {
-      statusHtml += `${planung.verein} (${planung.vereinsNummer} - ${planung.verband}) ${this._getStatusIcon("success") } `
+    if ("verein" in planung && planung.verein == target_verein ) {// && "vereinsNummer" in planung && "verband" in planung) {
+      statusHtml += `${planung.verein} ${this._getStatusIcon("success") } ` // (${planung.vereinsNummer} - ${planung.verband})
     } else {
-      statusHtml += `Kein Verein gefunden ${this._getStatusIcon("danger") } `
+      statusHtml += `${planung.verein} (Nicht ${target_verein}) ${this._getStatusIcon("danger") } `
       bilanzenFound = false
     }
     // saison

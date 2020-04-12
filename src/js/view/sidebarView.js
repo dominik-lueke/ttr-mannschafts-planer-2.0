@@ -14,10 +14,10 @@ class SidebarView {
 
   /* DISPLAY */
 
-  displaySpieler(spieler){
+  displaySpieler(spieler, compareHalbserienFn){
     this.sidebar_div.removeClass("display-none")
     this.mannschaftDetailsView.hide()
-    this.spielerDetailsView.displaySpieler(spieler)
+    this.spielerDetailsView.displaySpieler(spieler, compareHalbserienFn)
   }
 
   displayMannschaft(mannschaft){

@@ -12,7 +12,7 @@ class HeaderView {
           <h6 id="planung-spielklasse"></h6>
         </div>
         <div class="p-2 flex-fill">
-          <h4 id="planung-reload-data-button" class="link" data-toggle="modal" data-target="#planung-reload-data-modal">
+          <h4 class="text-muted">
             <i class="fa fa-cloud-download" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Aktualisiere Daten<br/>von myTischtennis.de"></i>
           </h4>
           <div class="d-flex justify-content-center">
@@ -34,7 +34,6 @@ class HeaderView {
     `)
     this.planung = {}
     this.mytt_aufstellung_url = ""
-    this.reload_data_button = $("#planung-reload-data-button")
     this.mytt_status = {
       aufstellung: {
         div: $("#header-aufstellung-status-icon"),
@@ -55,9 +54,6 @@ class HeaderView {
   }
 
   bindClickOnReloadDataButon(handler) {
-    this.reload_data_button.click( (event) => {
-      handler("aufstellung", this.planung.aufstellung.url)
-    })
     this.mytt_status.aufstellung.badge.click( (event) => {
       handler("aufstellung", this.planung.aufstellung.url)
     })

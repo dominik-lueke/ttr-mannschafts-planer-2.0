@@ -107,7 +107,7 @@ class SpielerDetailsView {
   }
 
   /* DISPLAY */
-  displaySpieler(spieler){
+  displaySpieler(spieler, compareHalbserieFn){
     this.spieler = spieler
     // Show this view
     this.card_div.removeClass("display-none")
@@ -139,18 +139,7 @@ class SpielerDetailsView {
         </div>
       `)
       var bilanzen_container = $('#spieler-details-view-body-bilanzen')
-      var sorted_saison_keys = Object.keys(this.spieler.bilanzen).sort( (a,b) => {
-        // Sort halbserien descending
-        var a_sort_halbserie = a.split("-")[0]
-        var a_sort_saison = parseInt(a.split("-")[1].replace("/",0), 10)
-        var b_sort_halbserie = b.split("-")[0]
-        var b_sort_saison = parseInt(b.split("-")[1].replace("/",0), 10)
-        if ( (a_sort_saison - b_sort_saison) === 0 ){
-          return a_sort_halbserie.localeCompare(b_sort_halbserie) // Vorrunde > Rückrunde
-        } else {
-          return b_sort_saison - a_sort_saison
-        }
-      })
+      var sorted_saison_keys = Object.keys(this.spieler.bilanzen).sort( compareHalbserieFn )
       sorted_saison_keys.forEach( saison_key => {
         var saison = this.spieler.bilanzen[saison_key]
         bilanzen_container.append(`<h7 class="text-muted">${saison.saison} ${saison.halbserie} <small>(Position ${saison.position})</small></h7>`)

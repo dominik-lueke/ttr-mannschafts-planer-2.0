@@ -387,7 +387,7 @@ class MyTTParser {
       },
       bilanzen: {
         status: "ok",
-        latest: ""
+        saisons: []
       }
     }
     /* get information from url */
@@ -424,7 +424,7 @@ class MyTTParser {
       // verband
       planung.verband = url_split[4]
     }
-    planung.bilanzen.latest = `${planung.bilanzhalbserie} ${planung.bilanzsaison}`
+    planung.bilanzen.saisons.push(`${planung.bilanzhalbserie} ${planung.bilanzsaison}`)
     return planung
   }
 

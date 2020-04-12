@@ -73,7 +73,7 @@ class Controller {
     const id = this.model.view.sidebar.id
     if (display == "spieler") {
       const spieler = this.planung.spieler.getSpieler(id)
-      this.sidebarView.displaySpieler(spieler)
+      this.sidebarView.displaySpieler(spieler, this.planung.compareHalbserien)
       this.editorView.focusSpieler(spieler)
     } else if (display == "mannschaft") {
       const mannschaft = this.planung.mannschaften.getMannschaft(id)
@@ -87,8 +87,8 @@ class Controller {
 
   /* HEADER HANDLER */
 
-  handleClickOnReloadDataButton = (url) => {
-    this.myTTModalView.loadUrl("aufstellung", url)
+  handleClickOnReloadDataButton = (tab, url) => {
+    this.myTTModalView.loadUrl(tab, url)
   }
 
   /* MYTT MODAL WEBVIEW HANDLER */

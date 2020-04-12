@@ -17,15 +17,15 @@ class HeaderView {
           </h4>
           <div class="d-flex justify-content-center">
             <div id="header-aufstellung-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="" class="mr-2">
-              <span class="badge badge-dark p-1 text-muted">CLICK-TT</span>
+              <span class="badge badge-dark p-1 text-muted link" data-toggle="modal" data-target="#planung-reload-data-modal" >CLICK-TT</span>
               <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
             </div>
             <div id="header-ttrwerte-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="" class="mr-2">
-              <span class="badge badge-dark p-1 text-muted">TTR</span>
+              <span class="badge badge-dark p-1 text-muted link" data-toggle="modal" data-target="#planung-reload-data-modal">TTR</span>
               <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
             </div>
             <div id="header-bilanzen-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="">
-              <span class="badge badge-dark p-1 text-muted">11:9</span>
+              <span class="badge badge-dark p-1 text-muted link" data-toggle="modal" data-target="#planung-reload-data-modal">11:9</span>
               <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
             </div>
           </div>
@@ -56,7 +56,16 @@ class HeaderView {
 
   bindClickOnReloadDataButon(handler) {
     this.reload_data_button.click( (event) => {
-      handler(this.planung.aufstellung.url)
+      handler("aufstellung", this.planung.aufstellung.url)
+    })
+    this.mytt_status.aufstellung.badge.click( (event) => {
+      handler("aufstellung", this.planung.aufstellung.url)
+    })
+    this.mytt_status.ttrwerte.badge.click( (event) => {
+      handler("ttrwerte", this.planung.ttrwerte.url)
+    })
+    this.mytt_status.bilanzen.badge.click( (event) => {
+      handler("bilanzen", this.planung.bilanzen.url)
     })
   }
 
@@ -131,13 +140,21 @@ class HeaderView {
         this.mytt_status.bilanzen.badge.removeClass("text-muted")
         this.mytt_status.bilanzen.icon.removeClass("fa-times-circle").addClass("fa-check-circle").removeClass("fa-warning")
         this.mytt_status.bilanzen.icon.removeClass("text-muted").addClass("text-success").removeClass("text-warning")
-        this.mytt_status.bilanzen.div.attr("title", `Die geladenen Bilanzen sind von der ${this.planung.bilanzen.latest}`)
+        var title_attr = `Die geladenen Bilanzen sind aktuell.`
+        this.planung.bilanzen.saisons.forEach(saison => {
+          title_attr += `<br/>${saison} <i class="fa fa-check"></i>`
+        })
+        this.mytt_status.bilanzen.div.attr("title", title_attr)
         break
       case "outdated":
         this.mytt_status.bilanzen.badge.removeClass("text-muted")
         this.mytt_status.bilanzen.icon.removeClass("fa-times-circle").removeClass("fa-check-circle").addClass("fa-warning")
         this.mytt_status.bilanzen.icon.removeClass("text-muted").removeClass("text-success").addClass("text-warning")
-        this.mytt_status.bilanzen.div.attr("title", `Die aktuellsten Bilanzen sind von der ${this.planung.bilanzen.latest}`)
+        var title_attr = `Die geladenen Bilanzen sind nicht aktuell.`
+        this.planung.bilanzen.saisons.forEach(saison => {
+          title_attr += `<br/>${saison} <i class="fa fa-check"></i>`
+        })
+        this.mytt_status.bilanzen.div.attr("title", title_attr)
         break
       default:
         break

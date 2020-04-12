@@ -27,7 +27,7 @@ class PlanungsModel {
     this.bilanzen = {
       url: this._getBilanzenUrl(),
       status: "offline",
-      latest: ""
+      saisons: []
     }
 
     this.mannschaften = new MannschaftsListeModel(this.spielklasse)
@@ -77,6 +77,19 @@ class PlanungsModel {
     this.halbserie = this._getOtherHalbserie()
     this.saison = this._getPreviousSaison()
     this._commit()
+  }
+
+  _setBilanzenStatus(){
+    //Check if the latest saison from Bilanzen is at least the previous halbserie of this planung
+    if (this.bilanzen.saisons.length > 0) {
+      if ( this.compareHalbserien(this.bilanzen.saisons[0], this._getOtherHalbserie() + " " + this._getPreviousSaison()) <= 0 ){
+        this.bilanzen.status = "ok"
+      } else {
+        this.bilanzen.status = "outdated"
+      }
+    } else {
+      this.bilanzen.status = "offline"
+    }
   }
 
   /**
@@ -336,7 +349,21 @@ class PlanungsModel {
               }
             })
           }
-
+        /* set bilanzen properties */
+        } else if (key == "bilanzen") {
+          for (var bilanzen_key in planung_json.bilanzen) { 
+            /* special case for saisons which are merged with the current saisons array */
+            if (bilanzen_key === "saisons" && this.bilanzen.hasOwnProperty("saisons") ) {
+              planung_json.bilanzen.saisons.forEach(saison => {
+                if ( this.bilanzen.saisons.indexOf(saison) === -1 ) {
+                  this.bilanzen.saisons.push(saison)
+                }
+              })
+              this.bilanzen.saisons.sort(this.compareHalbserien)
+            } else {
+              this.bilanzen[key] = planung_json.bilanzen[key]
+            }
+          }
         /* Set other planungs properties */ 
         } else {
           this[key] = planung_json[key]
@@ -347,6 +374,8 @@ class PlanungsModel {
     if ("ttrwerte" in planung_json && "date" in planung_json.ttrwerte) {
       this.ttrwerte.date = new Date(planung_json.ttrwerte.date)
     }
+    // bilanzen status
+    this._setBilanzenStatus()
     // Check if we need to recompute aufstellung
     if ( update_aufstellung ) {
       this.spieler.cleanUp()
@@ -361,6 +390,24 @@ class PlanungsModel {
     }
     this._commit()
     return this
+  }
+
+  compareHalbserien(a,b) {
+    // Sort halbserien descending
+    // valid inputs: for a and b [Vorrunde|Rückrunde][ |-]d+[/]d*
+    var a_split = " "
+    if (a.includes("-")) { a_split = "-" }
+    var b_split = " "
+    if (b.includes("-")) { b_split = "-" }
+    var a_sort_halbserie = a.split(a_split)[0]
+    var a_sort_saison = parseInt(a.split(a_split)[1].replace("/",0), 10)
+    var b_sort_halbserie = b.split(b_split)[0]
+    var b_sort_saison = parseInt(b.split(b_split)[1].replace("/",0), 10)
+    if ( (a_sort_saison - b_sort_saison) === 0 ){
+      return a_sort_halbserie.localeCompare(b_sort_halbserie) // Vorrunde > Rückrunde
+    } else {
+      return b_sort_saison - a_sort_saison
+    }
   }
 
   /**
@@ -399,4 +446,6 @@ class PlanungsModel {
   _getBilanzenUrl() {
     return `https://www.mytischtennis.de/clicktt/${this.verband}/${this.url.saison}/verein/${this.vereinsNummer}/${this.url.verein}/bilanzen/${this.url.halbserie}/`
   }
+
+
 }

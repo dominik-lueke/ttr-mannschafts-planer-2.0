@@ -8,19 +8,22 @@ class Controller {
     this.editorView = new EditorView()
     this.sidebarView = new SidebarView()
     this.myTTModalView = new MyTTModalView()
+    this.newPlanungModalView = new NewPlanungModalView()
     // Parser
     this.myTTParser = new MyTTParser()
     
     // Initial Display
-    this.onHeaderDataChanged(this.planung)
-    this.onMannschaftenChanged(this.planung.mannschaften.liste, this.planung.spieler.liste)
+    this.updateView()
 
-    // Bind Handlers
+    // Bind Model Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
     this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
+
+    // Bind View Handlers
     this.editorView.bindAddMannschaft(this.handleAddMannschaft)
     this.headerView.bindClickOnReloadDataButon(this.handleClickOnReloadDataButton)
+    // MYTTMODAL VIEW
     this.myTTModalView.bindHtmlParser("aufstellung", this.parseAufstellungHtml)
     this.myTTModalView.bindParseResultAnalyzer("aufstellung", this.getAufstellungsParseResult)
     this.myTTModalView.bindClickOnLoadButtonOnMyTTModalTab("aufstellung", this.handleClickAufstellungLadenButtonOnMyTTModal)
@@ -30,9 +33,11 @@ class Controller {
     this.myTTModalView.bindHtmlParser("bilanzen", this.parseBilanzenHtml)
     this.myTTModalView.bindParseResultAnalyzer("bilanzen", this.getBilanzenParseResult)
     this.myTTModalView.bindClickOnLoadButtonOnMyTTModalTab("bilanzen", this.handleClickBilanzenLadenButtonOnMyTTModal)
-    // SIDEBAR
+    // NEWPLANUNGS VIEW
+    this.newPlanungModalView.bindClickSubmitPlanungButton(this.handleClickSubmitPlanungButton)
+    // SIDEBAR VIEW
     this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
-    // SIDEBAR SPIELER
+    // SIDEBAR SPIELER VIEW
     this.sidebarView.bindEditNameOnSpieler(this.handleEditNameOnSpieler)
     this.sidebarView.bindEditQttrOnSpieler(this.handleEditQttrOnSpieler)
     this.sidebarView.bindClickResButtonOnSpieler(this.handleClickResButtonOnSpieler)
@@ -40,7 +45,7 @@ class Controller {
     this.sidebarView.bindClickFarbeButtonOnSpieler(this.handleClickFarbeButtonOnSpieler)
     this.sidebarView.bindEditKommentarOnSpieler(this.handleEditKommentarOnSpieler)
     this.sidebarView.bindClickDeleteButtonOnSpieler(this.handleClickDeleteButtonOnSpieler)
-    // SIDEBAR MANNSCHAFT
+    // SIDEBAR MANNSCHAFT VIEW
     this.sidebarView.bindEditLigaOnMannschaft(this.handleEditLigaOnMannschaft)
     this.sidebarView.bindEditSollstaerkeOnMannschaft(this.handleEditSollstaerkeOnMannschaft)
     this.sidebarView.bindEditSpieltagOnMannschaft(this.handleEditSpieltagOnMannschaft)
@@ -49,7 +54,28 @@ class Controller {
     this.sidebarView.bindClickDeleteButtonOnMannschaft(this.handleClickDeleteButtonOnMannschaft)
   }
 
+  /* PLANUNG */
+  createNewPlanung = () => {
+    // New model
+    this.model.createNewPlanung()
+    this.planung = this.model.planung
+    // Bind Handlers
+    this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
+    this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
+    this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
+    // Initial Display
+    this.updateView()
+  }
+
+  handleClickSubmitPlanungButton = (planung_json) => {
+    this.model.updatePlanung(planung_json)
+  }
+
   /* UPDATE */
+  updateView = () => {
+    this.onHeaderDataChanged(this.planung)
+    this.onMannschaftenChanged(this.planung.mannschaften.liste, this.planung.spieler.liste)
+  }
 
   onHeaderDataChanged = () => {
     this.headerView.updateHeader(this.planung)

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:">
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
     <title>Tischtennis Mannschafts Planer</title>
 
@@ -40,6 +40,10 @@
     <div id="myTTModal">
     </div>
 
+    <!-- new Planung Modal -->
+    <div id="newPlanungModal">
+    </div>
+  
     <!-- You can also require other files to run in this process -->
     <script src="./src/js/parser/myTTParser.js"></script>
     <script src="./src/js/model/spielerModel.js"></script>
@@ -51,6 +55,7 @@
     <script src="./src/js/controller/controller.js"></script>
     <script src="./src/js/view/myTTModalView.js"></script>
     <script src="./src/js/view/myTTModalTabView.js"></script>
+    <script src="./src/js/view/newPlanungModalView.js"></script>
     <script src="./src/js/view/headerView.js"></script>
     <script src="./src/js/view/spielerView.js"></script>
     <script src="./src/js/view/mannschaftView.js"></script>

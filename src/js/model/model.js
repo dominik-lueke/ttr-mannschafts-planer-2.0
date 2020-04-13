@@ -16,6 +16,21 @@ class Model {
   }
 
   /**
+   * PLANUNG
+   */
+  createNewPlanung(){
+    // View
+    this.closeSidebar()
+    // Planung
+    this.planung = new PlanungsModel()
+    localStorage.setItem("localStoragePlanung", JSON.stringify(this.planung))
+  }
+
+  updatePlanung(planung_json){
+    this.planung.loadFromJSON(planung_json)
+  }
+
+  /**
    * EVENT HANDLER
    */
 

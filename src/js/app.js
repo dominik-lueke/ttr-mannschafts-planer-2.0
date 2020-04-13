@@ -12,3 +12,9 @@
 */
 
 const app = new Controller()
+const ipc = require('electron').ipcRenderer
+
+ipc.on('newFile', (event, args) => {
+    app.createNewPlanung()
+   }
+)

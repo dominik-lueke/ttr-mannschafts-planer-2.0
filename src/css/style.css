@@ -196,24 +196,28 @@ a .spieler-farbe-selector {
   color: var(--dark-grey) !important;
 }
 
-.modal-body {
+#myTTModal .modal-body {
   height: 70vh;
   min-height: 550px;
 }
 
-.myttmodal-status {
+#myTTModal .myttmodal-status {
   min-height: 3em;
 }
 
-.myttmodal-load-button {
+#myTTModal .myttmodal-load-button {
   width: 150px
 }
 
-.myttmodal-home-button,
-.myttmodal-loading-indicator .fa-refresh {
+#myTTModal .myttmodal-home-button,
+#myTTModal .myttmodal-loading-indicator .fa-refresh {
   cursor: pointer;
 }
 
+/* NEW PLANUNG MODAL */
+#newPlanungModal .form-control:valid{
+  background-image: none !important;
+}
 /* OVERLAY ICON */
 
 .overlay-icon {

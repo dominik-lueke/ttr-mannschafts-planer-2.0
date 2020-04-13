@@ -76,6 +76,11 @@ class HeaderView {
     $('#planung-serie').text(planung.halbserie + " " + planung.saison);
     $('#planung-spielklasse').text(planung.spielklasse);
     this._updateMyTTStatusIcons()
+    // Display New Planungs Modal if verein is empty
+    if(this.planung.verein === "") {
+      $('#new-planung-modal').modal('show')
+      
+    }
   }
 
   _updateMyTTStatusIcons() {

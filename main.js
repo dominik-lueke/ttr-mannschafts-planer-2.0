@@ -68,6 +68,11 @@ function createWindow () {
         },
         {type:'separator'},
         {
+          label:'Schließen',
+          click() { closeFile() }
+        }
+        ,{type:'separator'},
+        {
           label:'Beenden',
           role: 'quit'
         }
@@ -121,4 +126,8 @@ app.on('activate', function () {
 
 function newFile() {
   let response = mainWindow.webContents.send('newFile','Create a new File')
+}
+
+function closeFile() {
+  let response = mainWindow.webContents.send('closeFile','Close the current File')
 }

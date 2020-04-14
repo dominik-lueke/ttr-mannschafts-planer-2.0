@@ -1,12 +1,14 @@
 class PlanungsModel {
 
-  constructor(verein="", verband="", vereinsNummer="", saison="", halbserie="", spielklasse="") {
+  constructor(verein="", verband="", vereinsNummer=0, saison="", halbserie="", spielklasse="") {
+    this.isNew = true
     this.verein = verein
     this.verband = verband
     this.vereinsNummer = vereinsNummer
     this.saison = saison
     this.halbserie = halbserie
     this.spielklasse = spielklasse
+    this.isEmpty = this._isEmpty()
     this.url = {
       verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue"),
       saison: this._getPreviousSaison().replace("/","-").substring(2),
@@ -388,6 +390,8 @@ class PlanungsModel {
     if (qttr_values_changed && ! update_aufstellung) {
       this.spieler.validate()
     }
+    this.isEmpty = this._isEmpty()
+    this.isNew = this.isEmpty
     this._commit()
     return this
   }
@@ -417,11 +421,20 @@ class PlanungsModel {
    _commit() {
     this._updateUrlStrings()
     // trigger view update
-    this.onMannschaftenChanged(this.mannschaften.liste, this.spieler.liste)
+    this.onMannschaftenChanged(this)
     this.onHeaderDataChanged(this)
     // store this object
     localStorage.setItem("localStoragePlanung", JSON.stringify(this))
    }
+  
+  _isEmpty() {
+    return (  this.verein === "" &&
+              this.verband === "" &&
+              this.vereinsNummer === 0 &&
+              this.saison === "" &&
+              this.halbserie === "" &&
+              this.spielklasse === "")
+  }
 
   _updateUrlStrings() {
     this.url = {

@@ -18,3 +18,7 @@ ipc.on('newFile', (event, args) => {
     app.createNewPlanung()
    }
 )
+
+ipc.on('closeFile', (event, args) => {
+    app.closePlanung()
+})

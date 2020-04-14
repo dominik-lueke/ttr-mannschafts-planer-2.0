@@ -3,16 +3,34 @@ class EditorView {
     $('#editor').append(`
       <div class="container editor-container">
         <div class="row">
-          <div class="col-8">
+          <div id="editor-col" class="col-8" >
             <div id="mannschafts-container" class="container">
             </div>
             <div class="container">
               <div class="row mannschafts-row">
+                <div class="empty-planung-message text-center mannschaft mb-3 display-none">
+                  <h6 class="mb-3">Es existieren noch keine Mannschaften oder Spieler</h6>
+                  <h6 class="mb-3">Lege manuell welche an</h6>
+                </div>
                 <div class="card mannschaft">
                   <button id="add-mannschaft-button" class="btn btn-light text-muted">
                     <i class="fa fa-plus"></i>
                     Mannschaft hinzufügen
                   </button>
+                </div>
+                <div class="empty-planung-message text-center mannschaft mt-3 display-none">
+                  <h6 class="mb-3">oder</h6>
+                  <h6 class="link text-success" id="lade-aufstellung-link" data-toggle="modal" data-target="#planung-reload-data-modal">lade eine Aufstellung von myTischtennis.de</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="neue-planung-col" class="col-12 display-none">
+            <div class="container">
+              <div class="row mannschafts-row">
+                <div id="neue-planung-button" class="text-center card mannschaft pt-4 pb-4 link">
+                  <h1><i class="fa fa-file-o" /></h1>
+                  <h6>Neue Planung starten</h6>
                 </div>
               </div>
             </div>
@@ -20,13 +38,37 @@ class EditorView {
         </div>
       </div>
     `)
+    this.editor_col = $('#editor-col')
+    this.neue_planung_col = $('#neue-planung-col')
     this.mannschaftsContainer = $('#mannschafts-container')
     this.add_mannschaft_button = $('#add-mannschaft-button')
+    this.empty_planung_message = $('.empty-planung-message')
+    this.lade_aufstellung_link = $('#lade-aufstellung-link')
+    this.neue_planung_button = $('#neue-planung-button')
     this.mannschaftViews = []
     this.reorderSpielerHandler = {}
   }
 
-  displayMannschaften(mannschaften, spieler) {
+  displayMannschaften(planung) {
+    // Display neue planung 
+    if (planung.isNew) {
+      this.editor_col.addClass("display-none")
+      this.neue_planung_col.removeClass("display-none")
+    } else {
+      this.editor_col.removeClass("display-none")
+      this.neue_planung_col.addClass("display-none")
+    }
+    // mannschaften und spieler
+    const mannschaften = planung.mannschaften.liste
+    const spieler = planung.spieler.liste
+
+    // Display empty message
+    if (mannschaften.length === 0){
+      this.empty_planung_message.removeClass("display-none")
+    } else {
+      this.empty_planung_message.addClass("display-none")
+    }
+
     // Delete all nodes execpt the "Mannschaft hinzufügen" button
     this.mannschaftViews.forEach( mannschaft => { mannschaft.delete() })
     this.mannschaftViews = []
@@ -66,6 +108,17 @@ class EditorView {
 
     // activate tooltips
     $('[data-toggle="tooltip"]').tooltip();
+  }
+
+  /* PLANUNG */
+  bindClickOnNeuePlanungButton(handler) {
+    this.neue_planung_button.click( (event) => { handler() } )
+  }
+
+  /* LADE AUFSTELLUNG LINK */
+
+  bindClickOnLadeAufstellungLink(handler) {
+    this.lade_aufstellung_link.click( (event) => { handler() } )
   }
 
   /* MANNSCHAFT BINDINGS */

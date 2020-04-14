@@ -12,21 +12,23 @@ class HeaderView {
           <h6 id="planung-spielklasse"></h6>
         </div>
         <div class="p-2 flex-fill">
-          <h4 class="text-muted">
-            <i class="fa fa-cloud-download" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Aktualisiere Daten<br/>von myTischtennis.de"></i>
-          </h4>
-          <div class="d-flex justify-content-center">
-            <div id="header-aufstellung-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="" class="mr-2">
-              <span class="badge badge-dark p-1 text-muted link" data-toggle="modal" data-target="#planung-reload-data-modal" >CLICK-TT</span>
-              <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
-            </div>
-            <div id="header-ttrwerte-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="" class="mr-2">
-              <span class="badge badge-dark p-1 text-muted link" data-toggle="modal" data-target="#planung-reload-data-modal">TTR</span>
-              <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
-            </div>
-            <div id="header-bilanzen-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="">
-              <span class="badge badge-dark p-1 text-muted link" data-toggle="modal" data-target="#planung-reload-data-modal">11:9</span>
-              <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
+          <div id="header-mytt-status-div">
+            <h4 class="text-muted">
+              <i class="fa fa-cloud-download" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Aktualisiere Daten<br/>von myTischtennis.de"></i>
+            </h4>
+            <div class="d-flex justify-content-center">
+              <div id="header-aufstellung-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="" class="mr-2">
+                <span class="badge badge-dark p-1 text-muted link" data-toggle="modal" data-target="#planung-reload-data-modal" >CLICK-TT</span>
+                <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
+              </div>
+              <div id="header-ttrwerte-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="" class="mr-2">
+                <span class="badge badge-dark p-1 text-muted link" data-toggle="modal" data-target="#planung-reload-data-modal">TTR</span>
+                <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
+              </div>
+              <div id="header-bilanzen-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="">
+                <span class="badge badge-dark p-1 text-muted link" data-toggle="modal" data-target="#planung-reload-data-modal">11:9</span>
+                <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
+              </div>
             </div>
           </div>
         </div>
@@ -35,6 +37,7 @@ class HeaderView {
     this.planung = {}
     this.mytt_aufstellung_url = ""
     this.mytt_status = {
+      div: $("#header-mytt-status-div"),
       aufstellung: {
         div: $("#header-aufstellung-status-icon"),
         badge: $("#header-aufstellung-status-icon .badge"),
@@ -77,13 +80,23 @@ class HeaderView {
     $('#planung-spielklasse').text(planung.spielklasse);
     this._updateMyTTStatusIcons()
     // Display New Planungs Modal if verein is empty
-    if(this.planung.verein === "") {
-      $('#new-planung-modal').modal('show')
-      
+    if(this.planung.isEmpty) {
+      $('#planung-serie').text("Tischtennis Mannschafts Planer")
+    }
+    if(this.planung.isNew) {
+      this.mytt_status.div.addClass("display-none")
+    } else {
+      this.mytt_status.div.removeClass("display-none")
     }
   }
 
   _updateMyTTStatusIcons() {
+    if ( this.planung.isEmpty ){
+      this.mytt_status.div.addClass("display-none")
+    } else {
+      this.mytt_status.div.removeClass("display-none")
+    }
+    
     switch (this.planung.aufstellung.status) {
       case "offline":
         this.mytt_status.aufstellung.badge.addClass("text-muted")

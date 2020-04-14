@@ -22,6 +22,8 @@ class Controller {
 
     // Bind View Handlers
     this.editorView.bindAddMannschaft(this.handleAddMannschaft)
+    this.editorView.bindClickOnLadeAufstellungLink(this.handleClickOnLadeAufstellungLink)
+    this.editorView.bindClickOnNeuePlanungButton(this.createNewPlanung)
     this.headerView.bindClickOnReloadDataButon(this.handleClickOnReloadDataButton)
     // MYTTMODAL VIEW
     this.myTTModalView.bindHtmlParser("aufstellung", this.parseAufstellungHtml)
@@ -56,13 +58,24 @@ class Controller {
 
   /* PLANUNG */
   createNewPlanung = () => {
-    // New model
+    // close current planung
+    this.closePlanung()
+    // Show Planungs Modal
+    this.newPlanungModalView.displayPlanungModal()
+  }
+
+  closePlanung = () => {
+    // New planung
     this.model.createNewPlanung()
     this.planung = this.model.planung
     // Bind Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
     this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
+    // reset and hide Planungs Modal
+    this.newPlanungModalView.destroyPlanungModal()
+    this.newPlanungModalView = new NewPlanungModalView()
+    this.newPlanungModalView.bindClickSubmitPlanungButton(this.handleClickSubmitPlanungButton)
     // Initial Display
     this.updateView()
   }
@@ -74,7 +87,7 @@ class Controller {
   /* UPDATE */
   updateView = () => {
     this.onHeaderDataChanged(this.planung)
-    this.onMannschaftenChanged(this.planung.mannschaften.liste, this.planung.spieler.liste)
+    this.onMannschaftenChanged(this.planung)
   }
 
   onHeaderDataChanged = () => {
@@ -84,8 +97,8 @@ class Controller {
     this.myTTModalView.setHomeUrl("bilanzen", this.planung.bilanzen.url)
   }
 
-  onMannschaftenChanged = (mannschaften,spieler) => {
-    this.editorView.displayMannschaften(mannschaften,spieler)
+  onMannschaftenChanged = (planung) => {
+    this.editorView.displayMannschaften(planung)
     this.editorView.bindClickOnMannschaft(this.handleClickOnMannschaft)
     this.editorView.bindAddSpieler(this.handleAddSpieler)
     this.editorView.bindClickOnSpieler(this.handleClickOnSpieler)
@@ -159,6 +172,10 @@ class Controller {
   }
 
   /* EDITOR HANDLER */
+
+  handleClickOnLadeAufstellungLink = () => {
+    this.myTTModalView.loadUrl('aufstellung', this.planung.aufstellung.url)
+  }
 
   handleAddMannschaft = (nummer) => {
     this.model.addMannschaft(nummer)

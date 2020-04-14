@@ -369,6 +369,11 @@ class PlanungsModel {
         /* Set other planungs properties */ 
         } else {
           this[key] = planung_json[key]
+          // set spielklasse also for mannschaften and spieler
+          if (key == "spielklasse") {
+            this.spieler.spielklasse = planung_json.spielklasse
+            this.mannschaften.spielklasse = planung_json.spielklasse
+          }
         }
       }
     }

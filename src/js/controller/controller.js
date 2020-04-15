@@ -80,8 +80,20 @@ class Controller {
     this.updateView()
   }
 
+  getPlanungAsJsonString = () => {
+    return JSON.stringify(this.planung)
+  }
+
   handleClickSubmitPlanungButton = (planung_json) => {
     this.model.updatePlanung(planung_json)
+  }
+
+  setPlanungFile = (filepath) => {
+    this.planung.setFile(filepath)
+  }
+
+  setDocumentTitle(title){
+    $(document).attr("title", title);
   }
 
   /* UPDATE */
@@ -95,6 +107,7 @@ class Controller {
     this.myTTModalView.setHomeUrl("aufstellung", this.planung.aufstellung.url)
     this.myTTModalView.setHomeUrl("ttrwerte", this.planung.ttrwerte.url)
     this.myTTModalView.setHomeUrl("bilanzen", this.planung.bilanzen.url)
+    this.setDocumentTitle(`Tischtennis Mannschafts Planer   -   ${this.planung.filename}`)
   }
 
   onMannschaftenChanged = (planung) => {

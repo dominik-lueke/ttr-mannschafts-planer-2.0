@@ -1,14 +1,19 @@
 class PlanungsModel {
 
   constructor(verein="", verband="", vereinsNummer=0, saison="", halbserie="", spielklasse="") {
+    // FILE
+    this.file = ""
+    this.filename = ""
+    // METADATA
     this.isNew = true
+    this.isEmpty = this._isEmpty()
+    // HEADER DATA
     this.verein = verein
     this.verband = verband
     this.vereinsNummer = vereinsNummer
     this.saison = saison
     this.halbserie = halbserie
     this.spielklasse = spielklasse
-    this.isEmpty = this._isEmpty()
     this.url = {
       verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue"),
       saison: this._getPreviousSaison().replace("/","-").substring(2),
@@ -31,8 +36,9 @@ class PlanungsModel {
       status: "offline",
       saisons: []
     }
-
+    // MANNSCHAFTEN LISTE
     this.mannschaften = new MannschaftsListeModel(this.spielklasse)
+    // SPIELER LISTE
     this.spieler = new SpielerListeModel(this.spielklasse)
 
     this.onMannschaftenChanged = () => {}
@@ -49,6 +55,15 @@ class PlanungsModel {
 
   bindHeaderDataChanged(callback) {
     this.onHeaderDataChanged = callback
+  }
+
+  /**
+   * FILE
+   */
+  setFile(filepath){
+    this.file = filepath
+    this.filename = path.parse(filepath).base
+    this._commit()
   }
 
   /**

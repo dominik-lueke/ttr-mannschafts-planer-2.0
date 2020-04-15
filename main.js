@@ -52,8 +52,7 @@ function createWindow () {
         {
           label:'Speichern',
           accelerator: 'CmdOrCtrl+S',
-          click: function(item, focusedWindow) {
-          }
+          click() { saveFile() }
         },
         {
           label:'Speichern unter...',
@@ -63,8 +62,7 @@ function createWindow () {
             else
               return 'Ctrl+Shift+S';
           })(),
-          click: function(item, focusedWindow) {
-          }
+          click() { saveFileAs() }
         },
         {type:'separator'},
         {
@@ -130,4 +128,12 @@ function newFile() {
 
 function closeFile() {
   let response = mainWindow.webContents.send('closeFile','Close the current File')
+}
+
+function saveFile() {
+  let response = mainWindow.webContents.send('saveFile','Save the current File')
+}
+
+function saveFileAs() {
+  let response = mainWindow.webContents.send('saveFileAs','Save the current File')
 }

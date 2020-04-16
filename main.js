@@ -1,6 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, Menu} = require('electron')
-const ipc = require('electron').ipcMain;
+const {app, BrowserWindow, Menu, ipcMain} = require('electron')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -45,8 +44,7 @@ function createWindow () {
         {
           label:'Öffnen',
           accelerator: 'CmdOrCtrl+O',
-          click: function(item, focusedWindow) {
-          }
+          click() { openFile() }
         },
         {type:'separator'},
         {
@@ -119,6 +117,10 @@ app.on('activate', function () {
   if (mainWindow === null) createWindow()
 })
 
+ipcMain.on('openFile', (event, args) => {
+  openFile()
+})
+
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
@@ -136,4 +138,8 @@ function saveFile() {
 
 function saveFileAs() {
   let response = mainWindow.webContents.send('saveFileAs','Save the current File')
+}
+
+function openFile() {
+  let response = mainWindow.webContents.send('openFile','Open a File')
 }

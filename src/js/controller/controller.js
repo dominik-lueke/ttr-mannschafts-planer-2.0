@@ -24,6 +24,7 @@ class Controller {
     this.editorView.bindAddMannschaft(this.handleAddMannschaft)
     this.editorView.bindClickOnLadeAufstellungLink(this.handleClickOnLadeAufstellungLink)
     this.editorView.bindClickOnNeuePlanungButton(this.createNewPlanung)
+    this.editorView.bindClickOnOeffnePlanungButton(this.openPlanung)
     this.headerView.bindClickOnReloadDataButon(this.handleClickOnReloadDataButton)
     // MYTTMODAL VIEW
     this.myTTModalView.bindHtmlParser("aufstellung", this.parseAufstellungHtml)
@@ -80,34 +81,48 @@ class Controller {
     this.updateView()
   }
 
+  openPlanung = () => {
+    ipcRenderer.send('openFile', 'Open a File')
+  }
+
   getPlanungAsJsonString = () => {
     return JSON.stringify(this.planung)
   }
 
+  loadPlanungFromJsonString = (planung_json_string) => {
+    this.closePlanung()
+    this.model.updatePlanung(JSON.parse(planung_json_string), true)
+  }
+
   handleClickSubmitPlanungButton = (planung_json) => {
-    this.model.updatePlanung(planung_json)
+    this.model.updatePlanung(planung_json, false)
   }
 
   setPlanungFile = (filepath) => {
     this.planung.setFile(filepath)
   }
 
-  setDocumentTitle(title){
-    $(document).attr("title", title);
+  setDocumentTitle = (title) => {
+    title = title === " - " ? " - Unbenannt" : title
+    $(document).attr("title", `Tischtennis Mannschafts Planer${title}`);
   }
 
   /* UPDATE */
   updateView = () => {
+    this.setDocumentTitle("")
     this.onHeaderDataChanged(this.planung)
     this.onMannschaftenChanged(this.planung)
   }
 
-  onHeaderDataChanged = () => {
-    this.headerView.updateHeader(this.planung)
-    this.myTTModalView.setHomeUrl("aufstellung", this.planung.aufstellung.url)
-    this.myTTModalView.setHomeUrl("ttrwerte", this.planung.ttrwerte.url)
-    this.myTTModalView.setHomeUrl("bilanzen", this.planung.bilanzen.url)
-    this.setDocumentTitle(`Tischtennis Mannschafts Planer   -   ${this.planung.filename}`)
+  onHeaderDataChanged = (planung) => {
+    this.headerView.updateHeader(planung)
+    this.myTTModalView.setHomeUrl("aufstellung", planung.aufstellung.url)
+    this.myTTModalView.setHomeUrl("ttrwerte", planung.ttrwerte.url)
+    this.myTTModalView.setHomeUrl("bilanzen", planung.bilanzen.url)
+    if ( ! planung.isNew ) {
+      var title = planung.saved ? planung.filename : `${planung.filename}*`
+      this.setDocumentTitle(` - ${title}`)
+    }
   }
 
   onMannschaftenChanged = (planung) => {

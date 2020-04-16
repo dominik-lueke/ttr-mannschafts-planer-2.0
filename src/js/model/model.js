@@ -26,8 +26,8 @@ class Model {
     localStorage.setItem("localStoragePlanung", JSON.stringify(this.planung))
   }
 
-  updatePlanung(planung_json){
-    this.planung.loadFromJSON(planung_json)
+  updatePlanung(planung_json, update_aufstellung){
+    this.planung.loadFromJSON(planung_json, update_aufstellung)
   }
 
   /**

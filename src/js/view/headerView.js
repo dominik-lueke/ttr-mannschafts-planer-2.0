@@ -79,11 +79,8 @@ class HeaderView {
     $('#planung-serie').text(planung.halbserie + " " + planung.saison);
     $('#planung-spielklasse').text(planung.spielklasse);
     this._updateMyTTStatusIcons()
-    // Display New Planungs Modal if verein is empty
-    if(this.planung.isEmpty) {
-      $('#planung-serie').text("Tischtennis Mannschafts Planer")
-    }
     if(this.planung.isNew) {
+      $('#planung-serie').text("Tischtennis Mannschafts Planer")
       this.mytt_status.div.addClass("display-none")
     } else {
       this.mytt_status.div.removeClass("display-none")

@@ -30,7 +30,13 @@ class EditorView {
               <div class="row mannschafts-row">
                 <div id="neue-planung-button" class="text-center card mannschaft pt-4 pb-4 link">
                   <h1><i class="fa fa-file-o" /></h1>
-                  <h6>Neue Planung starten</h6>
+                  <h6>Neue Saisonplanung starten</h6>
+                </div>
+              </div>
+              <div class="row mannschafts-row">
+                <div id="oeffne-planung-button" class="text-center card mannschaft pt-4 pb-4 link">
+                  <h1><i class="fa fa-folder-open-o" /></h1>
+                  <h6>Saisonplanung öffnen</h6>
                 </div>
               </div>
             </div>
@@ -45,6 +51,7 @@ class EditorView {
     this.empty_planung_message = $('.empty-planung-message')
     this.lade_aufstellung_link = $('#lade-aufstellung-link')
     this.neue_planung_button = $('#neue-planung-button')
+    this.oeffne_planung_button = $('#oeffne-planung-button')
     this.mannschaftViews = []
     this.reorderSpielerHandler = {}
   }
@@ -113,6 +120,10 @@ class EditorView {
   /* PLANUNG */
   bindClickOnNeuePlanungButton(handler) {
     this.neue_planung_button.click( (event) => { handler() } )
+  }
+
+  bindClickOnOeffnePlanungButton(handler) {
+    this.oeffne_planung_button.click( (event) => { handler() } )
   }
 
   /* LADE AUFSTELLUNG LINK */

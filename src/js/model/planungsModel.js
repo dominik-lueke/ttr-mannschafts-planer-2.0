@@ -4,9 +4,7 @@ class PlanungsModel {
     // FILE
     this.file = ""
     this.filename = ""
-    // METADATA
-    this.isNew = true
-    this.isEmpty = this._isEmpty()
+    this.saved = ""
     // HEADER DATA
     this.verein = verein
     this.verband = verband
@@ -36,6 +34,9 @@ class PlanungsModel {
       status: "offline",
       saisons: []
     }
+    // METADATA
+    this.isEmpty = this._isEmpty()
+    this.isNew = true
     // MANNSCHAFTEN LISTE
     this.mannschaften = new MannschaftsListeModel(this.spielklasse)
     // SPIELER LISTE
@@ -63,7 +64,9 @@ class PlanungsModel {
   setFile(filepath){
     this.file = filepath
     this.filename = path.parse(filepath).base
-    this._commit()
+    this.saved = true
+    // trigger view update
+    this.onHeaderDataChanged(this)
   }
 
   /**
@@ -439,6 +442,7 @@ class PlanungsModel {
    */
 
    _commit() {
+    this.saved = false
     this._updateUrlStrings()
     // trigger view update
     this.onMannschaftenChanged(this)

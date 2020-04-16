@@ -4,7 +4,7 @@ class PlanungsModel {
     // FILE
     this.file = ""
     this.filename = ""
-    this.saved = ""
+    this.saved = true
     // HEADER DATA
     this.verein = verein
     this.verband = verband
@@ -65,8 +65,12 @@ class PlanungsModel {
     this.file = filepath
     this.filename = path.parse(filepath).base
     this.saved = true
-    // trigger view update
-    this.onHeaderDataChanged(this)
+    this._commit(this.saved)
+  }
+
+  setSaved(saved){
+    this.saved = saved
+    this._commit(this.saved)
   }
 
   /**
@@ -441,8 +445,8 @@ class PlanungsModel {
    *  Private
    */
 
-   _commit() {
-    this.saved = false
+   _commit(saved=false) {
+    this.saved = saved
     this._updateUrlStrings()
     // trigger view update
     this.onMannschaftenChanged(this)

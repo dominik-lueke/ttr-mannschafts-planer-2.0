@@ -59,10 +59,42 @@ class Controller {
 
   /* PLANUNG */
   createNewPlanung = () => {
-    // close current planung
-    this.closePlanung()
-    // Show Planungs Modal
-    this.newPlanungModalView.displayPlanungModal()
+    // close current planung save
+    this.closePlanungSave().then((result) => {
+      if (result) {
+        // Show Planungs Modal
+        this.newPlanungModalView.displayPlanungModal()
+      }
+    })
+  }
+
+  closePlanungSave = () => {
+    if ( ! this.planung.saved ) {
+      // show confirm dialog if current planung is unsafed
+      let confirmclosedialogresult = confirmClosePlanungDialog()
+      switch (confirmclosedialogresult) {
+        case 0 : // Speichern
+          return new Promise((resolve, reject) => {
+            ipcRenderer.invoke('saveFile', 'Save a File').then((result) => {
+              this.closePlanung()
+              resolve(true)
+            })
+          })
+        case 1 : // Schließen
+          return new Promise((resolve, reject) => {
+            this.closePlanung()
+            resolve(true)
+          })
+        case 2 : // Abbrechen
+        return new Promise((resolve, reject) => {
+          resolve(false)
+        })
+      }
+    }
+    return new Promise((resolve, reject) => {
+      this.closePlanung()
+      resolve(true)
+    })
   }
 
   closePlanung = () => {
@@ -82,15 +114,14 @@ class Controller {
   }
 
   openPlanung = () => {
-    ipcRenderer.send('openFile', 'Open a File')
+    ipcRenderer.invoke('openFile', 'Open a File')
   }
 
   getPlanungAsJsonString = () => {
     return JSON.stringify(this.planung)
   }
 
-  loadPlanungFromJsonString = (planung_json_string) => {
-    this.closePlanung()
+  openPlanungFromJsonString = (planung_json_string) => {
     this.model.updatePlanung(JSON.parse(planung_json_string), true)
   }
 

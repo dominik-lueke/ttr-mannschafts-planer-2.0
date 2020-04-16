@@ -25,39 +25,46 @@ ipcRenderer.on('newFile', (event, args) => {
 })
 
 ipcRenderer.on('closeFile', (event, args) => {
-  app.closePlanung()
+  app.closePlanungSave()
 })
 
 ipcRenderer.on('saveFile', (event, args) => {
-  const planung_json_str = app.getPlanungAsJsonString()
-  const planung_json = JSON.parse(planung_json_str)
+  const planung_json = JSON.parse(app.getPlanungAsJsonString())
+  // set saved to true in the planung in the file
+  planung_json.saved = true
+  const planung_json_save_str = JSON.stringify(planung_json)
   if (planung_json.file === "") {
     var filepath = saveAsDialog(planung_json)
     if ( filepath ) {
-      writePlanungToFile(filepath, planung_json_str)
+      writePlanungToFile(filepath, planung_json_save_str)
       app.setPlanungFile(filepath)
     }
   } else {
-    writePlanungToFile(planung_json.file, planung_json_str)
+    writePlanungToFile(planung_json.file, planung_json_save_str)
     app.setPlanungFile(planung_json.file)
   }
 })
 
 ipcRenderer.on('saveFileAs', (event, args) => {
-  const planung_json_str = app.getPlanungAsJsonString()
-  const planung_json = JSON.parse(planung_json_str)
+  const planung_json = JSON.parse(app.getPlanungAsJsonString())
+  planung_json.saved = true
+  const planung_json_save_str = JSON.stringify(planung_json)
   var filepath = saveAsDialog(planung_json)
   if ( filepath ) {
-    writePlanungToFile(filepath, planung_json_str)
+    writePlanungToFile(filepath, planung_json_save_str)
     app.setPlanungFile(filepath)
   }
 })
 
 ipcRenderer.on('openFile', (event, args) => {
-  var filepath = openDialog()
-  if ( filepath && filepath.length == 1 ) {
-    openPlanungFromFile(filepath[0])
-  }
+  app.closePlanungSave().then((result) => {
+    if ( result ) {
+      var filepath = openDialog()
+      if ( filepath && filepath.length == 1 ) {
+        openPlanungFromFile(filepath[0])
+      }
+    }
+  })
 })
 
 /**
@@ -96,6 +103,19 @@ openDialog = () => {
   return dialog.showOpenDialogSync(window, options)
 }
 
+confirmClosePlanungDialog = () => {
+  const dialog = remote.dialog
+  const window = remote.getCurrentWindow();
+  let options = {
+    type: "info",
+    title: "Ungespeicherte Änderungen",
+    message: "Die aktuelle Saisonplanung enthält ungespeicherte Änderungen.",
+    buttons: ["Speichern", "Trotzdem schließen", "Abbrechen"],
+    cancelId: 2,
+  }
+  return dialog.showMessageBoxSync(window, options)
+}
+
 /**
  * FILE HANDLING
  */
@@ -114,7 +134,11 @@ openPlanungFromFile = (filepath) => {
         alert("An error ocurred reading the file :" + err.message);
         return;
     }
-    app.loadPlanungFromJsonString(planung_json_str)
-    app.setPlanungFile(filepath)
+    app.closePlanungSave().then((result) => {
+      if (result) {
+        app.openPlanungFromJsonString(planung_json_str)
+        app.setPlanungFile(filepath)
+      }
+    })
   });
 }

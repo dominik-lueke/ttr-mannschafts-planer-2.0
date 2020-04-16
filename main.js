@@ -108,6 +108,7 @@ app.on('ready', createWindow)
 app.on('window-all-closed', function () {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
+  closeFile()
   if (process.platform !== 'darwin') app.quit()
 })
 
@@ -117,13 +118,12 @@ app.on('activate', function () {
   if (mainWindow === null) createWindow()
 })
 
-ipcMain.on('openFile', (event, args) => {
-  openFile()
-})
-
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
+/**
+ * FUNCTIONS
+ */
 function newFile() {
   let response = mainWindow.webContents.send('newFile','Create a new File')
 }
@@ -143,3 +143,16 @@ function saveFileAs() {
 function openFile() {
   let response = mainWindow.webContents.send('openFile','Open a File')
 }
+
+/**
+ * IPC EVENTS
+ */
+ipcMain.handle('saveFile', (event, args) => {
+  saveFile()
+  return true
+})
+
+ipcMain.handle('openFile', (event, args) => {
+  openFile()
+  return true
+})

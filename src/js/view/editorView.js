@@ -4,7 +4,7 @@ class EditorView {
       <div class="container editor-container">
         <div class="row">
           <div id="editor-col" class="col-8" >
-            <div id="mannschafts-container" class="container">
+            <div id="mannschafts-container" class="container connected-sortable-mannschaft">
             </div>
             <div class="container">
               <div class="row mannschafts-row">
@@ -54,6 +54,7 @@ class EditorView {
     this.oeffne_planung_button = $('#oeffne-planung-button')
     this.mannschaftViews = []
     this.reorderSpielerHandler = {}
+    this.reorderMannschaftHandler = {}
   }
 
   displayMannschaften(planung) {
@@ -88,8 +89,8 @@ class EditorView {
     })
 
     // Activate sorting
-    $(".connectedSortable").sortable({
-      connectWith: ".connectedSortable",
+    $(".connected-sortable-spieler").sortable({
+      connectWith: ".connected-sortable-spieler",
       update: (event, ui) => {
         // handle reordering
         const old_position_array = $("#" + ui.item.attr("id") + "-position").text().split(".") // MANNSCHAFT.POSITION
@@ -106,6 +107,26 @@ class EditorView {
         // deactivate tooltips
         $(`#${ui.item.attr("id")}-invalid-icon`).tooltip("dispose")
         $(`#${ui.item.attr("id")} .ttr-wert`).tooltip("dispose")
+      },
+      stop: (event, ui) => {
+        // activate tooltips again
+        $('[data-toggle="tooltip"]').tooltip();
+      }
+    }).disableSelection();
+
+    $(".connected-sortable-mannschaft").sortable({
+      connectWith: ".connected-sortable-mannschaft",
+      update: (event, ui) => {
+        // handle reordering
+        const old_mannschaft = parseInt(ui.item.children('.mannschaft').attr("id").split("-")[2],10)// mannschaft-SPIELKLASSE->NUMMER<-spielerliste
+        const new_mannschaft = ui.item.index() + 1
+        if ( old_mannschaft != new_mannschaft ) {
+          this.reorderMannschaftHandler(old_mannschaft, new_mannschaft)
+        }
+      },
+      start: (event, ui) => {
+        // deactivate tooltips
+        $(`#${ui.item.attr("id")}-invalid-icon`).tooltip("dispose")
       },
       stop: (event, ui) => {
         // activate tooltips again
@@ -158,6 +179,10 @@ class EditorView {
 
   bindReorderSpieler(handler) {
     this.reorderSpielerHandler = handler
+  }
+
+  bindReorderMannschaft(handler) {
+    this.reorderMannschaftHandler = handler
   }
 
   /* FOCUS WITH OPEN OR CLOSED SIDEBAR */

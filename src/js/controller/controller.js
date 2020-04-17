@@ -159,6 +159,7 @@ class Controller {
     this.editorView.bindClickOnSpieler(this.handleClickOnSpieler)
     this.editorView.bindToggleSpvOnSpieler(this.handleToggleSpvOnSpieler)
     this.editorView.bindReorderSpieler(this.handleReorderSpieler)
+    this.editorView.bindReorderMannschaft(this.handleReorderMannschaft)
     this.onSidebarViewChanged()
   }
 
@@ -252,6 +253,10 @@ class Controller {
 
   handleReorderSpieler = (id, new_mannschaft, new_position) => {
     this.planung.reorderSpieler(id, new_mannschaft, new_position)
+  }
+
+  handleReorderMannschaft = (mannschaft, new_mannschaft) => {
+    this.planung.reorderMannschaft(mannschaft, new_mannschaft)
   }
 
   handleClickOnSpieler = (id) => {

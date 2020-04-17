@@ -33,7 +33,7 @@ class MannschaftView {
     this.mannschafts_header = mannschafts_div.find(".mannschaft-header")
 
     // Add all Spieler to the Mannschaft
-    this.spielerListeContainer = $(`<ul id="mannschaft-${id}-spielerliste" class="list-group list-group-flush connectedSortable spielerliste"></ul>`)
+    this.spielerListeContainer = $(`<ul id="mannschaft-${id}-spielerliste" class="list-group list-group-flush connected-sortable-spieler spielerliste"></ul>`)
     mannschafts_div.append(this.spielerListeContainer)
     this.spielerViews = []
     mannschaftsspieler.forEach( spieler => {

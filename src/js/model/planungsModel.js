@@ -224,6 +224,26 @@ class PlanungsModel {
     this._commit()
   }
 
+  reorderMannschaft(mannschaft_nummer, new_mannschaft_nummer) {
+    // reorder mannschaften
+    this.mannschaften.reorderMannschaftByNummer(mannschaft_nummer, new_mannschaft_nummer)
+    // set new mannschaften for spieler
+    const temp_number = -1
+    this.spieler.reorderMannschaft(mannschaft_nummer,temp_number)
+    if ( mannschaft_nummer < new_mannschaft_nummer ) {
+      for (var i=mannschaft_nummer+1; i<=new_mannschaft_nummer; i++) {
+        this.spieler.reorderMannschaft(i,i-1)
+      }
+    } else {
+      for (var i=mannschaft_nummer-1; i>=new_mannschaft_nummer; i--) {
+        this.spieler.reorderMannschaft(i,i+1)
+      }
+    }
+    this.spieler.reorderMannschaft(temp_number,new_mannschaft_nummer)
+    // commit
+    this._commit()
+  }
+
   editSpielerSpv(id, spv) {
     this.spieler.editSpielerSpv(id, spv)
     // commit

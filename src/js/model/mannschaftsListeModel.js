@@ -17,9 +17,7 @@ class MannschaftsListeModel {
 
   deleteMannschaft(id) {
     this.liste = this.liste.filter(mannschaft => ( mannschaft.id !== id ))
-    // set new nummern for all mannschaften
-    var i = 1
-    this.liste.forEach(mannschaft => { mannschaft.setNummer(i); i++ })
+    this._setNumbersForAllMannschaften()
   }
 
   deleteMannschaftByNummer(nummer) {
@@ -27,6 +25,18 @@ class MannschaftsListeModel {
     if (mannschaft != null){
       this.deleteMannschaft(mannschaft.id)
     }
+  }
+
+  reorderMannschaftByNummer(nummer, new_nummer){
+    // insert old mannschaft at new position
+    this.liste.splice(new_nummer-1, 0, this.liste.splice(nummer-1, 1)[0]);
+    this._setNumbersForAllMannschaften()
+  }
+
+  _setNumbersForAllMannschaften(){
+    // set new nummern for all mannschaften
+    var i = 1
+    this.liste.forEach(mannschaft => { mannschaft.setNummer(i); i++ })
   }
 
   /* EDIT */

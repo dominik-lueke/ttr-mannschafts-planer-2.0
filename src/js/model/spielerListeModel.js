@@ -29,6 +29,19 @@ class SpielerListeModel {
     this._insertSpielerInMannschaft(spieler, new_mannschaft, new_position)
   }
 
+  reorderMannschaft(old_mannschaft, new_mannschaft) {
+    // reorder
+    this.liste
+      .filter(spieler => ( spieler.mannschaft == old_mannschaft ))
+      .forEach(spieler => {
+        spieler.mannschaft = new_mannschaft
+      })
+    // sort liste
+    this._sortSpielerListe()
+    // validate all spieler
+    this.validate()
+  }
+
   editSpielerSpv(id, spv) {
     const spieler = this.liste.find(spieler => spieler.id == id)
     // set the primary Spv for this spieler and the secondary for all with higher positionen in the same mannschaft

@@ -16,7 +16,7 @@ class PlanungsModel {
       verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue"),
       saison: this._getPreviousSaison().replace("/","-").substring(2),
       halbserie: this._getOtherHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
-      spielklasse: this.spielklasse.substring(0,1) // Only works for Herren H and Damen D
+      spielklasse: this._getSpielklassenUrlString(this.spielklasse)
     }
     this.aufstellung = {
       url: this._getAufstellungsUrl(),
@@ -488,5 +488,22 @@ class PlanungsModel {
     return `https://www.mytischtennis.de/clicktt/${this.verband}/${this.url.saison}/verein/${this.vereinsNummer}/${this.url.verein}/bilanzen/${this.url.halbserie}/`
   }
 
-
+  _getSpielklassenUrlString(spielklasse) {
+    var valid_spielklassen_map = {
+      "Herren": "H",
+      "Damen": "D",
+      "Jungen 18": "J18",
+      "Jungen 15": "J15",
+      "Jungen 13": "J13",
+      "Jungen 11": "J11",
+      "Mädchen 18": "M18",
+      "Mädchen 15": "M15",
+      "Mädchen 13": "M13",
+      "Mädchen 11": "M11",
+    }
+    if ( valid_spielklassen_map.hasOwnProperty(spielklasse) ) {
+      return valid_spielklassen_map[spielklasse]
+    }
+    return ""
+  }
 }

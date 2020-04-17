@@ -42,7 +42,7 @@ class MyTTParser {
    * @param {*} url 
    * @param {*} planung 
    */
-  parseMyTTAufstellungsUrl(url, planung){
+  parseMyTTAufstellungsUrl(url, planung = {} ){
     const url_split = url.split("/") 
     // Expect like "https://www.mytischtennis.de/clicktt/WTTV/19-20/verein/187012/TuRa-Elsen/mannschaftsmeldungendetails/H/vr/"
     // url_split = [https:,,www.mytischtennis.de,clicktt,WTTV,19-20,verein,187012,TuRa-Elsen,mannschaftsmeldungendetails,H,vr,]
@@ -60,14 +60,43 @@ class MyTTParser {
           qttr_year = parseInt(planung.saison.slice(0,4),10)
         }
       }
+      // vereinsnummer
+      if (url_split.length > 7) {
+        if ( (url_split[7]).match(/\d\d\d\d\d\d/g) !== null ) {
+          planung.vereinsNummer = parseInt(url_split[7],10)
+        }
+      }
+      // verein
+      if (url_split.length > 8) {
+        planung.verein = url_split[8].replace(/-/g," ").replace(/ae/g,"ä").replace(/ae/g,"ö").replace(/ue/g,"ü")
+      }
+      // spielklasse
+      if (url_split.length > 10) {
+        var spielklasse_map = {
+          "H": "Herren",
+          "D": "Damen",
+          "J18": "Jungen 18",
+          "J15": "Jungen 15",
+          "J13": "Jungen 13",
+          "J11": "Jungen 11",
+          "M18": "Mädchen 18",
+          "M15": "Mädchen 15",
+          "M13": "Mädchen 13",
+          "M11": "Mädchen 11"
+        }
+        planung.spielklasse =  spielklasse_map[url_split[10]]
+      }
+      // serie
       if (url_split.length > 11) {
-        // serie
         const halbserie = url_split[11].replace("rr", "Rückrunde").replace("vr","Vorrunde")
         if (halbserie == "Vorrunde" || halbserie == "Rückrunde") {
           planung.halbserie = halbserie
           qttr_month = halbserie == "Vorrunde" ? 4 : 11 // 4 -> Mai; 11 -> Dez
         }
         // qttr-date
+        if ( ! planung.hasOwnProperty('ttrwerte') ) {
+          planung.ttrwerte = {}
+        }
         planung.ttrwerte.date = new Date(qttr_year, qttr_month, 11)
         planung.ttrwerte.datestring = `${planung.ttrwerte.date.getDate()}.${planung.ttrwerte.date.getMonth()+1}.${planung.ttrwerte.date.getFullYear()}`
         const qttr_age_in_days = ( Date.now() - planung.ttrwerte.date ) / (1000*60*60*24)

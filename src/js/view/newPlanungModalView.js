@@ -58,7 +58,7 @@ class NewPlanungModalView {
           </div>
           <div class="modal-body">
             <form class="needs-validation" novalidate>
-              <h6 class="text-center">Daten manuell eingeben:</h6>
+              <!--<h6 class="text-center">Daten manuell eingeben:</h6>-->
               <div class="form-row">
                   <div class="col-sm-12 mb-3">
                   <label for="newPlanungsFormVerband">Verband</label>
@@ -127,8 +127,8 @@ class NewPlanungModalView {
                   </div>
                 </div>
               </div>
-              <hr />
               -->
+              <hr />
               <button class="btn btn-success pull-right mt-3" type="submit">Planung starten</button>
             </form>
           </div>
@@ -136,11 +136,6 @@ class NewPlanungModalView {
       </div>
     </div>
   `
-  }
-  bindHtmlParser(parser) {
-  }
-
-  bindParseResultAnalyzer(analyzer) {
   }
 
 }

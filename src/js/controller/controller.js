@@ -125,10 +125,6 @@ class Controller {
     this.model.updatePlanung(JSON.parse(planung_json_string), true)
   }
 
-  handleClickSubmitPlanungButton = (planung_json) => {
-    this.model.updatePlanung(planung_json, false)
-  }
-
   setPlanungFile = (filepath) => {
     this.planung.setFile(filepath)
   }
@@ -187,6 +183,15 @@ class Controller {
 
   handleClickOnReloadDataButton = (tab, url) => {
     this.myTTModalView.loadUrl(tab, url)
+  }
+
+  /* NEW PLANUNG MODAL HANDLER */
+  handleClickSubmitPlanungButton = (planung_json) => {
+    this.model.updatePlanung(planung_json, false)
+  }
+
+  parseAufstellungUrl = (url) => {
+    return this.myTTParser.parseMyTTAufstellungsUrl(url)
   }
 
   /* MYTT MODAL WEBVIEW HANDLER */

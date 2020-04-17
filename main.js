@@ -8,14 +8,13 @@ let mainWindow
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
     webPreferences: {
       nodeIntegration: true,
       webviewTag: true
     }
 
   })
+  mainWindow.maximize()
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
@@ -35,23 +34,11 @@ function createWindow () {
     {
       label: 'Datei',
       submenu: [
-        {
-          label:'Neu',
-          accelerator: 'CmdOrCtrl+N',
-          click() { newFile() }
-        },
-        {type:'separator'},
-        {
-          label:'Öffnen',
-          accelerator: 'CmdOrCtrl+O',
-          click() { openFile() }
-        },
-        {type:'separator'},
-        {
-          label:'Speichern',
-          accelerator: 'CmdOrCtrl+S',
-          click() { saveFile() }
-        },
+        { label:'Neu', accelerator: 'CmdOrCtrl+N', click() { newFile() } },
+        { type:'separator' },
+        { label:'Öffnen', accelerator: 'CmdOrCtrl+O', click() { openFile() } },
+        { type:'separator' },
+        { label:'Speichern', accelerator: 'CmdOrCtrl+S', click() { saveFile() } },
         {
           label:'Speichern unter...',
           accelerator: (function() {
@@ -62,26 +49,24 @@ function createWindow () {
           })(),
           click() { saveFileAs() }
         },
-        {type:'separator'},
-        {
-          label:'Schließen',
-          click() { closeFile() }
-        }
-        ,{type:'separator'},
-        {
-          label:'Beenden',
-          role: 'quit'
+        { type:'separator' },
+        { label:'Schließen', click() { closeFile() } },
+        { type:'separator' },
+        { label:'Beenden', role: 'quit'
         }
       ]
     },
     {
       label: 'Ansicht',
       submenu: [
-        {
-          label: 'Neu laden',
-          accelerator: 'CmdOrCtrl+R',
-          role: 'reload'
-        },
+        { label: 'Neu laden', role: 'reload' },
+        { type: 'separator' },
+        { label: 'Zoom zurücksetzen', role: 'resetzoom' },
+        { label: 'Vergrößern', role: 'zoomin', accelerator: 'CmdOrCtrl+Plus' },
+        { label: 'Verkleinern', role: 'zoomout' },
+        { type: 'separator' },
+        { label: 'Vollbild', role: 'togglefullscreen' },
+        { type: 'separator' },
         {
           label: 'Toggle Developer Tools',
           accelerator: (function() {
@@ -91,7 +76,7 @@ function createWindow () {
               return 'Ctrl+Shift+I';
           })(),
           role: 'toggleDevTools'
-        }
+        },
       ]
     }
   ])

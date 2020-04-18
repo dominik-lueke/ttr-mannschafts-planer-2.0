@@ -24,8 +24,12 @@ class SpielerView {
       spielerListeContainer.append(this.spieler_div)
 
       // color the ttr-differenz
-      $(`#spieler-${spieler.spielklasse}-${spieler.id}-ttrdifferenz`).addClass(ttrdifferenz < 0 ? "text-success" : ttrdifferenz > 0 ? "text-danger" : "")
-
+      this.spieler_ttrdifferenz_div.addClass(ttrdifferenz < 0 ? "text-success" : ttrdifferenz > 0 ? "text-danger" : "")
+      // special case for qttr = 0
+      if ( spieler.qttr === 0 ) {
+        this.spieler_qttr_div.html('<i class="fa fa-question-circle" title="(Q)TTR Wert unbekannt" data-toggle="tooltip"></i>')
+        this.spieler_ttrdifferenz_div.html('')
+      }
       // add RES and SBE Badges
       if ( this.spieler.reserve ) { 
         this.spieler_res_badge.removeClass("display-none")

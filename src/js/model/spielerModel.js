@@ -58,6 +58,10 @@ class SpielerModel {
    */
 
   isInvalidBecauseOf(other_spieler) {
+    // Special Case for if one of the two hast qttr 0. Then it is not invalid
+    if (this.qttr === 0 || other_spieler.qttr === 0 ){
+      return false
+    }
     const allowed_delta = this._getAllowedTtrDifferenz(other_spieler)
     const differenz = this.getTtrDifferenz(other_spieler)
     // add to invalid list if 

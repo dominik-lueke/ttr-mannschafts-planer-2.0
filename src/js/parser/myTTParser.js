@@ -151,6 +151,7 @@ class MyTTParser {
             break;
           case 1: //qttr
             spieler.qttr = parseInt( td.text().trim(), 10)
+            if (isNaN(spieler.qttr)) {spieler.qttr = 0}
             break;
           case 2: //name + mytt_id
             // <a role="button" tabindex="0" href="#" data-bind="playerPopover: { personId: 'NU1234567', clubNr: '123456' }" data-original-title="" title="">Nachname, Vorname</a>
@@ -222,14 +223,14 @@ class MyTTParser {
     }
     statusHtml += "<br/>"
     // mannschaften
-    if (planung.mannschaften.liste.length > 0) {
+    if ("mannschaften" in planung && planung.mannschaften.liste.length > 0) {
       statusHtml += `${planung.mannschaften.liste.length} Mannschaften gefunden ${this._getStatusIcon("success") } `
     } else {
       statusHtml += `Keine Mannschaften ${this._getStatusIcon("danger") } `
       aufstellungFound = false
     }
     // spieler
-    if (planung.spieler.liste.length > 0) {
+    if ("spieler" in planung && planung.spieler.liste.length > 0) {
       statusHtml += `${planung.spieler.liste.length} Spieler gefunden ${this._getStatusIcon("success") } `
     } else {
       statusHtml += `Keine Spieler ${this._getStatusIcon("danger") } `
@@ -403,7 +404,7 @@ class MyTTParser {
     }
     statusHtml += "<br/>"
     // spieler
-    if (planung.spieler.liste.length > 0) {
+    if ("spieler" in planung && planung.spieler.liste.length > 0) {
       statusHtml += `${planung.spieler.liste.length} Spieler gefunden ${this._getStatusIcon("success") } `
     } else {
       statusHtml += `Keine Spieler gefunden ${this._getStatusIcon("danger") } `

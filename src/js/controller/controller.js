@@ -220,7 +220,7 @@ class Controller {
   }
 
   getAufstellungsParseResult = (planung) => {
-    return this.myTTParser.getResultOfMyTTAufstellungsParser(planung)
+    return this.myTTParser.getResultOfMyTTAufstellungsParser(planung, this.planung.verein)
   }
 
   getTtrRanglisteParseResult = (planung) => {

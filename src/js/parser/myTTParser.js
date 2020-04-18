@@ -47,7 +47,7 @@ class MyTTParser {
    * @param {*} url 
    * @param {*} planung 
    */
-  parseMyTTAufstellungsUrl(url, planung = {} ){
+  parseMyTTAufstellungsUrl(url, planung = {}){
     const url_split = url.split("/") 
     // Expect like "https://www.mytischtennis.de/clicktt/WTTV/19-20/verein/187012/TuRa-Elsen/mannschaftsmeldungendetails/H/vr/"
     // url_split = [https:,,www.mytischtennis.de,clicktt,WTTV,19-20,verein,187012,TuRa-Elsen,mannschaftsmeldungendetails,H,vr,]
@@ -197,12 +197,17 @@ class MyTTParser {
    * the result is true if the planungs object is a loadable aufstellung
    * @param {*} planung 
    */
-  getResultOfMyTTAufstellungsParser(planung){
+  getResultOfMyTTAufstellungsParser(planung, target_verein){
     var aufstellungFound = true
     var statusHtml = ""
-    // verein + + vereinsNummer + verband
+    // verein + + vereinsNummer + verbandW
     if ("verein" in planung && "vereinsNummer" in planung && "verband" in planung) {
-      statusHtml += `${planung.verein} (${planung.vereinsNummer} - ${planung.verband}) ${this._getStatusIcon("success") } `
+      if ( planung.verein == target_verein ) {
+        statusHtml += `${planung.verein} (${planung.vereinsNummer} - ${planung.verband}) ${this._getStatusIcon("success") } `
+      } else {
+        statusHtml += `${planung.verein} (Nicht ${target_verein}) ${this._getStatusIcon("danger") } `
+        aufstellungFound = false
+      }
     } else {
       statusHtml += `Kein Verein ${this._getStatusIcon("danger") } `
       aufstellungFound = false

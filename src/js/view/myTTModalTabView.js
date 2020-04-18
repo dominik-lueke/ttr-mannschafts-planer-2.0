@@ -147,7 +147,10 @@ class MyTTModalTabView {
   }
 
   bindClickOnLoadButtonOnMyTTModalTab(handler) {
-    this.load_button.click((event) => { this._loadData(handler) })
+    this.load_button.click((event) => { 
+      this.load_button.popover('dispose')
+      this._loadData(handler) 
+    })
   }
 
   show() {

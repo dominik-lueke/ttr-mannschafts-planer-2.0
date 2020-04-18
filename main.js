@@ -70,7 +70,7 @@ function createWindow () {
         { label: 'Neu laden', role: 'reload' },
         { type: 'separator' },
         { label: 'Zoom zurücksetzen', role: 'resetzoom' },
-        { label: 'Vergrößern', role: 'zoomin', accelerator: 'CmdOrCtrl+Plus' },
+        { label: 'Vergrößern', role: 'zoomin' },
         { label: 'Verkleinern', role: 'zoomout' },
         { type: 'separator' },
         { label: 'Vollbild', role: 'togglefullscreen' },

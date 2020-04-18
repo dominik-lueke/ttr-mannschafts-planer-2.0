@@ -29,10 +29,15 @@ class MyTTParser {
         datestring: ""
       }
     }
-    /* get information from url */
-    planung = this.parseMyTTAufstellungsUrl(url, planung)
-    /* get information from html */
-    planung = this.parseMyTTAufstellungsHtml(html, planung)
+    try {
+      /* get information from url */
+      planung = this.parseMyTTAufstellungsUrl(url, planung)
+      /* get information from html */
+      planung = this.parseMyTTAufstellungsHtml(html, planung)
+    } catch (e) {
+      // Return empty if parsing error
+      planung = {}
+    }
     /* return */
     return planung
   }
@@ -259,7 +264,12 @@ class MyTTParser {
     /* get information from url */
     //planung = this.parseMyTTAufstellungsUrl(url, planung)
     /* get information from html */
-    planung = this.parseMyTTTtrRanglisteHtml(html, planung)
+    try {
+      planung = this.parseMyTTTtrRanglisteHtml(html, planung)
+    } catch (e) {
+      // Return emtpy if parsing error
+      planung = {}
+    }
     /* return */
     return planung
   }
@@ -423,10 +433,15 @@ class MyTTParser {
         saisons: []
       }
     }
-    /* get information from url */
-    planung = this.parseMyTTBilanzenUrl(url, planung)
-    /* get information from html */
-    planung = this.parseMyTTBilanzenHtml(html, planung)
+    try {
+      /* get information from url */
+      planung = this.parseMyTTBilanzenUrl(url, planung)
+      /* get information from html */
+      planung = this.parseMyTTBilanzenHtml(html, planung)
+    } catch (e) {
+      // Return empty if parsing error
+      planung = {}
+    }
     /* return */
     return planung
   }

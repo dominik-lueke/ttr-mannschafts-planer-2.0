@@ -268,8 +268,7 @@ class SpielerListeModel {
     // Check if this spieler is invalid because of any positionen higher than its own
     this.liste
     .filter(spieler => (
-      ( spieler.mannschaft == check_spieler.mannschaft && spieler.position > check_spieler.position ) || ( spieler.mannschaft > check_spieler.mannschaft ) ) &&
-      spieler.qttr > check_spieler.qttr)
+      ( spieler.mannschaft == check_spieler.mannschaft && spieler.position > check_spieler.position ) || ( spieler.mannschaft > check_spieler.mannschaft ) ) )
     .forEach(spieler => {
       if ( spieler.isInvalidBecauseOf(check_spieler) ) {
         spieler.addSpielerToInvalidList(check_spieler)

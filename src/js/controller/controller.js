@@ -139,15 +139,17 @@ class Controller {
     this.planung.setFile(filepath)
   }
 
-  setDocumentTitle = (title) => {
-    title = title === " - " ? " - Unbenannt" : title
-    $(document).attr("title", `Tischtennis Mannschafts Planer${title}`);
+  _updateDocumentTitle = () => {
+    const app_title = "Tischtennis Mannschafts Planer"
+    const separator = this.planung.isNew ? "" : " - "
+    const filename = this.planung.isNew ? "" : this.planung.filename !== "" ? this.planung.filename : "Unbenannt"
+    const saved_indicator = this.planung.saved ? "" : "*"
+    $(document).attr("title", `${app_title}${separator}${filename}${saved_indicator}`);
   }
 
   /* UPDATE */
 
   updateView = () => {
-    this.setDocumentTitle("")
     this.onHeaderDataChanged(this.planung)
     this.onMannschaftenChanged(this.planung)
   }
@@ -157,10 +159,7 @@ class Controller {
     this.myTTModalView.setHomeUrl("aufstellung", planung.aufstellung.url)
     this.myTTModalView.setHomeUrl("ttrwerte", planung.ttrwerte.url)
     this.myTTModalView.setHomeUrl("bilanzen", planung.bilanzen.url)
-    if ( ! planung.isNew ) {
-      var title = planung.saved ? planung.filename : `${planung.filename}*`
-      this.setDocumentTitle(` - ${title}`)
-    }
+    this._updateDocumentTitle()
   }
 
   onMannschaftenChanged = (planung) => {

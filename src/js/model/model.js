@@ -31,7 +31,7 @@ class Model {
     this.planung = new PlanungsModel()
     this.planung.bindPlanungStored(this.handlePlanungStored)
     if ( planung_json ) {
-      this.planung.loadFromJSON(planung_json, true)
+      this.planung.loadFromJSON(planung_json, true, true)
     }
     // return this
     return this.planung

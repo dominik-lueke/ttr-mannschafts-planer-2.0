@@ -524,7 +524,7 @@ class PlanungsModel {
       verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue"),
       saison: this._getPreviousSaison().replace("/","-").substring(2),
       halbserie: this._getOtherHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
-      spielklasse: this.spielklasse.substring(0,1) // Only works for Herren H and Damen D
+      spielklasse: this._getSpielklassenUrlString(this.spielklasse)
     }
     this.aufstellung.url = this._getAufstellungsUrl()
     this.ttrwerte.url = this._getTtrRanglisteUrl()

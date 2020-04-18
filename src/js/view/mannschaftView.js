@@ -1,7 +1,7 @@
 class MannschaftView {
   constructor(mannschaftsContainer, mannschaft, mannschaftsspieler, letzte_mannschaft) {
     this.mannschaft = mannschaft
-    const id = `${mannschaft.spielklasse}-${mannschaft.nummer}`
+    const id = `${(mannschaft.spielklasse).replace(" ", "_")}-${mannschaft.nummer}`
     // Add the row for the Mannschaft
     this.html = $(`
       <div class="row mannschafts-row">

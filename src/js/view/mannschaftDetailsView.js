@@ -298,7 +298,7 @@ class MannschaftDetailsView {
   _clickDeleteButtonHandler(event, handler) {
     // A bit hacky here toget the number of mannschaften and spieler in this mannschaft via jquery...
     const number_of_mannschaften = $(`#mannschafts-container > .mannschafts-row`).length
-    const spieler_in_mannschaft = $(`#mannschaft-Herren-${this.mannschaft.nummer}-spielerliste li`).length
+    const spieler_in_mannschaft = $(`#mannschaft-${this.mannschaft.spielklasse}-${this.mannschaft.nummer}-spielerliste li`).length
     if ( spieler_in_mannschaft == 0) {
       // directly delete mannschaft if there are no spieler in the mannschaft
       this._clickDeleteConfirmButtonHandler(event, handler, false)

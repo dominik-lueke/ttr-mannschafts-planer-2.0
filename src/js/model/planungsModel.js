@@ -37,6 +37,7 @@ class PlanungsModel {
     // METADATA
     this.isEmpty = this._isEmpty()
     this.isNew = true
+    this.allow_commit = true
     // MANNSCHAFTEN LISTE
     this.mannschaften = new MannschaftsListeModel(this.spielklasse)
     // SPIELER LISTE
@@ -44,6 +45,7 @@ class PlanungsModel {
 
     this.onMannschaftenChanged = () => {}
     this.onHeaderDataChanged = () => {}
+    this.onPlanungStored = () => {}
   }
 
   /**
@@ -56,6 +58,10 @@ class PlanungsModel {
 
   bindHeaderDataChanged(callback) {
     this.onHeaderDataChanged = callback
+  }
+
+  bindPlanungStored(callback) {
+    this.onPlanungStored = callback
   }
 
   /**
@@ -307,7 +313,15 @@ class PlanungsModel {
    * JSON LOAD
    */
 
-  loadFromJSON (planung_json, update_aufstellung=false) {
+  loadFromJSON (planung_json, update_aufstellung=false, use_stored_saved=false) {
+    this._parsePlanungJson(planung_json, update_aufstellung)
+    this.isEmpty = this._isEmpty()
+    this.isNew = this.isEmpty
+    this._commit(use_stored_saved ? this.saved : false)
+  }
+
+  _parsePlanungJson(planung_json, update_aufstellung=false) {
+    this._disableCommit() // do no commit while loading the whole json
     var qttr_values_changed = false
     const current_anzahl_mannschaften = this.mannschaften.liste.length
     if (update_aufstellung){
@@ -408,6 +422,9 @@ class PlanungsModel {
               this.bilanzen[key] = planung_json.bilanzen[key]
             }
           }
+        /* Do not load allow_commit */
+        } else if (key == "allow_commit") {
+
         /* Set other planungs properties */ 
         } else {
           this[key] = planung_json[key]
@@ -434,13 +451,16 @@ class PlanungsModel {
       }
       this.validateAllMannschaften()
     }
-    if (qttr_values_changed && ! update_aufstellung) {
+    if ( qttr_values_changed ) {
       this.spieler.validate()
     }
-    this.isEmpty = this._isEmpty()
-    this.isNew = this.isEmpty
-    this._commit()
-    return this
+    this._enableCommit()
+  }
+
+  getPlanungAsJsonString() {
+    const store_planung = jQuery.extend({}, this);
+    store_planung.allow_commit = false
+    return JSON.stringify(store_planung)
   }
 
   compareHalbserien(a,b) {
@@ -464,17 +484,32 @@ class PlanungsModel {
   /**
    *  Private
    */
+  _enableCommit() {
+    this.allow_commit = true
+  }
 
-   _commit(saved=false) {
-    this.saved = saved
-    this._updateUrlStrings()
-    // trigger view update
-    this.onMannschaftenChanged(this)
-    this.onHeaderDataChanged(this)
+  _disableCommit() {
+    this.allow_commit = false
+  }
+
+  _commit(saved=false) {
+    if ( this.allow_commit === true ) {
+      this.saved = saved
+      this._updateUrlStrings()
+      // trigger view update
+      this.onMannschaftenChanged(this)
+      this.onHeaderDataChanged(this)
+      // store planung
+      this._storePlanung()
+    }
+  }
+
+  _storePlanung(){
     // store this object
     localStorage.setItem("localStoragePlanung", JSON.stringify(this))
-   }
-  
+    this.onPlanungStored(this)
+  }
+
   _isEmpty() {
     return (  this.verein === "" &&
               this.verband === "" &&

@@ -4,6 +4,7 @@ const {app, BrowserWindow, Menu, ipcMain} = require('electron')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+let menu 
 
 function createWindow () {
   // Create the browser window.
@@ -30,7 +31,7 @@ function createWindow () {
     mainWindow = null
   })
 
-  var menu = Menu.buildFromTemplate([
+  menu = Menu.buildFromTemplate([
     {
       label: 'Datei',
       submenu: [
@@ -54,6 +55,13 @@ function createWindow () {
         { type:'separator' },
         { label:'Beenden', role: 'quit'
         }
+      ]
+    },
+    {
+      label: 'Bearbeiten',
+      submenu: [
+        { id: 'undo', label: 'Rückgängig', accelerator: 'CmdOrCtrl+Z', click() { undo() }, enabled: false },
+        { id: 'redo', label: 'Wiederholen', accelerator: 'CmdOrCtrl+Y', click() { redo() }, enabled: false }
       ]
     },
     {
@@ -93,7 +101,6 @@ app.on('ready', createWindow)
 app.on('window-all-closed', function () {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  closeFile()
   if (process.platform !== 'darwin') app.quit()
 })
 
@@ -129,6 +136,14 @@ function openFile() {
   let response = mainWindow.webContents.send('openFile','Open a File')
 }
 
+function undo() {
+  let response = mainWindow.webContents.send('undo','Take last action back')
+}
+
+function redo() {
+  let response = mainWindow.webContents.send('redo','Redo last action')
+}
+
 /**
  * IPC EVENTS
  */
@@ -139,5 +154,15 @@ ipcMain.handle('saveFile', (event, args) => {
 
 ipcMain.handle('openFile', (event, args) => {
   openFile()
+  return true
+})
+
+ipcMain.handle('setUndoEnabled', (event, args) => {
+  menu.getMenuItemById('undo').enabled = args
+  return true
+})
+
+ipcMain.handle('setRedoEnabled', (event, args) => {
+  menu.getMenuItemById('redo').enabled = args
   return true
 })

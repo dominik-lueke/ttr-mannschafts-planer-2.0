@@ -67,6 +67,14 @@ ipcRenderer.on('openFile', (event, args) => {
   })
 })
 
+ipcRenderer.on('undo', (event, args) => {
+  app.undo()
+})
+
+ipcRenderer.on('redo', (event, args) => {
+  app.redo()
+})
+
 /**
  * DIALOGS
  */
@@ -110,7 +118,7 @@ confirmClosePlanungDialog = () => {
     type: "info",
     title: "Ungespeicherte Änderungen",
     message: "Die aktuelle Saisonplanung enthält ungespeicherte Änderungen.",
-    buttons: ["Speichern", "Trotzdem schließen", "Abbrechen"],
+    buttons: ["Speichern", "Ohne Speichern schließen", "Abbrechen"],
     cancelId: 2,
   }
   return dialog.showMessageBoxSync(window, options)

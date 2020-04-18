@@ -56,8 +56,18 @@ class Controller {
     this.sidebarView.bindEditSpielwocheOnMannschaft(this.handleEditSpielwocheOnMannschaft)
     this.sidebarView.bindClickDeleteButtonOnMannschaft(this.handleClickDeleteButtonOnMannschaft)
   }
+  /* UNDO + REDO */
+
+  undo = () => {
+    this.model.undo()
+  }
+
+  redo = () => {
+    this.model.redo()
+  }
 
   /* PLANUNG */
+
   createNewPlanung = () => {
     // close current planung save
     this.closePlanungSave().then((result) => {
@@ -118,7 +128,7 @@ class Controller {
   }
 
   getPlanungAsJsonString = () => {
-    return JSON.stringify(this.planung)
+    return this.planung.getPlanungAsJsonString()
   }
 
   openPlanungFromJsonString = (planung_json_string) => {
@@ -135,6 +145,7 @@ class Controller {
   }
 
   /* UPDATE */
+
   updateView = () => {
     this.setDocumentTitle("")
     this.onHeaderDataChanged(this.planung)

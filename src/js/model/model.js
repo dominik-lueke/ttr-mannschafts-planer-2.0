@@ -1,34 +1,73 @@
 class Model {
 
   constructor() {
-
-    const stored_planung = JSON.parse(localStorage.getItem('localStoragePlanung'))
-    this.planung = stored_planung ? (new PlanungsModel()).loadFromJSON(stored_planung, true) : this.createNewPlanung()
-    this.planung.setSaved(stored_planung.saved)
-
+    // store the view
     this.view = JSON.parse(localStorage.getItem('localStorageView')) || {
       sidebar: {
         display: "",
         id: 0
       }
     } // 
+    this.onSidebarViewChanged = () => {}
 
-    this.onSidebarViewChanged = {}
+    this.history = {
+      undo: [], // the tip of undo is always the current
+      redo: []
+    }
+
+    // load planung or create new
+    const stored_planung = JSON.parse(localStorage.getItem('localStoragePlanung'))
+    this.planung = this.createNewPlanung(stored_planung)
   }
 
   /**
    * PLANUNG
    */
-  createNewPlanung(){
+
+  createNewPlanung(planung_json=undefined){
     // View
     this.closeSidebar()
     // Planung
     this.planung = new PlanungsModel()
-    localStorage.setItem("localStoragePlanung", JSON.stringify(this.planung))
+    this.planung.bindPlanungStored(this.handlePlanungStored)
+    if ( planung_json ) {
+      this.planung.loadFromJSON(planung_json, true)
+    }
+    // return this
+    return this.planung
   }
 
   updatePlanung(planung_json, update_aufstellung){
     this.planung.loadFromJSON(planung_json, update_aufstellung)
+  }
+
+  handlePlanungStored = (planung) => {
+    if (this.history.undo.length > 100){
+      this.history.undo.shift()
+    }
+    this.history.undo.push(planung.getPlanungAsJsonString())
+    ipcRenderer.invoke('setUndoEnabled', this.history.undo.length > 1)
+    ipcRenderer.invoke('setRedoEnabled', this.history.redo.length > 0)
+  }
+
+  /**
+   * UNDO + REDO
+   */
+
+  undo() {
+    if ( this.history.undo.length > 1 ) {
+      // move the current state from undo to redo history
+      this.history.redo.push(this.history.undo.pop())
+      // pop the history
+      this.planung.loadFromJSON(JSON.parse(this.history.undo.pop()), true, true)
+    }
+  }
+
+  redo() {
+    if ( this.history.redo.length > 0 ) {
+      // pop the redo history and apply it
+      this.planung.loadFromJSON(JSON.parse(this.history.redo.pop()), true, true)
+    }
   }
 
   /**

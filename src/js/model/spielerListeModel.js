@@ -124,6 +124,7 @@ class SpielerListeModel {
   }
 
   validate(){
+    this._sortSpielerListe()
     this.liste.forEach(spieler => {
       // recompute ttrdifferenz
       this._recomputeTtrDifferenzForSpieler(spieler)
@@ -157,11 +158,12 @@ class SpielerListeModel {
    */
 
   _insertSpielerInMannschaft(insert_spieler, mannschaft, position) {
+    const current_spieler_with_position = this.liste.find(spieler => ( spieler.mannschaft == mannschaft && spieler.position === position ) )
     this.liste
     .filter( spieler => ( spieler.mannschaft == mannschaft && spieler.position >= position ) )
     .forEach( spieler => {
       // increase all positionen from the same mannschaft greater or equal than position by one
-      spieler.position++
+      if ( current_spieler_with_position ) { spieler.position++ }
       // also check if any of the positionen has a sperrvermerk and increase our secondary if so
       if (spieler.spv.primary) { insert_spieler.spv.secondary++ }
     } )

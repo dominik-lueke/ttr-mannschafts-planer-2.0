@@ -7,7 +7,7 @@ class Controller {
     this.headerView = new HeaderView()
     this.editorView = new EditorView()
     this.sidebarView = new SidebarView()
-    this.myTTModalView = new MyTTModalView()
+    this.myTTModalView = new MyTTModalView(this.planung)
     this.newPlanungModalView = new NewPlanungModalView()
     // Parser
     this.myTTParser = new MyTTParser()

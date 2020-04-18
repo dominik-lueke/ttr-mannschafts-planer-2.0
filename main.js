@@ -21,7 +21,7 @@ function createWindow () {
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -74,19 +74,24 @@ function createWindow () {
         { label: 'Verkleinern', role: 'zoomout' },
         { type: 'separator' },
         { label: 'Vollbild', role: 'togglefullscreen' },
-        { type: 'separator' },
-        {
-          label: 'Toggle Developer Tools',
-          accelerator: (function() {
-            if (process.platform === 'darwin')
-              return 'Alt+Command+I';
-            else
-              return 'Ctrl+Shift+I';
-          })(),
-          role: 'toggleDevTools'
-        },
       ]
     }
+    // ,
+    // { 
+    //   label: 'Devloper',
+    //   submenu: [
+    //     {
+    //       label: 'Toggle Developer Tools',
+    //       accelerator: (function() {
+    //         if (process.platform === 'darwin')
+    //           return 'Alt+Command+I';
+    //         else
+    //           return 'Ctrl+Shift+I';
+    //       })(),
+    //       role: 'toggleDevTools'
+    //     }
+    //   ]
+    // }
   ])
   Menu.setApplicationMenu(menu);
 

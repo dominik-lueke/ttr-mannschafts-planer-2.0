@@ -11,7 +11,7 @@ class Model {
     this.onSidebarViewChanged = () => {}
 
     this.history = {
-      undo: [], // the tip of undo is always the current
+      undo: [], // the tip of undo is always the current planung
       redo: []
     }
 
@@ -29,9 +29,14 @@ class Model {
     this.closeSidebar()
     // Planung
     this.planung = new PlanungsModel()
-    this.planung.bindPlanungStored(this.handlePlanungStored)
     if ( planung_json ) {
       this.planung.loadFromJSON(planung_json, true, true)
+    }
+    this.planung.bindPlanungStored(this.handlePlanungStored)
+    // History
+    this.history = {
+      undo: [], // the tip of undo is always the current planung
+      redo: []
     }
     // return this
     return this.planung

@@ -316,8 +316,9 @@ class PlanungsModel {
   loadFromJSON (planung_json, update_aufstellung=false, use_stored_saved=false) {
     this._parsePlanungJson(planung_json, update_aufstellung)
     this.isEmpty = this._isEmpty()
-    this.isNew = this.isEmpty
-    this._commit(use_stored_saved ? this.saved : false)
+    if ( ! this.isNew ) {
+      this._commit(use_stored_saved ? this.saved : false)
+    }
   }
 
   _parsePlanungJson(planung_json, update_aufstellung=false) {

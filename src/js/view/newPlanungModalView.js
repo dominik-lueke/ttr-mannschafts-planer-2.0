@@ -22,6 +22,7 @@ class NewPlanungModalView {
             saison:         $('#newPlanungsFormSaison').val(),
             halbserie:      $('#newPlanungsFormHalbserie').val(),
             spielklasse:    $('#newPlanungsFormSpielklasse').val(),
+            isNew:          false,
           }
           handler( planung_json )
         }

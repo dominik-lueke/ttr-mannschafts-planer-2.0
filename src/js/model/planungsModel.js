@@ -100,6 +100,7 @@ class PlanungsModel {
   increaseSerie(){
     this.halbserie = this._getOtherHalbserie()
     this.saison = this._getNextSaison()
+    this._setBilanzenStatus()
     this._commit()
   }
 

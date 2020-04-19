@@ -67,6 +67,13 @@ ipcRenderer.on('openFile', (event, args) => {
   })
 })
 
+ipcRenderer.on('exportAsXlsx', (event, args) => {
+  var filepath = exportAsXlsxDialog(app.planung)
+  if ( filepath ) {
+    app.exportPlanungToXlsx(filepath)
+  }
+})
+
 ipcRenderer.on('undo', (event, args) => {
   app.undo()
 })
@@ -109,6 +116,22 @@ openDialog = () => {
     ]
   }
   return dialog.showOpenDialogSync(window, options)
+}
+
+exportAsXlsxDialog = (planung) => {
+  const dialog = remote.dialog
+  const window = remote.getCurrentWindow();
+  const filepath_suggestion = planung.file.replace("ttr.json","xlsx")
+  let options = {
+    title: "Exportiere Saisonplanung - Tischtennis Mannschafts Planer",
+    defaultPath : path.resolve(filepath_suggestion),
+    buttonLabel : "Exportieren",
+    filters :[
+      {name: 'Excel Arbeitsmappen', extensions: ['xlsx']},
+      {name: 'All Files', extensions: ['*']}
+    ]
+  }
+  return dialog.showSaveDialogSync(window, options)
 }
 
 confirmClosePlanungDialog = () => {

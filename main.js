@@ -21,7 +21,7 @@ function createWindow () {
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -51,7 +51,9 @@ function createWindow () {
           click() { saveFileAs() }
         },
         { type:'separator' },
-        { label:'Schließen', click() { closeFile() } },
+        { label:'Schließen', accelerator: 'CmdOrCtrl+W', click() { closeFile() } },
+        { type:'separator' },
+        { label:'Exportieren nach Excel', accelerator: 'CmdOrCtrl+E', click() { exportFileAsXlsx() } },
         { type:'separator' },
         { label:'Beenden', role: 'quit'
         }
@@ -76,22 +78,22 @@ function createWindow () {
         { label: 'Vollbild', role: 'togglefullscreen' },
       ]
     }
-    // ,
-    // { 
-    //   label: 'Devloper',
-    //   submenu: [
-    //     {
-    //       label: 'Toggle Developer Tools',
-    //       accelerator: (function() {
-    //         if (process.platform === 'darwin')
-    //           return 'Alt+Command+I';
-    //         else
-    //           return 'Ctrl+Shift+I';
-    //       })(),
-    //       role: 'toggleDevTools'
-    //     }
-    //   ]
-    // }
+    ,
+    { 
+      label: 'Developer',
+      submenu: [
+        {
+          label: 'Toggle Developer Tools',
+          accelerator: (function() {
+            if (process.platform === 'darwin')
+              return 'Alt+Command+I';
+            else
+              return 'Ctrl+Shift+I';
+          })(),
+          role: 'toggleDevTools'
+        }
+      ]
+    }
   ])
   Menu.setApplicationMenu(menu);
 
@@ -139,6 +141,10 @@ function saveFileAs() {
 
 function openFile() {
   let response = mainWindow.webContents.send('openFile','Open a File')
+}
+
+function exportFileAsXlsx() {
+  let response = mainWindow.webContents.send('exportAsXlsx','Export as .xlsx file')
 }
 
 function undo() {

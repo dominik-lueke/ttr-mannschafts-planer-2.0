@@ -11,7 +11,9 @@ class Controller {
     this.newPlanungModalView = new NewPlanungModalView()
     // Parser
     this.myTTParser = new MyTTParser()
-    
+    // Excel Export
+    this.excelExporter = new ExcelExporter()
+
     // Initial Display
     this.updateView()
 
@@ -56,6 +58,7 @@ class Controller {
     this.sidebarView.bindEditSpielwocheOnMannschaft(this.handleEditSpielwocheOnMannschaft)
     this.sidebarView.bindClickDeleteButtonOnMannschaft(this.handleClickDeleteButtonOnMannschaft)
   }
+
   /* UNDO + REDO */
 
   undo = () => {
@@ -133,6 +136,10 @@ class Controller {
 
   openPlanungFromJsonString = (planung_json_string) => {
     this.model.updatePlanung(JSON.parse(planung_json_string), true)
+  }
+
+  exportPlanungToXlsx = (filepath) => {
+    this.excelExporter.exportAsXlsx(this.planung, filepath)
   }
 
   setPlanungFile = (filepath) => {

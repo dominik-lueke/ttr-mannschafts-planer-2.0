@@ -17,6 +17,7 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "7.1.6",
-    "electron-packager": "^14.2.1"
+    "electron-packager": "^14.2.1",
+    "excel4node": "^1.7.2"
   }
 }

@@ -101,7 +101,14 @@ class ExcelExporter {
     // qttr
     ws.cell(write_to_row,4).number(spieler.qttr)
     // ttr-differenz
-    ws.cell(write_to_row,5).number(spieler.ttrdifferenz)
+    var offset = 0
+    if (spieler.position > 1){
+      var offset = 1
+    } else if (spieler.position === 1 && spieler.mannschaft > 1) {
+      var offset = 4
+    }
+    var ttr_differenz_formel = `${xl.getExcelCellRef(write_to_row,4)}-${xl.getExcelCellRef(write_to_row-offset,4)}`
+    ws.cell(write_to_row,5).formula(ttr_differenz_formel)
     // bemerkungen from status
     var bemerkung = []
     if (spieler.spv.primary || spieler.spv.secondary > 0) {

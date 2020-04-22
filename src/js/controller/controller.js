@@ -9,6 +9,7 @@ class Controller {
     this.sidebarView = new SidebarView()
     this.myTTModalView = new MyTTModalView(this.planung)
     this.newPlanungModalView = new NewPlanungModalView()
+    this.alertView = new AlertView()
     // Parser
     this.myTTParser = new MyTTParser()
     // Excel Export
@@ -195,6 +196,10 @@ class Controller {
       this.sidebarView.hideSidebar()
       this.editorView.removeFocus()
     }
+  }
+
+  alert = (type="primary", html_content="", timeout=3000) => {
+    this.alertView.displayAlert(type, html_content, timeout)
   }
 
   /* HEADER HANDLER */

@@ -227,3 +227,17 @@ a .spieler-farbe-selector {
 span.badge {
   cursor: default;
 }
+
+/* ALERT */
+#alert {
+  position: fixed;
+  bottom: 30px;
+  z-index: 9999;
+  width: 100%
+}
+
+#alert .alert-container {
+  width: 60%;
+  margin: 0 auto;
+}
+

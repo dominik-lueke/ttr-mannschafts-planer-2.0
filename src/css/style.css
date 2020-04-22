@@ -241,3 +241,24 @@ span.badge {
   margin: 0 auto;
 }
 
+/* PROGRESSBAR */
+
+.progressbar-container {
+  display: none;
+  position: fixed; 
+  z-index: 9999; 
+  top: 45vh; 
+  width: 100%
+}
+
+.progressbar-container .progress {
+  height: 40px; 
+  width: 20%; 
+  margin: 0 auto;
+  
+}
+
+.progressbar-container .progress .progress-bar {
+  font-size: 1.3em;
+}
+

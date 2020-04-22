@@ -10,6 +10,7 @@ class Controller {
     this.myTTModalView = new MyTTModalView(this.planung)
     this.newPlanungModalView = new NewPlanungModalView()
     this.alertView = new AlertView()
+    this.progessBarView = new ProgressBarView()
     // Parser
     this.myTTParser = new MyTTParser()
     // Excel Export
@@ -200,6 +201,14 @@ class Controller {
 
   alert = (type="primary", html_content="", timeout=3000) => {
     this.alertView.displayAlert(type, html_content, timeout)
+  }
+
+  showProgressBar = (color="primary", textcolor="white", text="", timeout=-1) => {
+    this.progessBarView.show(color, textcolor, text, timeout)
+  }
+
+  hideProgressBar = () => {
+    this.progessBarView.hide()
   }
 
   /* HEADER HANDLER */

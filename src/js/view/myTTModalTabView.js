@@ -1,5 +1,5 @@
 class MyTTModalTabView {
-  constructor(container, id, current_planung) {
+  constructor(container, id) {
     container.find("ul.nav").append(`
       <li class="nav-item pl-1">
         <a class="nav-link" id="myttmodal-${id}-tab" href="#myttmodal-${id}-pane" data-toggle="tab" role="tab" aria-controls="myttmodal-${id}-tab" aria-selected="true">${id}</a>
@@ -33,7 +33,6 @@ class MyTTModalTabView {
         </div>
       </div>
     `)
-    this.current_planung = current_planung
     this.id = id
     // cache jq elements
     this.modal = $("#planung-reload-data-modal")
@@ -82,33 +81,16 @@ class MyTTModalTabView {
         this.load_button.removeProp("disabled")
         // Add popover to button if we are about to change the planungs details with 'Aufstellung laden'
         this.load_button.popover('dispose')
-        if ( this.id === 'Aufstellung' ) {
-          var planung_changed = false
-          var planungs_difference_html = '<b><i class="fa fa-warning text-warning"></i> Achtung!</b> Die aktuelle Saisonplanung wird verändert.'
-          const attributes = ['verein', 'spielklasse', 'saison']
-          attributes.forEach( attribute => {
-            var loaded_value = this.planung[attribute]
-            var current_value = this.current_planung[attribute]
-            if ( attribute === 'saison') {
-              // special case for saison+halbserie where we load a saison+halbserie but the start planning the next one with it
-              loaded_value = `${this.planung.halbserie} ${this.planung.saison}`
-              current_value = `${this.current_planung._getOtherHalbserie()} ${this.current_planung._getPreviousSaison()}`
-            }
-            if ( loaded_value !== current_value) { 
-              planung_changed = true
-              planungs_difference_html += `<br/> ${current_value} &rarr; <b>${loaded_value}</b>`
-            }
-          })
-          if ( planung_changed ){
+        if ( this.id === 'Aufstellung') {
+          if ( this.parse_result.planung_changed ){
             this.load_button.popover({
               trigger: 'hover',
-              content: planungs_difference_html,
+              content: this.parse_result.popoverhtml,
               html: true,
               placement: 'top'
             })
           }
         }
-        
       } else {
         this.load_button.prop("disabled", true)
       }

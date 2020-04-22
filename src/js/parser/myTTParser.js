@@ -15,6 +15,12 @@ class MyTTParser {
       mannschaften: {
         liste: []
       },
+      url: {
+        verein: "",
+        saison: "",
+        halbserie: "",
+        spielklasse: ""
+      },
       spieler: {
         liste: []
       },
@@ -62,6 +68,7 @@ class MyTTParser {
       if (url_split.length > 5) {
         if ( (url_split[5]).match(/\d\d-\d\d/g) !== null ) {
           planung.saison = "20" + url_split[5].replace("-","/")
+          planung.url.saison = url_split[5]
           qttr_year = parseInt(planung.saison.slice(0,4),10)
         }
       }
@@ -74,6 +81,7 @@ class MyTTParser {
       // verein
       if (url_split.length > 8) {
         planung.verein = url_split[8].replace(/-/g," ").replace(/ae/g,"ä").replace(/ae/g,"ö").replace(/ue/g,"ü")
+        planung.url.verein = url_split[8]
       }
       // spielklasse
       if (url_split.length > 10) {
@@ -90,12 +98,14 @@ class MyTTParser {
           "M11": "Mädchen 11"
         }
         planung.spielklasse =  spielklasse_map[url_split[10]]
+        planung.url.spielklasse = url_split[10]
       }
       // serie
       if (url_split.length > 11) {
         const halbserie = url_split[11].replace("rr", "Rückrunde").replace("vr","Vorrunde")
         if (halbserie == "Vorrunde" || halbserie == "Rückrunde") {
           planung.halbserie = halbserie
+          planung.url.halbserie = url_split[11]
           qttr_month = halbserie == "Vorrunde" ? 4 : 11 // 4 -> Mai; 11 -> Dez
         }
         // qttr-date
@@ -197,15 +207,15 @@ class MyTTParser {
    * the result is true if the planungs object is a loadable aufstellung
    * @param {*} planung 
    */
-  getResultOfMyTTAufstellungsParser(planung, target_verein){
+  getResultOfMyTTAufstellungsParser(planung, current_planung){
     var aufstellungFound = true
     var statusHtml = ""
     // verein + + vereinsNummer + verbandW
     if ("verein" in planung && "vereinsNummer" in planung && "verband" in planung) {
-      if ( planung.verein == target_verein ) {
+      if ( planung.verein == current_planung.verein ) {
         statusHtml += `${planung.verein} (${planung.vereinsNummer} - ${planung.verband}) ${this._getStatusIcon("success") } `
       } else {
-        statusHtml += `${planung.verein} (Nicht ${target_verein}) ${this._getStatusIcon("danger") } `
+        statusHtml += `${planung.verein} (Nicht ${current_planung.verein}) ${this._getStatusIcon("danger") } `
         aufstellungFound = false
       }
     } else {
@@ -241,7 +251,25 @@ class MyTTParser {
       statusHtml += `Keine Spieler ${this._getStatusIcon("danger") } `
       aufstellungFound = false
     }
-    return { result: aufstellungFound, html: statusHtml }
+
+    var planung_changed = false
+    var planungs_difference_html = '<b><i class="fa fa-warning text-warning"></i></b> Die aktuelle Planung wird verändert.<br/>'
+    const attributes = ['verein', 'spielklasse', 'saison']
+    attributes.forEach( attribute => {
+      var loaded_value = planung[attribute]
+      var current_value = current_planung[attribute]
+      if ( attribute === 'saison') {
+        // special case for saison+halbserie where we load a saison+halbserie but the start planning the next one with it
+        loaded_value = `${planung.halbserie} ${planung.saison}`
+        current_value = `${current_planung._getOtherHalbserie()} ${current_planung._getPreviousSaison()}`
+      }
+      if ( loaded_value !== current_value) { 
+        planung_changed = true
+        planungs_difference_html += `<br/> ${current_value} &rarr; <b>${loaded_value}</b>`
+      }
+    })
+
+    return { result: aufstellungFound, html: statusHtml, planung_changed: planung_changed, popoverhtml: planungs_difference_html  }
   }
 
   /**

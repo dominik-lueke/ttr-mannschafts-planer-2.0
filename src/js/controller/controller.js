@@ -7,7 +7,7 @@ class Controller {
     this.headerView = new HeaderView()
     this.editorView = new EditorView()
     this.sidebarView = new SidebarView()
-    this.myTTModalView = new MyTTModalView(this.planung)
+    this.myTTModalView = new MyTTModalView()
     this.newPlanungModalView = new NewPlanungModalView()
     this.alertView = new AlertView()
     this.progessBarView = new ProgressBarView()
@@ -235,7 +235,7 @@ class Controller {
   }
 
   getAufstellungsParseResult = (planung) => {
-    return this.myTTParser.getResultOfMyTTAufstellungsParser(planung, this.planung.verein)
+    return this.myTTParser.getResultOfMyTTAufstellungsParser(planung, this.planung)
   }
 
   getTtrRanglisteParseResult = (planung) => {

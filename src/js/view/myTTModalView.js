@@ -1,6 +1,6 @@
 class MyTTModalView {
 
-  constructor(planung) {
+  constructor() {
     $("#myTTModal").append(`
       <div class="modal fade" id="planung-reload-data-modal" tabindex="-1" role="dialog" aria-labelledby="planung-reload-data-modal-label" aria-hidden="true" data-backdrop="static" >
         <div class="modal-dialog" role="document">
@@ -24,9 +24,9 @@ class MyTTModalView {
     // cache jq elements
     this.tab_container = $("#myttmodal-tab-container")
     this.tabs = {
-      "aufstellung": new MyTTModalTabView(this.tab_container, "Aufstellung", planung),
-      "ttrwerte": new MyTTModalTabView(this.tab_container, "TTR-Werte", planung),
-      "bilanzen": new MyTTModalTabView(this.tab_container, "Bilanzen", planung)
+      "aufstellung": new MyTTModalTabView(this.tab_container, "Aufstellung"),
+      "ttrwerte": new MyTTModalTabView(this.tab_container, "TTR-Werte"),
+      "bilanzen": new MyTTModalTabView(this.tab_container, "Bilanzen")
     }
     this.tabs["aufstellung"].show()
   }

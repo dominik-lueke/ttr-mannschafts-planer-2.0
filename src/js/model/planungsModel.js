@@ -100,6 +100,7 @@ class PlanungsModel {
   increaseSerie(){
     this.halbserie = this._getOtherHalbserie()
     this.saison = this._getNextSaison()
+    this._updateUrlStrings()
     this._setBilanzenStatus()
     this._commit()
   }
@@ -522,12 +523,14 @@ class PlanungsModel {
   }
 
   _updateUrlStrings() {
+    // compute the correct url strings
     this.url = {
       verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue"),
       saison: this._getPreviousSaison().replace("/","-").substring(2),
       halbserie: this._getOtherHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
       spielklasse: this._getSpielklassenUrlString(this.spielklasse)
     }
+    // update urls
     this.aufstellung.url = this._getAufstellungsUrl()
     this.ttrwerte.url = this._getTtrRanglisteUrl()
     this.bilanzen.url = this._getBilanzenUrl()

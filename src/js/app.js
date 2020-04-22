@@ -154,10 +154,10 @@ confirmClosePlanungDialog = () => {
   const dialog = remote.dialog
   const window = remote.getCurrentWindow();
   let options = {
-    type: "info",
+    type: "warning",
     title: "Ungespeicherte Änderungen",
-    message: "Die aktuelle Saisonplanung enthält ungespeicherte Änderungen.",
-    buttons: ["Speichern", "Ohne Speichern schließen", "Abbrechen"],
+    message: "Möchten Sie die Änderungen speichern, die Sie an der aktuellen Planung vorgenommen haben?\n\nIhre Änderungen gehen verloren, wenn Sie diese nicht speichern",
+    buttons: ["Speichern", "Nicht speichern", "Abbrechen"],
     cancelId: 2,
   }
   return dialog.showMessageBoxSync(window, options)
@@ -170,7 +170,7 @@ confirmClosePlanungDialog = () => {
 writePlanungToFile = (filepath, planung_json_str) => {
   fs.writeFile(filepath, planung_json_str, (err) => {
     if(err){
-        alert(`An error ocurred creating the file ${file_name}:` + err.message)
+        app.alert('danger', `An error ocurred creating the file ${file_name}:<br/>${err.message}`, -1)
     }
   })
 }
@@ -178,7 +178,7 @@ writePlanungToFile = (filepath, planung_json_str) => {
 openPlanungFromFile = (filepath) => {
   fs.readFile(filepath, 'utf-8', (err, planung_json_str) => {
     if(err){
-        alert("An error ocurred reading the file :" + err.message);
+        app.alert('danger', `An error ocurred reading the file ${file_name}:<br/>${err.message}`, -1);
         return;
     }
     app.closePlanungSave().then((result) => {

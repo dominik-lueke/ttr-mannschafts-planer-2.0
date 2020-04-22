@@ -1,13 +1,18 @@
+
+const xl = require('excel4node')
+
 class ExcelExporter {
 
-  constructor(){
-    this.xl = require('excel4node')
+  constructor () {
     this.styles = {}
   }
 
-  exportAsXlsx(planung, filepath) {
+  /**
+   * EXPORTED FUNCTIONS
+   */
+  exportAsXlsx = (planung, filepath) => {
     // Create a new instance of a Workbook class
-    var wb = new this.xl.Workbook()
+    var wb = new xl.Workbook()
     // Add Workbook
     var ws = wb.addWorksheet(`${planung.spielklasse} ${planung.url.halbserie.toUpperCase()} ${planung.saison.replace("/","-")}`)
     // Define the styles
@@ -16,10 +21,13 @@ class ExcelExporter {
     this._writeHeader(planung, ws)
     this._writeMannschaften(planung, ws, 4)
     // Save
-    this._saveWorkbook(wb, filepath)
+    return this._saveWorkbook(wb, filepath)
   }
 
-  _writeHeader(planung, ws) {
+  /**
+   * PRIVATE FUNCTIONS
+   */
+  _writeHeader = (planung, ws) => {
     // Header
     ws.cell(1,2).string(planung.verein)
     ws.cell(1,3).string(`${planung.halbserie} ${planung.saison}`)
@@ -37,7 +45,7 @@ class ExcelExporter {
       .style(this.styles.bold)
   }
 
-  _writeMannschaften(planung, ws, row) {
+  _writeMannschaften = (planung, ws, row) => {
     var write_to_row = row
     var rows_written = 0
     planung.mannschaften.liste.forEach( mannschaft => {
@@ -47,7 +55,7 @@ class ExcelExporter {
     return rows_written
   }
 
-  _writeMannschaft(planung, mannschaft, ws, row) {
+  _writeMannschaft = (planung, mannschaft, ws, row) => {
     var write_to_row = row
     var rows_written = 0
     // write header
@@ -55,7 +63,7 @@ class ExcelExporter {
     rows_written += header_rows_written
     write_to_row += header_rows_written
     // write spieler
-    planung.spieler.getSpielerOfMannschaft(mannschaft.nummer).forEach(spieler => {
+    planung.spieler.liste.filter(spieler => ( spieler.mannschaft === mannschaft.nummer)).forEach(spieler => {
       var spieler_rows_written = this._writeSpieler(spieler, ws, write_to_row)
       rows_written += spieler_rows_written
       write_to_row += spieler_rows_written
@@ -63,7 +71,7 @@ class ExcelExporter {
     return rows_written
   }
 
-  _writeMannschaftHeader(mannschaft, ws, row) {
+  _writeMannschaftHeader = (mannschaft, ws, row) => {
     var write_to_row = row
     ws.cell(write_to_row,2).string(`${mannschaft.nummer}. ${mannschaft.spielklasse}`)
       .style(this.styles.mannschaft_header)
@@ -80,7 +88,7 @@ class ExcelExporter {
     return rows_written
   }
 
-  _writeSpieler(spieler, ws, row) {
+  _writeSpieler = (spieler, ws, row) => {
     var write_to_row = row
     // position
     ws.cell(write_to_row,2).string(`${spieler.position}.`)
@@ -102,12 +110,11 @@ class ExcelExporter {
     }
     if (spieler.reserve) {
       bemerkung.push("RES")
-      ws.cell(write_to_row,3).style(this.styles.color['light'])
     }
     if (spieler.sbe) {
       bemerkung.push("SBE")
     }
-    ws.cell(write_to_row,5).string(bemerkung.join(','))
+    ws.cell(write_to_row,6).string(bemerkung.join(','))
     // kommentar
     ws.cell(write_to_row,7).string(`${spieler.kommentar}`)
     // invalid
@@ -122,11 +129,24 @@ class ExcelExporter {
     return rows_written
   }
 
-  _saveWorkbook(wb, filepath) {
-    wb.write(filepath)
+  _saveWorkbook = async (wb, filepath) => {
+    var promise =  new Promise( (res,rej) => {
+      wb.write(filepath, (err, stats) => {
+        if (err) {
+          if (err.toString().includes("EBUSY: resource busy or locked")) {
+            res({success: false, message: `<strong>Der Export ist fehlgeschlagen!</strong><br/>Datei '${filepath}' wurde nicht erzeugt, da sie gerade geöffnet ist.`})
+          } else {
+            res({success: false, message: `<strong>Der Export ist fehlgeschlagen!</strong><br/>Datei '${filepath}' wurde nicht erzeugt, da ein unbekannter Fehler aufgetreten ist.<br/>${err.toString()}.`})
+          }
+        } else {
+          res({success: true, message: `<strong>Export erfolgreich</strong><br/>Datei '${filepath}' wurde erzeugt.`})
+        }
+      })
+    })
+    return await promise
   }
 
-  _defineStyles(wb, ws) {
+  _defineStyles = (wb, ws) => {
     // colum width
     ws.column(1).setWidth(1)  // "Margin"
     ws.column(2).setWidth(12) // Verein
@@ -242,3 +262,5 @@ class ExcelExporter {
   }
 
 }
+
+module.exports = new ExcelExporter()

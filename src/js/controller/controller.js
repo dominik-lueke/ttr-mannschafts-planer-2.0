@@ -13,8 +13,6 @@ class Controller {
     this.progessBarView = new ProgressBarView()
     // Parser
     this.myTTParser = new MyTTParser()
-    // Excel Export
-    this.excelExporter = new ExcelExporter()
 
     // Initial Display
     this.updateView()
@@ -138,10 +136,6 @@ class Controller {
 
   openPlanungFromJsonString = (planung_json_string) => {
     this.model.updatePlanung(JSON.parse(planung_json_string), true)
-  }
-
-  exportPlanungToXlsx = (filepath) => {
-    this.excelExporter.exportAsXlsx(this.planung, filepath)
   }
 
   setPlanungFile = (filepath) => {

@@ -1,5 +1,6 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, Menu, ipcMain} = require('electron')
+const {app, BrowserWindow, Menu, ipcMain, shell} = require('electron')
+const ExcelExporter = require('./src/js/export/excelExporter')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -51,9 +52,9 @@ function createWindow () {
           click() { saveFileAs() }
         },
         { type:'separator' },
-        { label:'Schließen', accelerator: 'CmdOrCtrl+W', click() { closeFile() } },
-        { type:'separator' },
         { label:'Exportieren nach Excel', accelerator: 'CmdOrCtrl+E', click() { exportFileAsXlsx() } },
+        { type:'separator' },
+        { label:'Schließen', accelerator: 'CmdOrCtrl+W', click() { closeFile() } },
         { type:'separator' },
         { label:'Beenden', role: 'quit'
         }
@@ -144,7 +145,7 @@ function openFile() {
 }
 
 function exportFileAsXlsx() {
-  let response = mainWindow.webContents.send('exportAsXlsx','Export as .xlsx file')
+  let response = mainWindow.webContents.send('exportAsExcel','Export as .xlsx file')
 }
 
 function undo() {
@@ -176,4 +177,17 @@ ipcMain.handle('setUndoEnabled', (event, args) => {
 ipcMain.handle('setRedoEnabled', (event, args) => {
   menu.getMenuItemById('redo').enabled = args
   return true
+})
+
+ipcMain.on('exportAsExcelReply', (event, args) => {
+  ExcelExporter.exportAsXlsx(JSON.parse(args.planung), args.filepath).then((result) => {
+    event.reply('exportAsExcelResult', result)
+    if (result.success){
+      try {
+        shell.openItem(args.filepath)
+      } catch (e) {
+        event.reply('showAlert', {type: 'danger', message: `Datei '${args.filepath} konnte nicht geöffnet werden`, timeout: -1 })
+      }
+    }
+  })
 })

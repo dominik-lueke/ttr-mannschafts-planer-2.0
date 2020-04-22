@@ -67,11 +67,27 @@ ipcRenderer.on('openFile', (event, args) => {
   })
 })
 
-ipcRenderer.on('exportAsXlsx', (event, args) => {
+ipcRenderer.on('exportAsExcel', (event, args) => {
   var filepath = exportAsXlsxDialog(app.planung)
   if ( filepath ) {
-    app.exportPlanungToXlsx(filepath)
+    app.showProgressBar('success', 'white', 'Exportiere nach Excel...')
+    ipcRenderer.send('exportAsExcelReply', {filepath: filepath, planung: app.planung.getPlanungAsJsonString()})
   }
+})
+
+ipcRenderer.on('exportAsExcelResult', (event, args) => {
+  setTimeout( () => {
+    app.hideProgressBar()
+    if (args.success){
+      app.alert('success', args.message)
+    } else {
+      app.alert('danger', args.message, -1)
+    }
+  }, 1000) // totally silly 1 second timeout to show the progressbar a decent amount of time to the user 
+})
+
+ipcRenderer.on('showAlert', (event, args) => {
+  app.alert(args.type, args.message, args.timeout)
 })
 
 ipcRenderer.on('undo', (event, args) => {
@@ -127,7 +143,7 @@ exportAsXlsxDialog = (planung) => {
     defaultPath : path.resolve(filepath_suggestion),
     buttonLabel : "Exportieren",
     filters :[
-      {name: 'Excel Arbeitsmappen', extensions: ['xlsx']},
+      {name: 'Excel Arbeitsmappen (*.xlsx)', extensions: ['xlsx']},
       {name: 'All Files', extensions: ['*']}
     ]
   }

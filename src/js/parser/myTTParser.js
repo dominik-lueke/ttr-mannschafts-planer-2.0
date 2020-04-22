@@ -85,19 +85,6 @@ class MyTTParser {
       }
       // spielklasse
       if (url_split.length > 10) {
-        var spielklasse_map = {
-          "H": "Herren",
-          "D": "Damen",
-          "J18": "Jungen 18",
-          "J15": "Jungen 15",
-          "J13": "Jungen 13",
-          "J11": "Jungen 11",
-          "M18": "Mädchen 18",
-          "M15": "Mädchen 15",
-          "M13": "Mädchen 13",
-          "M11": "Mädchen 11"
-        }
-        planung.spielklasse =  spielklasse_map[url_split[10]]
         planung.url.spielklasse = url_split[10]
       }
       // serie

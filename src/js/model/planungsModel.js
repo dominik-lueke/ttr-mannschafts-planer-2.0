@@ -560,6 +560,14 @@ class PlanungsModel {
       "Mädchen 15": "M15",
       "Mädchen 13": "M13",
       "Mädchen 11": "M11",
+      "Seniorinnen 40": "wS40",
+      "Seniorinnen 50": "wS50",
+      "Seniorinnen 60": "wS60",
+      "Seniorinnen 70": "wS70",
+      "Senioren 40": "mS40",
+      "Senioren 50": "mS50",
+      "Senioren 60": "mS60",
+      "Senioren 70": "mS70"
     }
     if ( valid_spielklassen_map.hasOwnProperty(spielklasse) ) {
       return valid_spielklassen_map[spielklasse]

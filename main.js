@@ -4,7 +4,7 @@ const ExcelExporter = require('./src/js/export/excelExporter')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
+let mainWindow, printWindow
 let menu 
 
 function createWindow () {
@@ -53,6 +53,8 @@ function createWindow () {
         },
         { type:'separator' },
         { label:'Exportieren nach Excel', accelerator: 'CmdOrCtrl+E', click() { exportFileAsXlsx() } },
+        { type:'separator' },
+        { label:'Drucken', accelerator: 'CmdOrCtrl+P', click() { printFile() } },
         { type:'separator' },
         { label:'Schließen', accelerator: 'CmdOrCtrl+W', click() { closeFile() } },
         { type:'separator' },
@@ -148,6 +150,29 @@ function exportFileAsXlsx() {
   let response = mainWindow.webContents.send('exportAsExcel','Export as .xlsx file')
 }
 
+function printFile() {
+  printWindow = new BrowserWindow({
+    show: false,
+    webPreferences: {
+      nodeIntegration: true,
+      webviewTag: true
+    }
+  })
+  printWindow.loadFile('index.html')
+  printWindow.once('ready-to-show', () => {
+    printWindow.webContents.print({}, function(success, errorType) {
+      if ( ! success ) {
+        if (errorType !== 'cancelled') {
+          mainWindow.webContents.send('showAlert', {type: 'danger', message: `Der Druck ist fehlgeschlagen!`, timeout: -1 })
+        }
+      } else {
+        mainWindow.webContents.send('showAlert', {type: 'success', message: `Saisonplanung erfolgreich gedruckt` })
+      }
+      printWindow.close()
+    })
+  })
+}
+
 function undo() {
   let response = mainWindow.webContents.send('undo','Take last action back')
 }
@@ -189,5 +214,16 @@ ipcMain.on('exportAsExcelReply', (event, args) => {
         event.reply('showAlert', {type: 'danger', message: `Datei '${args.filepath} konnte nicht geöffnet werden`, timeout: -1 })
       }
     }
+  })
+})
+
+ipcMain.on('printReady', (event, args) => {
+  printWindow.webContents.print({}, function(success, errorType) {
+    if ( ! success ) {
+      if (errorType !== 'cancelled') {
+        mainWindow.webContents.send('showAlert', {type: 'danger', message: `Der Druck ist fehlgeschlagen!`, timeout: -1 })
+      }
+    }
+    printWindow.close()
   })
 })

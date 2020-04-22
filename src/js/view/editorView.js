@@ -6,7 +6,7 @@ class EditorView {
           <div id="editor-col" class="col-8" >
             <div id="mannschafts-container" class="container connected-sortable-mannschaft">
             </div>
-            <div class="container">
+            <div id="add-mannschaft-button-container" class="container">
               <div class="row mannschafts-row">
                 <div class="empty-planung-message text-center mannschaft mb-3 display-none">
                   <h6 class="mb-3">Es existieren noch keine Mannschaften oder Spieler</h6>

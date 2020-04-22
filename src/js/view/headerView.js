@@ -31,6 +31,9 @@ class HeaderView {
               </div>
             </div>
           </div>
+          <div id="header-print-date-div" class="display-none">
+            <h4><small id="header-print-date">${new Date().getDate()}.${new Date().getMonth()+1}.${new Date().getFullYear()}</small></h4>
+          </div>
         </div>
       </div>
     `)
@@ -54,6 +57,7 @@ class HeaderView {
         icon: $("#header-bilanzen-status-icon i.fa"),
       }
     }
+    this.print_date = $('#header-print-date')
   }
 
   bindClickOnReloadDataButon(handler) {
@@ -85,6 +89,7 @@ class HeaderView {
     } else {
       this.mytt_status.div.removeClass("display-none")
     }
+    this.print_date.text(`${new Date().getDate()}.${new Date().getMonth()+1}.${new Date().getFullYear()}`)
   }
 
   _updateMyTTStatusIcons() {

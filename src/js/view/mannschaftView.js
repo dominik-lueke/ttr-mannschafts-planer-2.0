@@ -43,7 +43,7 @@ class MannschaftView {
     // Spieler Hinzufügen Form
     // New spieler button in seperate list because we dont want it to be draggable
     mannschafts_div.append(`
-      <ul class="list-group list-group-flush">
+      <ul class="list-group list-group-flush add-spieler-button-container">
         <li id="mannschaft-${id}-new-spieler" class="list-group-item spieler new-spieler-form">
           <div class="d-flex">
             <div id="mannschaft-${id}-new-position" class="p-2 text-muted invisible">${mannschaft.nummer}.${mannschaftsspieler.length + 1}</div>

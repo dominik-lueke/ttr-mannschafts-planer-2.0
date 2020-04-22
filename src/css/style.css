@@ -262,3 +262,69 @@ span.badge {
   font-size: 1.3em;
 }
 
+/* PRINT */
+
+@media print {
+
+  @page:first {
+    margin: 15mm 0mm 20mm 0mm;
+  }
+  @page {
+    margin: 25mm 0mm 20mm 0mm;
+  }
+
+  body {
+    margin:0;
+    padding:0;
+  }
+
+  #header > div {
+    position: relative !important;
+  }
+
+  .editor-container {
+    margin-top: 0px;
+  }
+
+  .mannschaft {
+    border: 2px solid;
+  }
+
+  .mannschaft .mannschaft-header {
+    border-bottom: 2px solid;
+  }
+
+  .mannschaft .spielerliste li {
+    border-top: 2px solid;
+  }
+
+  #editor-col {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+  }
+
+  #sidebar,
+  #alert,
+  #progressbar
+  #myTTModal,
+  #newPlanungModal,
+  #header-mytt-status-div,
+  #add-mannschaft-button-container,
+  ul.add-spieler-button-container,
+  div.spv span.badge-light {
+    display: none;
+  }
+
+  #header-print-date-div {
+    display: block !important;
+  }
+
+  .mannschafts-row {
+    page-break-inside: avoid;
+  }
+
+  #editor div {
+    -webkit-print-color-adjust: exact;
+  }
+
+}

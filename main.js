@@ -6,6 +6,8 @@ const ExcelExporter = require('./src/js/export/excelExporter')
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow, printWindow
 let menu 
+let pdfPrinter = "Microsoft Print to PDF"
+
 
 function createWindow () {
   // Create the browser window.
@@ -52,7 +54,27 @@ function createWindow () {
           click() { saveFileAs() }
         },
         { type:'separator' },
-        { label:'Exportieren nach Excel', accelerator: 'CmdOrCtrl+E', click() { exportFileAsXlsx() } },
+        { 
+          label:'Exportieren nach Excel', 
+          accelerator: (function() {
+            if (process.platform === 'darwin')
+              return 'Alt+Command+E';
+            else
+              return 'Ctrl+Shift+E';
+          })(),
+          click() { exportFileAsXlsx() } 
+        },
+        { 
+          label:'Exportieren nach PDF',
+          visible: isPdfPrinterAvailable(),
+          accelerator: (function() {
+            if (process.platform === 'darwin')
+              return 'Alt+Command+P';
+            else
+              return 'Ctrl+Shift+P';
+          })(),
+          click() { exportFileAsPdf() } 
+        },
         { type:'separator' },
         { label:'Drucken', accelerator: 'CmdOrCtrl+P', click() { printFile() } },
         { type:'separator' },
@@ -150,7 +172,15 @@ function exportFileAsXlsx() {
   let response = mainWindow.webContents.send('exportAsExcel','Export as .xlsx file')
 }
 
-function printFile() {
+function exportFileAsPdf() {
+  mainWindow.webContents.send('showProgressbar', {type: 'danger', textcolor: 'white', message: 'PDF Export wird ausgeführt...', timeout: -1 })
+  printFile(
+    {deviceName: pdfPrinter, silent: true},
+    {success: `Die Saisonplanung wurde erfolgreich als PDF exportiert.`, error: `Der PDF Export ist fehlgeschlagen oder wurde abgebrochen!` }
+  )
+}
+
+function printFile(printOptions={}, messages={success: `Saisonplanung erfolgreich gedruckt`, error: `Der Druck ist fehlgeschlagen!` } ) {
   printWindow = new BrowserWindow({
     show: false,
     webPreferences: {
@@ -160,13 +190,14 @@ function printFile() {
   })
   printWindow.loadFile('index.html')
   printWindow.once('ready-to-show', () => {
-    printWindow.webContents.print({}, function(success, errorType) {
+    printWindow.webContents.print(printOptions, function(success, errorType) {
+      mainWindow.webContents.send('hideProgressbar', "")
       if ( ! success ) {
         if (errorType !== 'cancelled') {
-          mainWindow.webContents.send('showAlert', {type: 'danger', message: `Der Druck ist fehlgeschlagen!`, timeout: -1 })
+          mainWindow.webContents.send('showAlert', {type: 'danger', message: messages.error, timeout: -1 })
         }
       } else {
-        mainWindow.webContents.send('showAlert', {type: 'success', message: `Saisonplanung erfolgreich gedruckt` })
+        mainWindow.webContents.send('showAlert', {type: 'success', message: messages.success })
       }
       printWindow.close()
     })
@@ -179,6 +210,12 @@ function undo() {
 
 function redo() {
   let response = mainWindow.webContents.send('redo','Redo last action')
+}
+
+function isPdfPrinterAvailable() {
+  return mainWindow.webContents.getPrinters().reduce((total, current) => { 
+    return total || ( current.name === pdfPrinter ) 
+  }, false);
 }
 
 /**
@@ -214,16 +251,5 @@ ipcMain.on('exportAsExcelReply', (event, args) => {
         event.reply('showAlert', {type: 'danger', message: `Datei '${args.filepath} konnte nicht geöffnet werden`, timeout: -1 })
       }
     }
-  })
-})
-
-ipcMain.on('printReady', (event, args) => {
-  printWindow.webContents.print({}, function(success, errorType) {
-    if ( ! success ) {
-      if (errorType !== 'cancelled') {
-        mainWindow.webContents.send('showAlert', {type: 'danger', message: `Der Druck ist fehlgeschlagen!`, timeout: -1 })
-      }
-    }
-    printWindow.close()
   })
 })

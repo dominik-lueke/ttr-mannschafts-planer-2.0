@@ -90,6 +90,14 @@ ipcRenderer.on('showAlert', (event, args) => {
   app.alert(args.type, args.message, args.timeout)
 })
 
+ipcRenderer.on('showProgressbar', (event, args) => {
+  app.showProgressBar(args.type, args.textcolor, args.message, args.timeout)
+})
+
+ipcRenderer.on('hideProgressbar', (event, args) => {
+  app.hideProgressBar()
+})
+
 ipcRenderer.on('undo', (event, args) => {
   app.undo()
 })

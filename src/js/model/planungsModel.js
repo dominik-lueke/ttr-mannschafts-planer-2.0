@@ -27,7 +27,8 @@ class PlanungsModel {
       status: "offline",
       date: new Date(0,0),
       aktuell: "Q-TTR",
-      datestring: ""
+      datestring: "",
+      spielklasse: spielklasse
     }
     this.bilanzen = {
       url: this._getBilanzenUrl(),
@@ -111,8 +112,27 @@ class PlanungsModel {
     this._commit()
   }
 
+  _setTtrwerteStatus(){
+    if (this.ttrwerte.status !== 'offline') {
+      const today = new Date(Date.now())
+      const this_year = today.getFullYear()
+      // get latest qttr-stichtag
+      var latest_qttr_stichtag
+      [-11,1,4,7,11].forEach(month => {
+        var year = this_year
+        year -= month < 0 ? 1 : 0
+        month = Math.abs(month)
+        var qttr_stichtag = new Date(year, month, 11)
+        if ( today.getTime() > qttr_stichtag.getTime()) { 
+          latest_qttr_stichtag = qttr_stichtag 
+        }
+      })
+      this.ttrwerte.status = this.ttrwerte.date.getTime() > latest_qttr_stichtag.getTime() ? "ok" : "outdated"
+    }
+  }
+
   _setBilanzenStatus(){
-    //Check if the latest saison from Bilanzen is at least the previous halbserie of this planung
+    // Check if the latest saison from Bilanzen is at least the previous halbserie of this planung
     if (this.bilanzen.saisons.length > 0) {
       if ( this.compareHalbserien(this.bilanzen.saisons[0], this._getOtherHalbserie() + " " + this._getPreviousSaison()) <= 0 ){
         this.bilanzen.status = "ok"
@@ -325,11 +345,24 @@ class PlanungsModel {
 
   _parsePlanungJson(planung_json, update_aufstellung=false) {
     this._disableCommit() // do no commit while loading the whole json
-    var qttr_values_changed = false
-    const current_anzahl_mannschaften = this.mannschaften.liste.length
+
     if (update_aufstellung){
       this.spieler.clearAllSpielerPositionen()
+      // set spielklasse also for mannschaften and spieler
+      if (planung_json.hasOwnProperty("spielklasse")) {
+        this.spieler.spielklasse = planung_json.spielklasse
+        this.mannschaften.spielklasse = planung_json.spielklasse
+        // reset mannschaften, spieler, bilanzen if we change the spielklasse
+        if (this.spielklasse !== planung_json.spielklasse) {
+          this.mannschaften.liste = []
+          this.bilanzen.saisons = []
+        }
+      }
     }
+
+    var qttr_values_changed = false
+    const current_anzahl_mannschaften = this.mannschaften.liste.length
+
     for (var key in planung_json) {
       if (planung_json.hasOwnProperty(key)) {
 
@@ -431,11 +464,6 @@ class PlanungsModel {
         /* Set other planungs properties */ 
         } else {
           this[key] = planung_json[key]
-          // set spielklasse also for mannschaften and spieler
-          if (key == "spielklasse") {
-            this.spieler.spielklasse = planung_json.spielklasse
-            this.mannschaften.spielklasse = planung_json.spielklasse
-          }
         }
       }
     }
@@ -443,7 +471,8 @@ class PlanungsModel {
     if ("ttrwerte" in planung_json && "date" in planung_json.ttrwerte) {
       this.ttrwerte.date = new Date(planung_json.ttrwerte.date)
     }
-    // bilanzen status
+    // bilanzen + ttrwerte status
+    this._setTtrwerteStatus()
     this._setBilanzenStatus()
     // Check if we need to recompute aufstellung
     if ( update_aufstellung ) {

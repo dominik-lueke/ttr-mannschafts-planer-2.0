@@ -198,11 +198,11 @@ a .spieler-farbe-selector {
 
 #myTTModal .modal-body {
   height: 70vh;
-  min-height: 550px;
+  min-height: 725px;
 }
 
 #myTTModal .myttmodal-status {
-  min-height: 3em;
+  min-height: 5em;
 }
 
 #myTTModal .myttmodal-load-button {

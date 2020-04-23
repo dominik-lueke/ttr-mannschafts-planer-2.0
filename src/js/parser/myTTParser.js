@@ -101,8 +101,6 @@ class MyTTParser {
         }
         planung.ttrwerte.date = new Date(qttr_year, qttr_month, 11)
         planung.ttrwerte.datestring = `${planung.ttrwerte.date.getDate()}.${planung.ttrwerte.date.getMonth()+1}.${planung.ttrwerte.date.getFullYear()}`
-        const qttr_age_in_days = ( Date.now() - planung.ttrwerte.date ) / (1000*60*60*24)
-        planung.ttrwerte.status = qttr_age_in_days <= 90 ? "ok" : "outdated"
       }
 
     }
@@ -238,6 +236,13 @@ class MyTTParser {
       statusHtml += `Keine Spieler ${this._getStatusIcon("danger") } `
       aufstellungFound = false
     }
+    statusHtml += "<br/>"
+    // ttrwerte 
+    if ("ttrwerte" in planung && "aktuell" in planung.ttrwerte && "datestring" in planung.ttrwerte) {
+      statusHtml += `TTR-Stichtag: ${planung.ttrwerte.datestring} (${planung.ttrwerte.aktuell}) ${this._getStatusIcon("success") } `
+    } else {
+      statusHtml += `Keine TTR-Werte gefunden ${this._getStatusIcon("danger") } `
+    }
 
     var planung_changed = false
     var planungs_difference_html = '<b><i class="fa fa-warning text-warning"></i></b> Die aktuelle Planung wird verändert.<br/>'
@@ -334,8 +339,6 @@ class MyTTParser {
     }
     planung.ttrwerte.date = ttr_date
     planung.ttrwerte.datestring = `${planung.ttrwerte.date.getDate()}.${planung.ttrwerte.date.getMonth()+1}.${planung.ttrwerte.date.getFullYear()}`
-    const qttr_age_in_days = ( Date.now() - planung.ttrwerte.date ) / (1000*60*60*24)
-    planung.ttrwerte.status = qttr_age_in_days <= 90 ? "ok" : "outdated"
     // spieler
     var verein = null
     const trs = jq.find("div#rankingList table.table-mytt tbody tr")

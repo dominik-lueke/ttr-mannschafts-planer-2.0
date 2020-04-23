@@ -148,9 +148,9 @@ class MyTTModalTabView {
     if ( this.webview.getAttribute("src") !== url || reload ) {
       this.url_input.val(url)
       this.webview.setAttribute("src", url)
+      this.load_button.prop("disabled", true)
+      this.status_row.html(`<small>Suche ${this.id}</small> <div class="spinner-grow spinner-grow-sm" role="status"><span class="sr-only">Lade Informationen...</span></div>`)
     }
-    this.load_button.prop("disabled", true)
-    this.status_row.html(`<small>Suche ${this.id}</small> <div class="spinner-grow spinner-grow-sm" role="status"><span class="sr-only">Lade Informationen...</span></div>`)
   }
 
   _loadData(handler) {

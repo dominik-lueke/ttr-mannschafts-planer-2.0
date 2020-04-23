@@ -139,7 +139,7 @@ class HeaderView {
         this.mytt_status.ttrwerte.badge.removeClass("text-muted")
         this.mytt_status.ttrwerte.icon.removeClass("fa-times-circle").removeClass("fa-check-circle").addClass("fa-warning")
         this.mytt_status.ttrwerte.icon.removeClass("text-muted").removeClass("text-success").addClass("text-warning")
-        this.mytt_status.ttrwerte.div.attr("title", `Das Datum der geladenen TTR-Werte (${this.planung.ttrwerte.datestring}) liegt über 90 Tage zurück`)
+        this.mytt_status.ttrwerte.div.attr("title", `Seit dem Datum der geladenen TTR-Werte (${this.planung.ttrwerte.datestring}) wurden bereits neue Q-TTR Werte veröffentlicht`)
         break
       default:
         break

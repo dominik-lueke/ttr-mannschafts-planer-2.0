@@ -8,32 +8,36 @@ let mainWindow, printWindow
 let menu 
 let pdfPrinter = "Microsoft Print to PDF"
 
+// Development Mode
+const is_dev_mode = process.argv[2] === '--dev';
+if (is_dev_mode) console.log("Developer Mode on")
 
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
+    show: false,
     webPreferences: {
       nodeIntegration: true,
-      webviewTag: true
+      webviewTag: true,
+      devTools: is_dev_mode
     }
 
   })
   mainWindow.maximize()
 
-  // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
-
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show()
+  })
 
   // Emitted when the window is closed.
-  mainWindow.on('closed', function () {
+  mainWindow.on('closed', () => {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null
   })
 
+  // Menu
   menu = Menu.buildFromTemplate([
     {
       label: 'Datei',
@@ -103,25 +107,37 @@ function createWindow () {
         { label: 'Vollbild', role: 'togglefullscreen' },
       ]
     }
-    ,
-    { 
-      label: 'Developer',
-      submenu: [
-        {
-          label: 'Toggle Developer Tools',
-          accelerator: (function() {
-            if (process.platform === 'darwin')
-              return 'Alt+Command+I';
-            else
-              return 'Ctrl+Shift+I';
-          })(),
-          role: 'toggleDevTools'
-        }
-      ]
-    }
   ])
   Menu.setApplicationMenu(menu);
 
+  if ( is_dev_mode ) {
+    devmenu = Menu.buildFromTemplate([
+      { 
+        id: 'dev-menu-item',
+        label: 'Developer',
+        submenu: [
+          {
+            label: 'Toggle Developer Tools',
+            accelerator: (function() {
+              if (process.platform === 'darwin')
+                return 'Alt+Command+I';
+              else
+                return 'Ctrl+Shift+I';
+            })(),
+            role: 'toggleDevTools'
+          }
+        ]
+      }
+    ])
+    menu.append(devmenu.getMenuItemById('dev-menu-item'))
+    Menu.setApplicationMenu(menu);
+  }
+
+  // and load the index.html of the app.
+  mainWindow.loadFile('index.html')
+
+  // Open the DevTools.
+  if ( is_dev_mode ) mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished

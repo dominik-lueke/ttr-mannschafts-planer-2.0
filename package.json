@@ -5,6 +5,7 @@
   "productName": "Tischtennis Mannschafts Planer",
   "main": "main.js",
   "scripts": {
+    "test": "electron . --dev",
     "start": "electron ."
   },
   "repository": "https://bitbucket.org/dominiklueke/ttr-mannschafts-planer-2.0/",

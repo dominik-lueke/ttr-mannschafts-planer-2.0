@@ -1,0 +1,1 @@
+electron-packager . --out=dist --icon=.\src\image\appicon.ico --overwrite

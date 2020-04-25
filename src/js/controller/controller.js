@@ -145,6 +145,7 @@ class Controller {
   openPlanung = (planung_json_string, filepath) => {
     this.model.updatePlanung(JSON.parse(planung_json_string), true)
     this.setPlanungFile(filepath) // unfortunately this leads to a new entry in the undo history
+    this.model.resetUndoRedo() // reset the undo history
   }
 
   setPlanungFile = (filepath) => {

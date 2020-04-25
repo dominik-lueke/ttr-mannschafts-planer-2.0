@@ -77,6 +77,15 @@ class Model {
     }
   }
 
+  resetUndoRedo() {
+    this.history = {
+      undo: [this.planung.getPlanungAsJsonString()], // the tip of undo is always the current planung
+      redo: []
+    }
+    ipcRenderer.invoke('setUndoEnabled', this.history.undo.length > 1)
+    ipcRenderer.invoke('setRedoEnabled', this.history.redo.length > 0)
+  }
+
   /**
    * EVENT HANDLER
    */

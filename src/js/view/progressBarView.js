@@ -1,7 +1,7 @@
 class ProgressBarView {
   constructor(){
     $('#progressbar').append(`
-      <div class="progressbar-container">
+      <div class="progressbar-container display-none">
         <div class="progress">
           <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
           </div>
@@ -12,10 +12,9 @@ class ProgressBarView {
     this.progressbar=$('#progressbar .progressbar-container .progress-bar')
     this.current_color = ""
     this.current_textcolor = ""
-    this.hide()
   }
   
-  show(color="primary", textcolor="white", text="", timeout=-1){
+  show(color="primary", textcolor="white", text="", fullscreen=false, timeout=-1){
     // hide the current message
     this.progressbar_container.hide()
     // display
@@ -24,7 +23,13 @@ class ProgressBarView {
     this.current_textcolor = `text-${textcolor}`
     this.progressbar.addClass(this.current_color).removeClass(this.current_textcolor)
     this.progressbar.text(text)
-    this.progressbar_container.fadeIn(250)
+    if ( fullscreen ) {
+      this.progressbar_container.addClass("fullscreen")
+      this.progressbar_container.show()
+    } else {
+      this.progressbar_container.removeClass("fullscreen")
+      this.progressbar_container.fadeIn(250)
+    }
     // timeout
     if (timeout > 0) {
       this.progressbar_container.delay(timeout).fadeOut(250)

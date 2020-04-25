@@ -195,7 +195,7 @@ function exportFileAsXlsx() {
 }
 
 function exportFileAsPdf() {
-  mainWindow.webContents.send('showProgressbar', {type: 'danger', textcolor: 'white', message: 'PDF Export wird ausgeführt...', timeout: -1 })
+  mainWindow.webContents.send('showProgressbar', {type: 'danger', textcolor: 'white', message: 'PDF Export wird ausgeführt...', fullscreen: false, timeout: -1 })
   printFile(
     {deviceName: pdfPrinter, silent: true},
     {success: `Die Saisonplanung wurde erfolgreich als PDF exportiert.`, error: `Der PDF Export ist fehlgeschlagen oder wurde abgebrochen!` }

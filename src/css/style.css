@@ -246,16 +246,20 @@ span.badge {
 .progressbar-container {
   display: none;
   position: fixed; 
+  top: 0;
   z-index: 9999; 
-  top: 45vh; 
-  width: 100%
+  height: 100vh; 
+  width: 100vw
+}
+
+.progressbar-container.fullscreen {
+  background: #ffffff;
 }
 
 .progressbar-container .progress {
   height: 40px; 
   width: 20%; 
-  margin: 0 auto;
-  
+  margin: 45vh auto;
 }
 
 .progressbar-container .progress .progress-bar {

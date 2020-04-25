@@ -1,5 +1,8 @@
 class Controller {
   constructor() {
+    // start "loading"
+    this.progessBarView = new ProgressBarView()
+    this.showProgressBar("primary","white","",true,1000)
     // Model
     this.model = new Model()
     this.planung = this.model.planung // only one planung at a time right now
@@ -10,18 +13,14 @@ class Controller {
     this.myTTModalView = new MyTTModalView()
     this.newPlanungModalView = new NewPlanungModalView()
     this.alertView = new AlertView()
-    this.progessBarView = new ProgressBarView()
     // Parser
     this.myTTParser = new MyTTParser()
-
     // Initial Display
     this.updateView()
-
     // Bind Model Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
     this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
-
     // Bind View Handlers
     this.editorView.bindAddMannschaft(this.handleAddMannschaft)
     this.editorView.bindClickOnLadeAufstellungLink(this.handleClickOnLadeAufstellungLink)
@@ -207,8 +206,8 @@ class Controller {
     this.alertView.displayAlert(type, html_content, timeout)
   }
 
-  showProgressBar = (color="primary", textcolor="white", text="", timeout=-1) => {
-    this.progessBarView.show(color, textcolor, text, timeout)
+  showProgressBar = (color="primary", textcolor="white", text="", fullscreen=false, timeout=-1) => {
+    this.progessBarView.show(color, textcolor, text, fullscreen, timeout)
   }
 
   hideProgressBar = () => {

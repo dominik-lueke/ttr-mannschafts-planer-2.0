@@ -84,7 +84,7 @@ ipcRenderer.on('showAlert', (event, args) => {
 })
 
 ipcRenderer.on('showProgressbar', (event, args) => {
-  app.showProgressBar(args.type, args.textcolor, args.message, args.timeout)
+  app.showProgressBar(args.type, args.textcolor, args.message, args.fullscreen, args.timeout)
 })
 
 ipcRenderer.on('hideProgressbar', (event, args) => {
@@ -185,6 +185,7 @@ writePlanungToFile = (filepath, planung_json_str) => {
 }
 
 openPlanungFromFile = (filepath) => {
+  app.showProgressBar("primary","white","",true) // start "loading"
   fs.readFile(filepath, 'utf-8', (err, planung_json_str) => {
     if(err){
         app.alert('danger', `An error ocurred reading the file ${file_name}:<br/>${err.message}`, -1);
@@ -194,6 +195,7 @@ openPlanungFromFile = (filepath) => {
       if (result) {
         app.openPlanung(planung_json_str, filepath)
       }
+      app.hideProgressBar() // stop "loading"
     })
   });
 }

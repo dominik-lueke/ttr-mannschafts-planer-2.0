@@ -4,13 +4,36 @@ const ExcelExporter = require('./src/js/export/excelExporter')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow, printWindow
+let mainWindow, printWindow, splashScreen
 let menu 
 let pdfPrinter = "Microsoft Print to PDF"
 
 // Development Mode
 const is_dev_mode = process.argv[2] === '--dev';
 if (is_dev_mode) console.log("Developer Mode on")
+
+function createAppWindows() {
+  createSplashscreen()
+  setTimeout( () => {
+    createWindow()
+  }, 1000)
+}
+
+function createSplashscreen() {
+  splashScreen = new BrowserWindow({ 
+    width: 500,
+    height: 300,
+    frame: false
+  })
+  splashScreen.setIgnoreMouseEvents(true)
+  splashScreen.loadFile('./src/html/splashscreen.html')
+  splashScreen.once('ready-to-show', () => {
+    splashScreen.show()
+  })
+  splashScreen.on('closed', () => {
+    splashScreen = null
+  })
+}
 
 function createWindow () {
   // Create the browser window.
@@ -21,12 +44,6 @@ function createWindow () {
       webviewTag: true,
       devTools: is_dev_mode
     }
-
-  })
-  mainWindow.maximize()
-
-  mainWindow.once('ready-to-show', () => {
-    mainWindow.show()
   })
 
   // Emitted when the window is closed.
@@ -41,6 +58,14 @@ function createWindow () {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null
+  })
+
+  mainWindow.once('ready-to-show', () => {
+    setTimeout(()=>{
+      splashScreen.destroy()
+      mainWindow.maximize()
+      mainWindow.show()
+    }, 1000)
   })
 
   // Menu
@@ -149,7 +174,9 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', () => {
+  createAppWindows()
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -161,7 +188,7 @@ app.on('window-all-closed', function () {
 app.on('activate', function () {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) createWindow()
+  if (mainWindow === null) createAppWindows()
 })
 
 // In this file you can include the rest of your app's specific main process

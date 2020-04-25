@@ -9,13 +9,6 @@ var eleapp = remote.app
 var path = require('path')
 var fs = require('fs')
 
-/*
-* --------------
-*     M V C
-* --------------
-*/
-const app = new Controller()
-
 /**
  * EVENTS FROM MENU
  */
@@ -106,6 +99,14 @@ ipcRenderer.on('redo', (event, args) => {
   app.redo()
 })
 
+ipcRenderer.on('quit', (event, args) => {
+  app.closePlanungSave().then((result) => {
+    if (result) {
+      ipcRenderer.send('quitOK')
+    }
+  })
+})
+
 /**
  * DIALOGS
  */
@@ -191,9 +192,18 @@ openPlanungFromFile = (filepath) => {
     }
     app.closePlanungSave().then((result) => {
       if (result) {
-        app.openPlanungFromJsonString(planung_json_str)
-        app.setPlanungFile(filepath)
+        app.openPlanung(planung_json_str, filepath)
       }
     })
   });
+}
+
+/*
+* --------------
+*     M V C
+* --------------
+*/
+const app = new Controller()
+if (localStorage.getItem('localStorageFilepath')) {
+  openPlanungFromFile(localStorage.getItem('localStorageFilepath'))
 }

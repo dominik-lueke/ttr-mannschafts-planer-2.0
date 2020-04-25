@@ -2,12 +2,13 @@ class Model {
 
   constructor() {
     // store the view
-    this.view = JSON.parse(localStorage.getItem('localStorageView')) || {
+    const stored_view_json_str = localStorage.getItem('localStorageView')
+    this.view = stored_view_json_str ? JSON.parse(stored_view_json_str) : {
       sidebar: {
         display: "",
         id: 0
       }
-    } // 
+    }
     this.onSidebarViewChanged = () => {}
 
     this.history = {
@@ -16,8 +17,9 @@ class Model {
     }
 
     // load planung or create new
-    const stored_planung = JSON.parse(localStorage.getItem('localStoragePlanung'))
-    this.planung = this.createNewPlanung(stored_planung)
+    const stored_planung_json_str = localStorage.getItem('localStoragePlanung')
+    const stored_planung_json = stored_planung_json_str ? JSON.parse(stored_planung_json_str) : undefined
+    this.planung = this.createNewPlanung(stored_planung_json)
   }
 
   /**

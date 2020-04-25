@@ -26,7 +26,7 @@ class Controller {
     this.editorView.bindAddMannschaft(this.handleAddMannschaft)
     this.editorView.bindClickOnLadeAufstellungLink(this.handleClickOnLadeAufstellungLink)
     this.editorView.bindClickOnNeuePlanungButton(this.createNewPlanung)
-    this.editorView.bindClickOnOeffnePlanungButton(this.openPlanung)
+    this.editorView.bindClickOnOeffnePlanungButton(this.handleClickOpenPlanungButton)
     this.headerView.bindClickOnReloadDataButon(this.handleClickOnReloadDataButton)
     // MYTTMODAL VIEW
     this.myTTModalView.bindHtmlParser("aufstellung", this.parseAufstellungHtml)
@@ -111,9 +111,17 @@ class Controller {
   }
 
   closePlanung = () => {
+    // store current file
+    if (this.planung.file) {
+      localStorage.setItem('localStorageFilepath', this.planung.file)
+    } else {
+      localStorage.removeItem('localStorageFilepath', this.planung.file)
+    }
     // New planung
     this.model.createNewPlanung()
     this.planung = this.model.planung
+    // reset local storage
+    localStorage.removeItem('localStoragePlanung')
     // Bind Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
@@ -126,7 +134,7 @@ class Controller {
     this.updateView()
   }
 
-  openPlanung = () => {
+  handleClickOpenPlanungButton = () => {
     ipcRenderer.invoke('openFile', 'Open a File')
   }
 
@@ -134,8 +142,9 @@ class Controller {
     return this.planung.getPlanungAsJsonString()
   }
 
-  openPlanungFromJsonString = (planung_json_string) => {
+  openPlanung = (planung_json_string, filepath) => {
     this.model.updatePlanung(JSON.parse(planung_json_string), true)
+    this.setPlanungFile(filepath) // unfortunately this leads to a new entry in the undo history
   }
 
   setPlanungFile = (filepath) => {

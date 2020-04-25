@@ -30,6 +30,12 @@ function createWindow () {
   })
 
   // Emitted when the window is closed.
+  mainWindow.on('close', (event) => {
+    event.preventDefault()
+    let response = mainWindow.webContents.send('quit','Close the current File then quit')
+  })
+
+  // Emitted when the window is closed.
   mainWindow.on('closed', () => {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
@@ -268,4 +274,9 @@ ipcMain.on('exportAsExcelReply', (event, args) => {
       }
     }
   })
+})
+
+ipcMain.on('quitOK', (event, args) => {
+  mainWindow.destroy()
+  app.quit()
 })

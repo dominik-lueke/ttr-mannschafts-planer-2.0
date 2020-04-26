@@ -63,7 +63,7 @@ class MannschaftDetailsView {
         <h6 class="text-muted">Kommentar</h6>
         <div class="form-row mb-4">
           <div class="col">
-            <textarea id="mannschaft-details-comment-input" class="form-control form-control-sm" rows="2">Kommentar</textarea>
+            <input id="mannschaft-details-comment-input" class="form-control form-control-sm" type="text"></textarea>
           </div>
         </div>
       </div>
@@ -307,7 +307,12 @@ class MannschaftDetailsView {
 
   _editKommentarKeyUpHandler(event, handler) {
     event.preventDefault()
-    if (event.keyCode === 27) {
+    // On <Enter> we edit kommentar
+    if (event.keyCode === 13) {
+      this._editKommentar(handler)
+      this.comment_input.blur()
+    // On <Escape> we cancel
+    } else if (event.keyCode === 27) {
       this.comment_input.val(this.mannschaft.kommentar)
       this.comment_input.blur()
     }
@@ -315,7 +320,7 @@ class MannschaftDetailsView {
 
   _editKommentarFocusOutHandler(event, handler) {
     event.preventDefault()
-    this._editKommentar(handler)
+    this.comment_input.val(this.mannschaft.kommentar)
   }
 
   _editKommentar(handler){

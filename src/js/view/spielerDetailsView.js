@@ -50,7 +50,7 @@ class SpielerDetailsView {
         <div class="form-row mb-4">
           <div class="col">
             <h6 class="text-muted">Kommentar</h6>
-            <textarea id= "spieler-details-comment-input" class="form-control form-control-sm" rows="2">Kommentar</textarea>
+            <input id="spieler-details-comment-input" class="form-control form-control-sm" type="text"></input>
           </div>
         </div>
       </div>
@@ -242,15 +242,7 @@ class SpielerDetailsView {
   }
 
   _editNameFocusOutHandler(event, handler) {
-    event.preventDefault()
-    var input = this.name_input.val()
-    // If not empty we edit name
-    if (input !== "") { 
-      this._editName(handler)
-    // Else we cancel
-    } else {
-      this.name_input.val(this.spieler.name)
-    }
+    this.name_input.val(this.spieler.name)
   }
 
   _editName(handler){
@@ -284,15 +276,7 @@ class SpielerDetailsView {
 
   _editQttrFocusOutHandler(event, handler) {
     event.preventDefault()
-    var input = this.qttr_input.val()
-    // If not empty we edit qttr
-    if (input !== "") { 
-      this._editQttr(handler)
-    // Else we cancel
-    } else {
-      this.qttr_input.removeClass("is-invalid") 
-      this.qttr_input.val(this.spieler.qttr)
-    }
+    this.qttr_input.val(this.spieler.qttr)
   }
 
   _editQttr(handler){
@@ -348,7 +332,12 @@ class SpielerDetailsView {
 
   _editKommentarKeyUpHandler(event, handler) {
     event.preventDefault()
-    if (event.keyCode === 27) {
+    // On <Enter> we edit kommentar
+    if (event.keyCode === 13) {
+      this._editKommentar(handler)
+      this.comment_input.blur()
+    // On <Escape> we cancel
+    } else if (event.keyCode === 27) {
       this.comment_input.val(this.spieler.kommentar)
       this.comment_input.blur()
     }
@@ -356,7 +345,7 @@ class SpielerDetailsView {
 
   _editKommentarFocusOutHandler(event, handler) {
     event.preventDefault()
-    this._editKommentar(handler)
+    this.comment_input.val(this.spieler.kommentar)
   }
 
   _editKommentar(handler){

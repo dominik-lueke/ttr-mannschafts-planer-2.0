@@ -74,8 +74,8 @@ class MyTTParser {
       }
       // vereinsnummer
       if (url_split.length > 7) {
-        if ( (url_split[7]).match(/\d\d\d\d\d\d/g) !== null ) {
-          planung.vereinsNummer = parseInt(url_split[7],10)
+        if ( (url_split[7]).match(/\d*/g) !== null ) {
+          planung.vereinsNummer = url_split[7]
         }
       }
       // verein
@@ -118,9 +118,9 @@ class MyTTParser {
     // verein, spielklasse, verband, vereinsNummer
     const verein_spielklasse = jq.find(".panel-body > h3").first().text().split(", ") // "TuRa Elsen, Herren"
     const vereinsNummer = jq.find(".panel-body > h5").first().text().split(", ")[0].split(": ")[1] // "VNr.: 187012, Gründungsjahr: 1947"
-    if (verein_spielklasse.length == 2 && vereinsNummer.match(/\d\d\d\d\d\d/g) !== null){
+    if (verein_spielklasse.length == 2 && vereinsNummer.match(/\d*/g) !== null){
       planung.verein = verein_spielklasse[0]
-      planung.vereinsNummer = parseInt(vereinsNummer, 10)
+      planung.vereinsNummer = vereinsNummer
       planung.spielklasse = verein_spielklasse[1]
     }
     // mannschaften, spieler
@@ -511,9 +511,9 @@ class MyTTParser {
     // verein
     const verein_verband = jq.find(".panel-body > h1").first().html().split(" <small>") // "TuRa Elsen <small>WTTV</small>"
     const vereinsNummer = jq.find(".panel-body > h5").first().text().split(", ")[0].split(": ")[1] // "VNr.: 187012, Gründungsjahr: 1947"
-    if (verein_verband.length == 2 && vereinsNummer && vereinsNummer.match(/\d\d\d\d\d\d/g) !== null){
+    if (verein_verband.length == 2 && vereinsNummer && vereinsNummer.match(/\d*/g) !== null){
       planung.verein = verein_verband[0]
-      planung.vereinsNummer = parseInt(vereinsNummer, 10)
+      planung.vereinsNummer = vereinsNummer
     }
     const saison_id = `${planung.bilanzhalbserie}-${planung.bilanzsaison}`
     //loop over all mannschaften

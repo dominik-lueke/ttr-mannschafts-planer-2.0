@@ -1,6 +1,6 @@
 class PlanungsModel {
 
-  constructor(verein="", verband="", vereinsNummer=0, saison="", halbserie="", spielklasse="") {
+  constructor(verein="", verband="", vereinsNummer="", saison="", halbserie="", spielklasse="") {
     // FILE
     this.file = ""
     this.filename = ""

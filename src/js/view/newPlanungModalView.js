@@ -63,7 +63,25 @@ class NewPlanungModalView {
               <div class="form-row">
                   <div class="col-sm-12 mb-3">
                   <label for="newPlanungsFormVerband">Verband</label>
-                  <input type="text" class="form-control" id="newPlanungsFormVerband" placeholder="Verein" value="WTTV" disabled required>
+                  <select type="text" class="form-control" id="newPlanungsFormVerband" required>
+                    <option value="BaTTV">Baden (BaTTV)</option>
+                    <option value="ByTTV">Bayern (ByTTV)</option>
+                    <option value="TTVB">Brandenburg (TTVB)</option>
+                    <option value="FTTB">Bremen (FTTB)</option>
+                    <option value="HaTTV">Hamburg (HaTTV)</option>
+                    <option value="HeTTV">Hessen (HeTTV)</option>
+                    <option value="TTVMV">Mecklenburg-Vorpommern (TTVMV)</option>
+                    <option value="TTVN">Niedersachsen (TTVN)</option>
+                    <option value="PTTV">Pfalz (PTTV)</option>
+                    <option value="RTTV">Rheinhessen (RTTV)</option>
+                    <option value="TTVR">Rheinland (TTVR)</option>
+                    <option value="STTB">Saarland (STTB)</option>
+                    <option value="TTVSA">Sachsen-Anhalt (TTVSA)</option>
+                    <option value="SbTTV">Südbaden (SbTTV)</option>
+                    <option value="TTTV">Thüringen (TTTV)</option>
+                    <option value="WTTV" selected>NRW (WTTV)</option>
+                    <option value="TTVWH">Würtemberg-Hohenzollern (TTVWH)</option>
+                  </select>
                   <div class="invalid-feedback">
                     Bitte einen Verband eingeben
                   </div>
@@ -71,7 +89,7 @@ class NewPlanungModalView {
               </div>
               <div class="form-row">
                 <div class="col-sm-6 mb-3">
-                  <label for="newPlanungsFormVerein">Verein</label>
+                  <label for="newPlanungsFormVerein">Verein <small><i class="fa fa-info-circle" data-toggle="tooltip" data-html="true" data-placement="top" title="Bitte den Verein so eingeben, wie er bei click-TT benannt ist. Nur so funktioniert später das Laden einer Aufstellung von myTischtennis"></i></small></label>
                   <input type="text" class="form-control" id="newPlanungsFormVerein" placeholder="Verein" value="Verein"  required>
                   <div class="invalid-feedback">
                     Bitte einen Vereinsnamen eingeben
@@ -79,7 +97,7 @@ class NewPlanungModalView {
                 </div>
                 <div class="col-sm-6 mb-3">
                   <label for="newPlanungsFormVereinsnummer">Vereins-Nummer</label>
-                  <input type="number" class="form-control" id="newPlanungsFormVereinsnummer" placeholder="123456" min="100000" max="999999" value="123456" required>
+                  <input type="text" class="form-control" id="newPlanungsFormVereinsnummer" placeholder="123456" pattern="[0-9]{3}[0-9]*" value="123456" required>
                   <div class="invalid-feedback">
                     Bitte eine gültige Vereins-Nummer eingeben
                   </div>

@@ -55,6 +55,7 @@ class Controller {
     this.sidebarView.bindEditSpieltagOnMannschaft(this.handleEditSpieltagOnMannschaft)
     this.sidebarView.bindEditUhrzeitOnMannschaft(this.handleEditUhrzeitOnMannschaft)
     this.sidebarView.bindEditSpielwocheOnMannschaft(this.handleEditSpielwocheOnMannschaft)
+    this.sidebarView.bindEditKommentarOnMannschaft(this.handleEditKommentarOnMannschaft)
     this.sidebarView.bindClickDeleteButtonOnMannschaft(this.handleClickDeleteButtonOnMannschaft)
   }
 
@@ -361,6 +362,10 @@ class Controller {
 
   handleEditSpielwocheOnMannschaft = (id, spielwoche) => {
     this.planung.editMannschaftSpielwoche(id, spielwoche)
+  }
+
+  handleEditKommentarOnMannschaft = (id, kommentar) => {
+    this.planung.editMannschaftKommentar(id, kommentar)
   }
 
   handleClickDeleteButtonOnMannschaft = (id, keep_spieler) => {

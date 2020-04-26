@@ -30,7 +30,10 @@ class MannschaftDetailsView {
           <div class="col-sm-3">
             <select id="mannschaft-details-sollstaerke-select" class="form-control form-control-sm">
               <option value="6">6er</option>
+              <option value="5">5er</option>
               <option value="4">4er</option>
+              <option value="3">3er</option>
+              <option value="2">2er</option>
             </select>
           </div>
         </div>
@@ -55,6 +58,12 @@ class MannschaftDetailsView {
             <option value="A">A</option>
             <option value="B">B</option>
           </select>
+          </div>
+        </div>
+        <h6 class="text-muted">Kommentar</h6>
+        <div class="form-row mb-4">
+          <div class="col">
+            <textarea id="mannschaft-details-comment-input" class="form-control form-control-sm" rows="2">Kommentar</textarea>
           </div>
         </div>
       </div>
@@ -110,6 +119,7 @@ class MannschaftDetailsView {
     this.spieltag_select = $("#mannschaft-details-spieltag-select")
     this.uhrzeit_input = $("#mannschaft-details-uhrzeit-input")
     this.spielwoche_select = $("#mannschaft-details-spielwoche-select")
+    this.comment_input = $("#mannschaft-details-comment-input")
     this.delete_button = $("#mannschaft-details-delete-button")
     this.delete_keep_spieler_button = $("#mannschaft-details-delete-keep-spieler-button")
     this.delete_keep_spieler_button_text = $("#mannschaft-details-delete-keep-spieler-button-text")
@@ -138,6 +148,7 @@ class MannschaftDetailsView {
     this.spieltag_select.val(this.mannschaft.spieltag)
     this.uhrzeit_input.val(this.mannschaft.uhrzeit)
     this.spielwoche_select.val(this.mannschaft.spielwoche)
+    this.comment_input.val(this.mannschaft.kommentar)
     this.delete_button.removeClass("display-none")
     this.delete_dialog.addClass("display-none")
   }
@@ -284,6 +295,35 @@ class MannschaftDetailsView {
     // Fire the handler
     if (newSpielwoche !== this.mannschaft.spielwoche ) {
       handler(this.mannschaft.id, newSpielwoche)
+    }
+  }
+
+  /* KOMMENTAR */
+
+  bindEditKommentarOnMannschaft(handler){
+    this.comment_input.on("keyup", (event) => { this._editKommentarKeyUpHandler(event, handler) } )
+    this.comment_input.focusout( () => { this._editKommentarFocusOutHandler(event, handler) } )
+  }
+
+  _editKommentarKeyUpHandler(event, handler) {
+    event.preventDefault()
+    if (event.keyCode === 27) {
+      this.comment_input.val(this.mannschaft.kommentar)
+      this.comment_input.blur()
+    }
+  }
+
+  _editKommentarFocusOutHandler(event, handler) {
+    event.preventDefault()
+    this._editKommentar(handler)
+  }
+
+  _editKommentar(handler){
+    // Get the inputs
+    var newkommentar = this.comment_input.val()
+    // Fire the handler if necessary
+    if (newkommentar !== this.mannschaft.comment ) {
+      handler(this.mannschaft.id, newkommentar)
     }
   }
 

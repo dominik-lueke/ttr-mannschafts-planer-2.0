@@ -66,6 +66,11 @@ class MannschaftsListeModel {
     mannschaft.spielwoche = spielwoche
   }
 
+  editMannschaftKommentar(id, kommentar) {
+    const mannschaft = this.liste.find(mannschaft => mannschaft.id == id)
+    mannschaft.kommentar = kommentar
+  }
+
   /* CHECK INVALID */
 
   checkMannschaftInvalid(nummer, spielerListe) {

@@ -86,6 +86,10 @@ class SidebarView {
     this.mannschaftDetailsView.bindEditSpielwocheOnMannschaft(handler)
   }
 
+  bindEditKommentarOnMannschaft(handler) {
+    this.mannschaftDetailsView.bindEditKommentarOnMannschaft(handler)
+  }
+
   bindClickDeleteButtonOnMannschaft(handler) {
     this.mannschaftDetailsView.bindClickDeleteButtonOnMannschaft(handler)
   }

@@ -50,7 +50,7 @@ class SpielerDetailsView {
         <div class="form-row mb-4">
           <div class="col">
             <h6 class="text-muted">Kommentar</h6>
-            <textarea id= "spieler-details-comment-input" class="form-control" id="exampleFormControlTextarea1" rows="2">Kommentar</textarea>
+            <textarea id= "spieler-details-comment-input" class="form-control form-control-sm" rows="2">Kommentar</textarea>
           </div>
         </div>
       </div>

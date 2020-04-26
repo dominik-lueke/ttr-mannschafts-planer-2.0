@@ -214,6 +214,12 @@ class PlanungsModel {
     this._commit()
   }
 
+  editMannschaftKommentar(id, kommentar) {
+    this.mannschaften.editMannschaftKommentar(id, kommentar)
+    // commit
+    this._commit()
+  }
+
   validateMannschaft(nummer) {
     this.mannschaften.checkMannschaftInvalid(nummer, this.spieler.getSpielerOfMannschaft(nummer))
   }

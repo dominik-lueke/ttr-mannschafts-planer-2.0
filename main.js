@@ -239,17 +239,19 @@ function printFile(printOptions={}, messages={success: `Saisonplanung erfolgreic
   })
   printWindow.loadFile('index.html')
   printWindow.once('ready-to-show', () => {
-    printWindow.webContents.print(printOptions, function(success, errorType) {
-      mainWindow.webContents.send('hideProgressbar', "")
-      if ( ! success ) {
-        if (errorType !== 'cancelled') {
-          mainWindow.webContents.send('showAlert', {type: 'danger', message: messages.error, timeout: -1 })
+    setTimeout(()=>{
+      printWindow.webContents.print(printOptions, function(success, errorType) {
+        mainWindow.webContents.send('hideProgressbar', "")
+        if ( ! success ) {
+          if (errorType !== 'cancelled') {
+            mainWindow.webContents.send('showAlert', {type: 'danger', message: messages.error, timeout: -1 })
+          }
+        } else {
+          mainWindow.webContents.send('showAlert', {type: 'success', message: messages.success })
         }
-      } else {
-        mainWindow.webContents.send('showAlert', {type: 'success', message: messages.success })
-      }
-      printWindow.close()
-    })
+        printWindow.close()
+      })
+    },1500) // wait until window is fully loaded
   })
 }
 

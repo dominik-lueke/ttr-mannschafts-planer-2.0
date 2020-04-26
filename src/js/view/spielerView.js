@@ -21,6 +21,11 @@ class SpielerView {
       this.spieler_flex_div.append( this.spieler_ttrdifferenz_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-ttrdifferenz" class="p-2 ttr-difference">${ttrdifferenzVorzeichen}${ttrdifferenz}</div>`) )
       this.spieler_flex_div.append( this.spieler_invalid_icon = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-invalid-icon" class="p-2 spieler-invalid-icon text-danger"><span><i class="fa fa-exclamation-triangle"></i></span></div>`) )
       this.spieler_div.append(this.spieler_flex_div)
+      if (spieler.kommentar !== "") {
+        this.spieler_print_kommentar_flex_div = $(`<div class="display-none spieler-print-kommentar"></div>`)
+        this.spieler_print_kommentar_flex_div.append( this.spieler_print_kommentar = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-print-kommentar" class="pl-2 text-muted"><small><i class="fa fa-comment-o"></i> ${spieler.kommentar}</small></div>`) )
+        this.spieler_div.append(this.spieler_print_kommentar_flex_div)
+      }
       spielerListeContainer.append(this.spieler_div)
 
       // color the ttr-differenz

@@ -290,8 +290,14 @@ span.badge {
     margin-top: 0px;
   }
 
+  #editor-col {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+  }
+
   .mannschaft {
     border: 2px solid;
+    margin: 0 5% !important;
   }
 
   .mannschaft .mannschaft-header {
@@ -306,9 +312,8 @@ span.badge {
     padding: .15rem .5rem
   }
 
-  #editor-col {
-    max-width: 100% !important;
-    flex: 0 0 100% !important;
+  .spieler-print-kommentar {
+    display: block !important;
   }
 
   #sidebar,

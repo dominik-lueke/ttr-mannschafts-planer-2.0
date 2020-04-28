@@ -142,16 +142,11 @@ class Controller {
   }
 
   closePlanung = () => {
-    // store current file
-    if (this.planung.file) {
-      localStorage.setItem('localStorageFilepath', this.planung.file)
-    } else {
-      localStorage.removeItem('localStorageFilepath', this.planung.file)
-    }
     // New planung
     this.model.createNewPlanung()
     this.planung = this.model.planung
     // reset local storage
+    localStorage.removeItem('localStorageFilepath')
     localStorage.removeItem('localStoragePlanung')
     // Bind Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)

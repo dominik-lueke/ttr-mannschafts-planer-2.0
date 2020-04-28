@@ -100,6 +100,12 @@ ipcRenderer.on('redo', (event, args) => {
 })
 
 ipcRenderer.on('quit', (event, args) => {
+  // store current file
+  if (app.planung.file) {
+    localStorage.setItem('localStorageFilepath', app.planung.file)
+  } else {
+    localStorage.removeItem('localStorageFilepath')
+  }
   app.closePlanungSave().then((result) => {
     if (result) {
       ipcRenderer.send('quitOK')

@@ -50,14 +50,14 @@ ipcRenderer.on('saveFileAs', (event, args) => {
 })
 
 ipcRenderer.on('openFile', (event, args) => {
-  app.closePlanungSave().then((result) => {
-    if ( result ) {
-      var filepath = openDialog()
-      if ( filepath && filepath.length == 1 ) {
+  var filepath = openDialog()
+  if ( filepath && filepath.length == 1 ) {
+    app.closePlanungSave().then((result) => {
+      if ( result ) {
         openPlanungFromFile(filepath[0])
       }
-    }
-  })
+    })
+  }
 })
 
 ipcRenderer.on('exportAsExcel', (event, args) => {

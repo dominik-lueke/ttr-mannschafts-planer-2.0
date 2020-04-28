@@ -73,12 +73,13 @@ function createWindow () {
     {
       label: 'Datei',
       submenu: [
-        { label:'Neu', accelerator: 'CmdOrCtrl+N', click() { newFile() } },
+        { id: 'new', label:'Neu', accelerator: 'CmdOrCtrl+N', click() { newFile() } },
         { type:'separator' },
-        { label:'Öffnen', accelerator: 'CmdOrCtrl+O', click() { openFile() } },
+        { id: 'open', label:'Öffnen', accelerator: 'CmdOrCtrl+O', click() { openFile() } },
         { type:'separator' },
-        { label:'Speichern', accelerator: 'CmdOrCtrl+S', click() { saveFile() } },
+        { id: 'save', label:'Speichern', accelerator: 'CmdOrCtrl+S', click() { saveFile() } },
         {
+          id: 'saveas',
           label:'Speichern unter...',
           accelerator: (function() {
             if (process.platform === 'darwin')
@@ -90,6 +91,7 @@ function createWindow () {
         },
         { type:'separator' },
         { 
+          id: 'export-excel',
           label:'Exportieren nach Excel', 
           accelerator: (function() {
             if (process.platform === 'darwin')
@@ -100,6 +102,7 @@ function createWindow () {
           click() { exportFileAsXlsx() } 
         },
         { 
+          id: 'export-pdf',
           label:'Exportieren nach PDF',
           visible: isPdfPrinterAvailable(),
           accelerator: (function() {
@@ -111,11 +114,11 @@ function createWindow () {
           click() { exportFileAsPdf() } 
         },
         { type:'separator' },
-        { label:'Drucken', accelerator: 'CmdOrCtrl+P', click() { printFile() } },
+        { id: 'print', label:'Drucken', accelerator: 'CmdOrCtrl+P', click() { printFile() } },
         { type:'separator' },
-        { label:'Schließen', accelerator: 'CmdOrCtrl+W', click() { closeFile() } },
+        { id: 'close', label:'Schließen', accelerator: 'CmdOrCtrl+W', click() { closeFile() } },
         { type:'separator' },
-        { label:'Beenden', role: 'quit'
+        { id: 'quit', label:'Beenden', role: 'quit'
         }
       ]
     },
@@ -129,18 +132,19 @@ function createWindow () {
     {
       label: 'Ansicht',
       submenu: [
-        { label: 'Neu laden', role: 'reload' },
+        { id: 'reload', label: 'Neu laden', role: 'reload' },
         { type: 'separator' },
-        { label: 'Zoom zurücksetzen', role: 'resetzoom' },
-        { label: 'Vergrößern', role: 'zoomin' },
-        { label: 'Verkleinern', role: 'zoomout' },
+        { id: 'resetzoom', label: 'Zoom zurücksetzen', role: 'resetzoom' },
+        { id: 'zoomin', label: 'Vergrößern', role: 'zoomin' },
+        { id: 'zoomout', label: 'Verkleinern', role: 'zoomout' },
         { type: 'separator' },
-        { label: 'Vollbild', role: 'togglefullscreen' },
+        { id: 'fullscreen', label: 'Vollbild', role: 'togglefullscreen' },
       ]
     }
   ])
   Menu.setApplicationMenu(menu);
-
+  setSaveExportPrintEnabled(false)
+  
   if ( is_dev_mode ) {
     devmenu = Menu.buildFromTemplate([
       { 
@@ -198,10 +202,12 @@ app.on('activate', function () {
  * FUNCTIONS
  */
 function newFile() {
+  setSaveExportPrintEnabled(false)
   let response = mainWindow.webContents.send('newFile','Create a new File')
 }
 
 function closeFile() {
+  setSaveExportPrintEnabled(false)
   let response = mainWindow.webContents.send('closeFile','Close the current File')
 }
 
@@ -269,6 +275,14 @@ function isPdfPrinterAvailable() {
   }, false);
 }
 
+function setSaveExportPrintEnabled(enabled=true){
+  menu.getMenuItemById('save').enabled = enabled
+  menu.getMenuItemById('saveas').enabled = enabled
+  menu.getMenuItemById('export-excel').enabled = enabled
+  menu.getMenuItemById('export-pdf').enabled = enabled
+  menu.getMenuItemById('print').enabled = enabled
+}
+
 /**
  * IPC EVENTS
  */
@@ -308,4 +322,8 @@ ipcMain.on('exportAsExcelReply', (event, args) => {
 ipcMain.on('quitOK', (event, args) => {
   mainWindow.destroy()
   app.quit()
+})
+
+ipcMain.on('enableSaveExportPrint', (event, args) => {
+  setSaveExportPrintEnabled(true)
 })

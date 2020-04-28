@@ -4,7 +4,7 @@
 // `nodeIntegration` is turned off. Use `preload.js` to
 // selectively enable features needed in the rendering
 // process.
-var {remote, ipcRenderer} = require('electron')
+var {remote, ipcRenderer, shell} = require('electron')
 var eleapp = remote.app
 var path = require('path')
 var fs = require('fs')
@@ -199,6 +199,14 @@ openPlanungFromFile = (filepath) => {
     })
   });
 }
+
+/**
+ * Open External URLs
+ */
+$(document).on('click', 'a[href^="http"]', function(event) {
+  event.preventDefault();
+  shell.openExternal(this.href);
+});
 
 /*
 * --------------

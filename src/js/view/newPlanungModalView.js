@@ -2,6 +2,28 @@ class NewPlanungModalView {
 
   constructor() {
     $("#newPlanungModal").append(this._getHtml())
+    $('#newPlanungsFormVerband').on('change', () => { this.setVereinssucheHref() })
+    $('#newPlanungsFormVerein').on('change', () => { this.setVereinsseiteHref() } )
+    $('#newPlanungsFormVereinsnummer').on('change', () => { this.setVereinsseiteHref() } )
+    $('#newPlanungsFormSaison').on('change', () => { this.setVereinsseiteHref() } )
+  }
+
+  setVereinssucheHref() {
+    $('#vereinHelp a').attr('href', `https://www.mytischtennis.de/clicktt/${ $('#newPlanungsFormVerband').val() }/vereinssuche/`)
+  }
+
+  setVereinsseiteHref() {
+    const verband = $('#newPlanungsFormVerband').val()
+    const verein = $('#newPlanungsFormVerein').val().replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue")
+    const vereinsnummer = $('#newPlanungsFormVereinsnummer').val()
+    const saison = $('#newPlanungsFormSaison').val().replace("/","-").substring(2)
+    if (verein !== "" && vereinsnummer.match('[0-9]{3}[0-9]*') && saison.match('[0-9]{2}-[0-9]{2}')) {
+      $('#vereinCheck').removeClass('display-none')
+      $('#vereinCheck a').attr('href', `https://www.mytischtennis.de/clicktt/${verband}/${saison}/verein/${vereinsnummer}/${verein}/info/`)
+    } else {
+      $('#vereinCheck').addClass('display-none')
+      $('#vereinCheck a').attr('href', `#`)
+    }
   }
 
   bindClickSubmitPlanungButton(handler) {
@@ -18,7 +40,7 @@ class NewPlanungModalView {
           var planung_json = {
             verein:         $('#newPlanungsFormVerein').val(),
             verband:        $('#newPlanungsFormVerband').val(),
-            vereinsNummer:  parseInt($('#newPlanungsFormVereinsnummer').val(),10),
+            vereinsNummer:  $('#newPlanungsFormVereinsnummer').val(),
             saison:         $('#newPlanungsFormSaison').val(),
             halbserie:      $('#newPlanungsFormHalbserie').val(),
             spielklasse:    $('#newPlanungsFormSpielklasse').val(),
@@ -85,15 +107,28 @@ class NewPlanungModalView {
               </div>
               <div class="form-row">
                 <div class="col-sm-6 mb-3">
-                  <label for="newPlanungsFormVerein">Verein <small><i class="fa fa-info-circle" data-toggle="tooltip" data-html="true" data-placement="top" title="Bitte den Verein so eingeben, wie er bei click-TT benannt ist. Nur so funktioniert später das Laden einer Aufstellung von myTischtennis"></i></small></label>
-                  <input type="text" class="form-control" id="newPlanungsFormVerein" placeholder="Verein" value="Verein"  required>
+                  <label for="newPlanungsFormVerein">Verein 
+                    <small>
+                      <i class="fa fa-info-circle" data-toggle="tooltip" data-html="true" data-placement="top" 
+                          title="Bitte den Verein so eingeben, wie er bei click-TT benannt ist. Nur so funktioniert später das Laden einer Aufstellung von myTischtennis.de. Nutze die Vereinssuche, wenn Du dir unsicher bist."></i>
+                    </small>
+                  </label>
+                  <input type="text" class="form-control" id="newPlanungsFormVerein" placeholder="Verein" required>
+                  <small id="vereinHelp" class="form-text text-muted">Zur <a class="text-success" href="https://www.mytischtennis.de/clicktt/WTTV/vereinssuche/">Vereinssuche</a> auf myTischtennis.de</small>
                   <div class="invalid-feedback">
                     Bitte einen Vereinsnamen eingeben
                   </div>
                 </div>
                 <div class="col-sm-6 mb-3">
-                  <label for="newPlanungsFormVereinsnummer">Vereins-Nummer</label>
-                  <input type="text" class="form-control" id="newPlanungsFormVereinsnummer" placeholder="123456" pattern="[0-9]{3}[0-9]*" value="123456" required>
+                  <label for="newPlanungsFormVereinsnummer">Vereins-Nummer 
+                    <small>
+                      <i class="fa fa-info-circle" data-toggle="tooltip" data-html="true" data-placement="top" 
+                          title="Die Vereins-Nummer findest du auf der Info-Seite deines Vereins auf myTischtennis.de oder die Vereinssuche">
+                      </i>
+                    </small>
+                  </label>
+                  <input type="text" class="form-control" id="newPlanungsFormVereinsnummer" placeholder="123456" pattern="[0-9]{3}[0-9]*" required>
+                  <small id="vereinCheck" class="form-text text-muted display-none">Zur <a class="text-success" href="#">Vereinsseite</a> auf myTischtennis.de</small>
                   <div class="invalid-feedback">
                     Bitte eine gültige Vereins-Nummer eingeben
                   </div>

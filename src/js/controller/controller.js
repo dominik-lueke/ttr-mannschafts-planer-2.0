@@ -214,6 +214,7 @@ class Controller {
     this.editorView.bindReorderSpieler(this.handleReorderSpieler)
     this.editorView.bindReorderMannschaft(this.handleReorderMannschaft)
     this.onSidebarViewChanged()
+    ipcRenderer.send('enableFileMenu', !this.planung.isNew)
   }
 
   onSidebarViewChanged = () => {
@@ -254,7 +255,7 @@ class Controller {
   /* NEW PLANUNG MODAL HANDLER */
   handleClickSubmitPlanungButton = (planung_json) => {
     this.model.updatePlanung(planung_json, false)
-    ipcRenderer.send('enableSaveExportPrint')
+    ipcRenderer.send('enableSaveExportPrintClose')
   }
 
   parseAufstellungUrl = (url) => {

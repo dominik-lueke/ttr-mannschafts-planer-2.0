@@ -143,8 +143,7 @@ function createWindow () {
     }
   ])
   Menu.setApplicationMenu(menu);
-  setSaveExportPrintEnabled(false)
-  
+
   if ( is_dev_mode ) {
     devmenu = Menu.buildFromTemplate([
       { 
@@ -202,12 +201,10 @@ app.on('activate', function () {
  * FUNCTIONS
  */
 function newFile() {
-  setSaveExportPrintEnabled(false)
   let response = mainWindow.webContents.send('newFile','Create a new File')
 }
 
 function closeFile() {
-  setSaveExportPrintEnabled(false)
   let response = mainWindow.webContents.send('closeFile','Close the current File')
 }
 
@@ -275,12 +272,15 @@ function isPdfPrinterAvailable() {
   }, false);
 }
 
-function setSaveExportPrintEnabled(enabled=true){
+function enableFileMenu(enabled=true){
+  menu.getMenuItemById('new').enabled = enabled
+  menu.getMenuItemById('open').enabled = enabled
   menu.getMenuItemById('save').enabled = enabled
   menu.getMenuItemById('saveas').enabled = enabled
   menu.getMenuItemById('export-excel').enabled = enabled
   menu.getMenuItemById('export-pdf').enabled = enabled
   menu.getMenuItemById('print').enabled = enabled
+  menu.getMenuItemById('close').enabled = enabled
 }
 
 /**
@@ -324,6 +324,6 @@ ipcMain.on('quitOK', (event, args) => {
   app.quit()
 })
 
-ipcMain.on('enableSaveExportPrint', (event, args) => {
-  setSaveExportPrintEnabled(true)
+ipcMain.on('enableFileMenu', (event, args) => {
+  enableFileMenu(args)
 })

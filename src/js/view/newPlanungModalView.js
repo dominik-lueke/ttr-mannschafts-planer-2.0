@@ -2,10 +2,20 @@ class NewPlanungModalView {
 
   constructor() {
     $("#newPlanungModal").append(this._getHtml())
+    this.fillHalbserieSaisonFromCurrentDate()
     $('#newPlanungsFormVerband').on('change', () => { this.setVereinssucheHref() })
     $('#newPlanungsFormVerein').on('change', () => { this.setVereinsseiteHref() } )
     $('#newPlanungsFormVereinsnummer').on('change', () => { this.setVereinsseiteHref() } )
     $('#newPlanungsFormSaison').on('change', () => { this.setVereinsseiteHref() } )
+  }
+
+  fillHalbserieSaisonFromCurrentDate() {
+    const today = new Date(Date.now())
+    const month = today.getMonth() + 1
+    const halbserie = month in [9,10,11,12] ? "Rückrunde" : "Vorrunde"
+    $('#newPlanungsFormHalbserie').val(halbserie)
+    const year = today.getFullYear()
+    $('#newPlanungsFormSaison').val(`${year}/${year - 1999}`)
   }
 
   setVereinssucheHref() {
@@ -147,7 +157,7 @@ class NewPlanungModalView {
                 </div>
                 <div class="col-sm-6 mb-3">
                   <label for="newPlanungsFormSaison">Saison</label>
-                  <input type="text" class="form-control" id="newPlanungsFormSaison" placeholder="2020/21" pattern="20[0-9]{2}/[0-9]{2}" value="2020/21" required>
+                  <input type="text" class="form-control" id="newPlanungsFormSaison" placeholder="" pattern="20[0-9]{2}/[0-9]{2}" value="" required>
                   <div class="invalid-feedback">
                     Bitte eine gültige Saison eingeben
                   </div>

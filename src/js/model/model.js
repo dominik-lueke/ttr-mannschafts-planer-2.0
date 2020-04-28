@@ -40,6 +40,8 @@ class Model {
       undo: [], // the tip of undo is always the current planung
       redo: []
     }
+    ipcRenderer.invoke('setUndoEnabled', this.history.undo.length > 1)
+    ipcRenderer.invoke('setRedoEnabled', this.history.redo.length > 0)
     // return this
     return this.planung
   }

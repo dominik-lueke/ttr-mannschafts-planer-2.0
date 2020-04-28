@@ -307,7 +307,7 @@ class SpielerDetailsView {
     // Get the inputs
     var newqttr = parseInt(this.qttr_input.val(), 10)
     // Test if inputs are valid
-    if ( newqttr !== parseInt(newqttr, 10) || newqttr <= 0 ) { 
+    if ( newqttr !== parseInt(newqttr, 10) || newqttr < 0 ) { 
       this.qttr_input.addClass("is-invalid") 
     } else {
       // Fire the handler if necessary

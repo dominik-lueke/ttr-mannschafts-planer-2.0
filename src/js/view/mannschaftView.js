@@ -133,9 +133,9 @@ class MannschaftView {
     var newqttr = parseInt(this.newQttrInput.val(), 10)
     // Test if inputs are valid
     if ( newname === "" ) { this.newNameInput.addClass("is-invalid") }
-    if ( newqttr !== parseInt(newqttr, 10) || newqttr <= 0 ) { this.newQttrInput.addClass("is-invalid") }
+    if ( newqttr !== parseInt(newqttr, 10) || newqttr < 0 ) { this.newQttrInput.addClass("is-invalid") }
     // Add the Spieler to the model in it is valid
-    if ( newname !== "" && newqttr === parseInt(newqttr, 10) && newqttr > 0 ) {
+    if ( newname !== "" && newqttr === parseInt(newqttr, 10) && newqttr >= 0 ) {
       const spielklasse = this.newNameInput.attr("id").split("-")[1]
       const mannschaft = parseInt(this.newPositionLabel.text().trim().split('.')[0], 10)
       const position = parseInt(this.newPositionLabel.text().trim().split('.')[1], 10)

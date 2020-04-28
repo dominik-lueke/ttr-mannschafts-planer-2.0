@@ -190,7 +190,7 @@ confirmClosePlanungDialog = () => {
 writePlanungToFile = (filepath, planung_json_str) => {
   fs.writeFile(filepath, planung_json_str, (err) => {
     if(err){
-        app.alert('danger', `An error ocurred creating the file ${file_name}:<br/>${err.message}`, -1)
+        app.alert('danger', `An error ocurred creating the file ${filepath}:<br/>${err.message}`, -1)
     }
   })
 }
@@ -199,7 +199,7 @@ openPlanungFromFile = (filepath) => {
   app.showProgressBar("primary","white","",true) // start "loading"
   fs.readFile(filepath, 'utf-8', (err, planung_json_str) => {
     if(err){
-        app.alert('danger', `An error ocurred reading the file ${file_name}:<br/>${err.message}`, -1);
+        app.alert('danger', `An error ocurred reading the file ${filepath}:<br/>${err.message}`, -1);
         return;
     }
     app.closePlanungSave().then((result) => {

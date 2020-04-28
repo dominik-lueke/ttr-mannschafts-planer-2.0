@@ -127,12 +127,14 @@ class Model {
   /* SIDEBAR */
 
   displaySpielerDetails(id) {
+    this.closeSidebar()
     this.view.sidebar.display = "spieler"
     this.view.sidebar.id = id
     this._commit()
   }
 
   displayMannschaftDetails(id) {
+    this.closeSidebar()
     this.view.sidebar.display = "mannschaft"
     this.view.sidebar.id = id
     this._commit()

@@ -1,6 +1,6 @@
 class MannschaftDetailsView {
   constructor(container) {
-    this.mannschaft = {}
+    this.mannschaft = undefined
     // HEADER
     this.header = `
       <div class="card-header bg-white">
@@ -156,6 +156,13 @@ class MannschaftDetailsView {
   /* HIDE */
 
   hide(){
+    // first save changes made from previous displayed mannschaft
+    // by using the focusout handler of the respective inputs
+    if (this.mannschaft !== undefined) {
+      this.liga_input.blur()
+      this.comment_input.blur()
+    }
+    // hide
     this.card_div.addClass("display-none")
   }
 
@@ -320,7 +327,7 @@ class MannschaftDetailsView {
 
   _editKommentarFocusOutHandler(event, handler) {
     event.preventDefault()
-    this.comment_input.val(this.mannschaft.kommentar)
+    this._editKommentar(handler)
   }
 
   _editKommentar(handler){

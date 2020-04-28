@@ -1,7 +1,7 @@
 class SpielerDetailsView {
 
   constructor(container) {
-    this.spieler = {}
+    this.spieler = undefined
     // HEADER
     this.header = `
       <div class="card-header bg-white">
@@ -214,6 +214,14 @@ class SpielerDetailsView {
   }
 
   hide(){
+    // first save changes made from previous displayed spieler
+    // by using the focusout handler of the respective inputs
+    if (this.spieler !== undefined) {
+      this.name_input.blur()
+      this.qttr_input.blur()
+      this.comment_input.blur()
+    }
+    // hide
     this.card_div.addClass("display-none")
   }
 
@@ -242,7 +250,15 @@ class SpielerDetailsView {
   }
 
   _editNameFocusOutHandler(event, handler) {
-    this.name_input.val(this.spieler.name)
+    event.preventDefault()
+    var input = this.name_input.val()
+    // If not empty we edit name
+    if (input !== "") { 
+      this._editName(handler)
+    // Else we cancel
+    } else {
+      this.name_input.val(this.spieler.name)
+    }
   }
 
   _editName(handler){
@@ -250,6 +266,7 @@ class SpielerDetailsView {
     var newname = this.name_input.val()
     // Fire the handler if necessary
     if (newname !== this.spieler.name ) {
+      console.log("edit spieler name",newname,this.spieler.name )
       handler(this.spieler.id, newname)
     }
   }
@@ -276,7 +293,15 @@ class SpielerDetailsView {
 
   _editQttrFocusOutHandler(event, handler) {
     event.preventDefault()
-    this.qttr_input.val(this.spieler.qttr)
+    var input = this.qttr_input.val()
+    // If not empty we edit qttr
+    if (input !== "") { 
+      this._editQttr(handler)
+    // Else we cancel
+    } else {
+      this.qttr_input.removeClass("is-invalid") 
+      this.qttr_input.val(this.spieler.qttr)
+    }
   }
 
   _editQttr(handler){
@@ -289,6 +314,7 @@ class SpielerDetailsView {
       // Fire the handler if necessary
       this.qttr_input.removeClass("is-invalid") 
       if (newqttr !== this.spieler.qttr ) {
+        console.log("edit spieler qttr",newqttr,this.spieler.id )
         handler(this.spieler.id, newqttr)
       }
     }
@@ -345,14 +371,14 @@ class SpielerDetailsView {
 
   _editKommentarFocusOutHandler(event, handler) {
     event.preventDefault()
-    this.comment_input.val(this.spieler.kommentar)
+    this._editKommentar(handler)
   }
 
   _editKommentar(handler){
     // Get the inputs
     var newkommentar = this.comment_input.val()
     // Fire the handler if necessary
-    if (newkommentar !== this.spieler.comment ) {
+    if (newkommentar !== this.spieler.kommentar ) {
       handler(this.spieler.id, newkommentar)
     }
   }

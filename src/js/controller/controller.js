@@ -1,33 +1,79 @@
 class Controller {
   constructor() {
-    // start "loading"
+    // PROGRESSBAR VIEW (start loading...)
     this.progessBarView = new ProgressBarView()
     this.showProgressBar("primary","white","",true,1000)
-    // Model
-    this.model = new Model()
-    this.planung = this.model.planung // only one planung at a time right now
-    // Views
-    this.headerView = new HeaderView()
-    this.editorView = new EditorView()
-    this.sidebarView = new SidebarView()
-    this.myTTModalView = new MyTTModalView()
-    this.newPlanungModalView = new NewPlanungModalView()
+
+    /* MODEL */
+    this._createModel()
+
+    /* VIEW */
+    // HEADER
+    this._createHeaderView()
+    // EDITOR
+    this._createEditorView()
+    // SIDEBAR
+    this._createSidebarView()
+    // MYTTMODAL
+    this._createMyTTModalView()
+    // NEWPLANUNGSMODAL
+    this._createNewPlanungModalView()
+    // ALERT
     this.alertView = new AlertView()
-    // Parser
-    this.myTTParser = new MyTTParser()
+
     // Initial Display
     this.updateView()
+  }
+
+  /* CONSTRUCTORS */
+  _createModel = () => {
+    this.model = new Model()
+    this.planung = this.model.planung // only one planung at a time right now
+    // Parser
+    this.myTTParser = new MyTTParser()
     // Bind Model Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
     this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
-    // Bind View Handlers
+  }
+
+  _createHeaderView = () => {
+    this.headerView = new HeaderView()
+    this.headerView.bindClickOnReloadDataButon(this.handleClickOnReloadDataButton)
+  }
+
+  _createEditorView = () => {
+    this.editorView = new EditorView()
     this.editorView.bindAddMannschaft(this.handleAddMannschaft)
     this.editorView.bindClickOnLadeAufstellungLink(this.handleClickOnLadeAufstellungLink)
     this.editorView.bindClickOnNeuePlanungButton(this.createNewPlanung)
     this.editorView.bindClickOnOeffnePlanungButton(this.handleClickOpenPlanungButton)
-    this.headerView.bindClickOnReloadDataButon(this.handleClickOnReloadDataButton)
-    // MYTTMODAL VIEW
+  }
+
+  _createSidebarView = () => {
+    this.sidebarView = new SidebarView()
+    // Handler SIDEBAR VIEW
+    this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
+    // Handler SIDEBAR SPIELER VIEW
+    this.sidebarView.bindEditNameOnSpieler(this.handleEditNameOnSpieler)
+    this.sidebarView.bindEditQttrOnSpieler(this.handleEditQttrOnSpieler)
+    this.sidebarView.bindClickResButtonOnSpieler(this.handleClickResButtonOnSpieler)
+    this.sidebarView.bindClickSbeButtonOnSpieler(this.handleClickSbeButtonOnSpieler)
+    this.sidebarView.bindClickFarbeButtonOnSpieler(this.handleClickFarbeButtonOnSpieler)
+    this.sidebarView.bindEditKommentarOnSpieler(this.handleEditKommentarOnSpieler)
+    this.sidebarView.bindClickDeleteButtonOnSpieler(this.handleClickDeleteButtonOnSpieler)
+    // Handler SIDEBAR MANNSCHAFT VIEW
+    this.sidebarView.bindEditLigaOnMannschaft(this.handleEditLigaOnMannschaft)
+    this.sidebarView.bindEditSollstaerkeOnMannschaft(this.handleEditSollstaerkeOnMannschaft)
+    this.sidebarView.bindEditSpieltagOnMannschaft(this.handleEditSpieltagOnMannschaft)
+    this.sidebarView.bindEditUhrzeitOnMannschaft(this.handleEditUhrzeitOnMannschaft)
+    this.sidebarView.bindEditSpielwocheOnMannschaft(this.handleEditSpielwocheOnMannschaft)
+    this.sidebarView.bindEditKommentarOnMannschaft(this.handleEditKommentarOnMannschaft)
+    this.sidebarView.bindClickDeleteButtonOnMannschaft(this.handleClickDeleteButtonOnMannschaft)
+  }
+
+  _createMyTTModalView = () => {
+    this.myTTModalView = new MyTTModalView()
     this.myTTModalView.bindHtmlParser("aufstellung", this.parseAufstellungHtml)
     this.myTTModalView.bindParseResultAnalyzer("aufstellung", this.getAufstellungsParseResult)
     this.myTTModalView.bindClickOnLoadButtonOnMyTTModalTab("aufstellung", this.handleClickAufstellungLadenButtonOnMyTTModal)
@@ -37,26 +83,11 @@ class Controller {
     this.myTTModalView.bindHtmlParser("bilanzen", this.parseBilanzenHtml)
     this.myTTModalView.bindParseResultAnalyzer("bilanzen", this.getBilanzenParseResult)
     this.myTTModalView.bindClickOnLoadButtonOnMyTTModalTab("bilanzen", this.handleClickBilanzenLadenButtonOnMyTTModal)
-    // NEWPLANUNGS VIEW
+  }
+
+  _createNewPlanungModalView = () => {
+    this.newPlanungModalView = new NewPlanungModalView()
     this.newPlanungModalView.bindClickSubmitPlanungButton(this.handleClickSubmitPlanungButton)
-    // SIDEBAR VIEW
-    this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
-    // SIDEBAR SPIELER VIEW
-    this.sidebarView.bindEditNameOnSpieler(this.handleEditNameOnSpieler)
-    this.sidebarView.bindEditQttrOnSpieler(this.handleEditQttrOnSpieler)
-    this.sidebarView.bindClickResButtonOnSpieler(this.handleClickResButtonOnSpieler)
-    this.sidebarView.bindClickSbeButtonOnSpieler(this.handleClickSbeButtonOnSpieler)
-    this.sidebarView.bindClickFarbeButtonOnSpieler(this.handleClickFarbeButtonOnSpieler)
-    this.sidebarView.bindEditKommentarOnSpieler(this.handleEditKommentarOnSpieler)
-    this.sidebarView.bindClickDeleteButtonOnSpieler(this.handleClickDeleteButtonOnSpieler)
-    // SIDEBAR MANNSCHAFT VIEW
-    this.sidebarView.bindEditLigaOnMannschaft(this.handleEditLigaOnMannschaft)
-    this.sidebarView.bindEditSollstaerkeOnMannschaft(this.handleEditSollstaerkeOnMannschaft)
-    this.sidebarView.bindEditSpieltagOnMannschaft(this.handleEditSpieltagOnMannschaft)
-    this.sidebarView.bindEditUhrzeitOnMannschaft(this.handleEditUhrzeitOnMannschaft)
-    this.sidebarView.bindEditSpielwocheOnMannschaft(this.handleEditSpielwocheOnMannschaft)
-    this.sidebarView.bindEditKommentarOnMannschaft(this.handleEditKommentarOnMannschaft)
-    this.sidebarView.bindClickDeleteButtonOnMannschaft(this.handleClickDeleteButtonOnMannschaft)
   }
 
   /* UNDO + REDO */
@@ -128,8 +159,7 @@ class Controller {
     this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
     // reset and hide Planungs Modal
     this.newPlanungModalView.destroyPlanungModal()
-    this.newPlanungModalView = new NewPlanungModalView()
-    this.newPlanungModalView.bindClickSubmitPlanungButton(this.handleClickSubmitPlanungButton)
+    this._createNewPlanungModalView()
     // Initial Display
     this.updateView()
   }

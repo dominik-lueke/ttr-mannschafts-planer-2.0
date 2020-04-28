@@ -12,6 +12,8 @@ let pdfPrinter = "Microsoft Print to PDF"
 const is_dev_mode = process.argv[2] === '--dev';
 if (is_dev_mode) console.log("Developer Mode on")
 
+const file_to_open = process.argv[1]
+
 function createAppWindows() {
   createSplashscreen()
   setTimeout( () => {
@@ -65,6 +67,10 @@ function createWindow () {
       splashScreen.destroy()
       mainWindow.maximize()
       mainWindow.show()
+      console.log(file_to_open)
+      if (file_to_open) {
+        mainWindow.webContents.send('openFilepath',file_to_open)
+      }
     }, 1000)
   })
 

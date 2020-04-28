@@ -60,6 +60,13 @@ ipcRenderer.on('openFile', (event, args) => {
   }
 })
 
+ipcRenderer.on('openFilepath', (event, args) => {
+  filepath = [args]
+  if ( filepath && filepath.length == 1 ) {
+    openPlanungFromFile(filepath[0])
+  }
+})
+
 ipcRenderer.on('exportAsExcel', (event, args) => {
   var filepath = exportAsXlsxDialog(app.planung)
   if ( filepath ) {
@@ -121,13 +128,13 @@ saveAsDialog = (planung) => {
   const dialog = remote.dialog
   const window = remote.getCurrentWindow();
   const friendly_saison = planung.saison.replace("/","")
-  const filepath_suggestion = `Saisonplanung-${planung.verein}-${planung.spielklasse}-${planung.halbserie}-${friendly_saison}.ttr.json`
+  const filepath_suggestion = `Saisonplanung-${planung.verein}-${planung.spielklasse}-${planung.halbserie}-${friendly_saison}.ttsp`
   let options = {
     title: "Speichere Saisonplanung - Tischtennis Mannschafts Planer",
     defaultPath : path.resolve(eleapp.getPath("documents"),filepath_suggestion),
     buttonLabel : "Speichern",
     filters :[
-      {name: 'Saisonplanungen', extensions: ['ttr.json']},
+      {name: 'Saisonplanungen', extensions: ['ttsp']},
       {name: 'All Files', extensions: ['*']}
     ]
   }
@@ -142,8 +149,7 @@ openDialog = () => {
     defaultPath : eleapp.getPath("documents"),
     buttonLabel : "Öffnen",
     filters :[
-      {name: 'Saisonplanungen', extensions: ['ttr.json']},
-      {name: 'All Files', extensions: ['*']}
+      {name: 'Tischtennis Saisonplanungen', extensions: ['ttsp']}
     ]
   }
   return dialog.showOpenDialogSync(window, options)
@@ -152,14 +158,13 @@ openDialog = () => {
 exportAsXlsxDialog = (planung) => {
   const dialog = remote.dialog
   const window = remote.getCurrentWindow();
-  const filepath_suggestion = planung.file.replace("ttr.json","xlsx")
+  const filepath_suggestion = planung.file.replace("ttsp","xlsx")
   let options = {
     title: "Exportiere Saisonplanung - Tischtennis Mannschafts Planer",
     defaultPath : path.resolve(filepath_suggestion),
     buttonLabel : "Exportieren",
     filters :[
-      {name: 'Excel Arbeitsmappen (*.xlsx)', extensions: ['xlsx']},
-      {name: 'All Files', extensions: ['*']}
+      {name: 'Excel Arbeitsmappen (*.xlsx)', extensions: ['xlsx']}
     ]
   }
   return dialog.showSaveDialogSync(window, options)

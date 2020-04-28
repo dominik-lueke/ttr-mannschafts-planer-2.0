@@ -41,11 +41,7 @@ class NewPlanungModalView {
 
   destroyPlanungModal() {
     this.hidePlanungModal()
-    // Async wait until we remove the modal
-    $('#new-planung-modal').on('hidden.bs.modal', function (e) {
-      $("#newPlanungModal").empty()
-    })
-    
+    $("#newPlanungModal").empty()
   }
 
   /* PRIVATE */

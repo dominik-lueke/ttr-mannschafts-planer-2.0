@@ -21,7 +21,7 @@ function createAppWindows() {
 
 function createSplashscreen() {
   splashScreen = new BrowserWindow({ 
-    width: 500,
+    width: 550,
     height: 300,
     frame: false
   })

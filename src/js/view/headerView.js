@@ -84,9 +84,10 @@ class HeaderView {
     $('#planung-spielklasse').text(planung.spielklasse);
     this._updateMyTTStatusIcons()
     if(this.planung.isNew) {
-      $('#planung-serie').text("Tischtennis Mannschafts Planer")
+      $('#planung-serie').text("Tischtennis Mannschafts Planer").addClass("display-4")
       this.mytt_status.div.addClass("display-none")
     } else {
+      $('#planung-serie').removeClass("display-4")
       this.mytt_status.div.removeClass("display-none")
     }
     this.print_date.text(`${new Date().getDate()}.${new Date().getMonth()+1}.${new Date().getFullYear()}`)

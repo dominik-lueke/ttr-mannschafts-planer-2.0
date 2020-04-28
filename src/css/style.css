@@ -188,7 +188,7 @@ a .spieler-farbe-selector {
 /* WEBVIEW */
 
 #myTTModal .tab-pane {
-  height: calc(70vh - 5em);
+  height: calc(85vh - 5em);
   min-height: calc(550px - 5em);
 }
 
@@ -197,8 +197,7 @@ a .spieler-farbe-selector {
 }
 
 #myTTModal .modal-body {
-  height: 70vh;
-  min-height: 725px;
+  height: 85vh;
 }
 
 #myTTModal .myttmodal-status {

@@ -158,7 +158,7 @@ class MannschaftDetailsView {
   hide(){
     // first save changes made from previous displayed mannschaft
     // by using the focusout handler of the respective inputs
-    if (this.mannschaft !== undefined) {
+    if (this.mannschaft !== undefined && ! this.card_div.hasClass("display-none")) {
       this.liga_input.blur()
       this.comment_input.blur()
     }
@@ -334,7 +334,7 @@ class MannschaftDetailsView {
     // Get the inputs
     var newkommentar = this.comment_input.val()
     // Fire the handler if necessary
-    if (newkommentar !== this.mannschaft.comment ) {
+    if (newkommentar !== this.mannschaft.kommentar ) {
       handler(this.mannschaft.id, newkommentar)
     }
   }

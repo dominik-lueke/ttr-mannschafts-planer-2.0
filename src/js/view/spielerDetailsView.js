@@ -216,7 +216,7 @@ class SpielerDetailsView {
   hide(){
     // first save changes made from previous displayed spieler
     // by using the focusout handler of the respective inputs
-    if (this.spieler !== undefined) {
+    if (this.spieler !== undefined && ! this.card_div.hasClass("display-none")) {
       this.name_input.blur()
       this.qttr_input.blur()
       this.comment_input.blur()
@@ -266,7 +266,6 @@ class SpielerDetailsView {
     var newname = this.name_input.val()
     // Fire the handler if necessary
     if (newname !== this.spieler.name ) {
-      console.log("edit spieler name",newname,this.spieler.name )
       handler(this.spieler.id, newname)
     }
   }
@@ -314,7 +313,6 @@ class SpielerDetailsView {
       // Fire the handler if necessary
       this.qttr_input.removeClass("is-invalid") 
       if (newqttr !== this.spieler.qttr ) {
-        console.log("edit spieler qttr",newqttr,this.spieler.id )
         handler(this.spieler.id, newqttr)
       }
     }

@@ -127,7 +127,7 @@ class PlanungsModel {
           latest_qttr_stichtag = qttr_stichtag 
         }
       })
-      this.ttrwerte.status = this.ttrwerte.date.getTime() > latest_qttr_stichtag.getTime() ? "ok" : "outdated"
+      this.ttrwerte.status = this.ttrwerte.date.getTime() >= latest_qttr_stichtag.getTime() ? "ok" : "outdated"
     }
   }
 

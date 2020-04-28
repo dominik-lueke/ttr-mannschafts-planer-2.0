@@ -14,7 +14,7 @@ class HeaderView {
         <div class="p-2 flex-fill">
           <div id="header-mytt-status-div">
             <h4 class="text-muted">
-              <i class="fa fa-cloud-download" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Aktualisiere Daten<br/>von myTischtennis.de"></i>
+              <small>myTischtennis.de</small>
             </h4>
             <div class="d-flex justify-content-center">
               <div id="header-aufstellung-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="" class="mr-2">

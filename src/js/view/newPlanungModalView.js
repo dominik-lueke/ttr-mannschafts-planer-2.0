@@ -127,7 +127,7 @@ class NewPlanungModalView {
                     </small>
                   </label>
                   <input type="text" class="form-control" id="newPlanungsFormVerein" placeholder="Verein" required>
-                  <small id="vereinHelp" class="form-text text-muted">Zur <a class="text-success" href="https://www.mytischtennis.de/clicktt/WTTV/vereinssuche/">Vereinssuche</a> auf myTischtennis.de</small>
+                  <small id="vereinHelp" class="form-text text-muted">Zur <a tabindex="-1" class="text-success" href="https://www.mytischtennis.de/clicktt/WTTV/vereinssuche/">Vereinssuche</a> auf myTischtennis.de</small>
                   <div class="invalid-feedback">
                     Bitte einen Vereinsnamen eingeben
                   </div>

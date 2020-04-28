@@ -26,7 +26,7 @@ class EditorView {
             </div>
           </div>
           <div id="neue-planung-col" class="col-12 display-none">
-            <div class="container">
+            <div class="container pt-4">
               <div class="row mannschafts-row">
                 <div id="neue-planung-button" class="text-center card mannschaft pt-4 pb-4 link">
                   <h1><i class="fa fa-file-o" /></h1>

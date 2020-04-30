@@ -67,8 +67,7 @@ function createWindow () {
       splashScreen.destroy()
       mainWindow.maximize()
       mainWindow.show()
-      console.log(file_to_open)
-      if (file_to_open) {
+      if (file_to_open && file_to_open !== '.') {
         mainWindow.webContents.send('openFilepath',file_to_open)
       }
     }, 1000)

@@ -352,18 +352,19 @@ class PlanungsModel {
   _parsePlanungJson(planung_json, update_aufstellung=false) {
     this._disableCommit() // do no commit while loading the whole json
 
+    // set spielklasse also for mannschaften and spieler
+    if (planung_json.hasOwnProperty("spielklasse")) {
+      this.spieler.spielklasse = planung_json.spielklasse
+      this.mannschaften.spielklasse = planung_json.spielklasse
+      // reset mannschaften, spieler, bilanzen if we change the spielklasse
+      if (this.spielklasse !== planung_json.spielklasse) {
+        this.mannschaften.liste = []
+        this.bilanzen.saisons = []
+      }
+    }
+
     if (update_aufstellung){
       this.spieler.clearAllSpielerPositionen()
-      // set spielklasse also for mannschaften and spieler
-      if (planung_json.hasOwnProperty("spielklasse")) {
-        this.spieler.spielklasse = planung_json.spielklasse
-        this.mannschaften.spielklasse = planung_json.spielklasse
-        // reset mannschaften, spieler, bilanzen if we change the spielklasse
-        if (this.spielklasse !== planung_json.spielklasse) {
-          this.mannschaften.liste = []
-          this.bilanzen.saisons = []
-        }
-      }
     }
 
     var qttr_values_changed = false
@@ -377,6 +378,7 @@ class PlanungsModel {
           const mannschaftsListe = this.mannschaften
           /* Set Spielklasse */
           if (planung_json.hasOwnProperty("spielklasse") ) {
+            console.log(`set spielklasse -> ${planung_json.spielklasse}`)
             mannschaftsListe.spielklasse = planung_json.spielklasse
           }
           if ( planung_json.mannschaften.hasOwnProperty("liste") ) {

@@ -170,7 +170,7 @@ class MannschaftDetailsView {
 
   bindEditLigaOnMannschaft(handler) {
     this.liga_input.on("keyup", (event) => { this._editLigaKeyUpHandler(event, handler) } )
-    this.liga_input.focusout( () => { this._editLigaFocusOutHandler(event, handler) } )
+    this.liga_input.focusout( (event) => { this._editLigaFocusOutHandler(event, handler) } )
   }
 
   _editLigaKeyUpHandler(event, handler) {
@@ -309,7 +309,7 @@ class MannschaftDetailsView {
 
   bindEditKommentarOnMannschaft(handler){
     this.comment_input.on("keyup", (event) => { this._editKommentarKeyUpHandler(event, handler) } )
-    this.comment_input.focusout( () => { this._editKommentarFocusOutHandler(event, handler) } )
+    this.comment_input.focusout( (event) => { this._editKommentarFocusOutHandler(event, handler) } )
   }
 
   _editKommentarKeyUpHandler(event, handler) {

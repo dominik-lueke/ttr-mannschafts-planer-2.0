@@ -284,6 +284,9 @@ class Controller {
   }
 
   handleClickAufstellungLadenButtonOnMyTTModal = (planung_json) => {
+    // Hide the sidebar as the currently shown spieler/mannschaft might not be there after load
+    this.model.closeSidebar()
+    // load the aufstellung
     this.planung.loadFromJSON(planung_json, true)
     // Assume if we load the Aufstellung of a Serie, we want to start planning the next 
     // Load RR-2019/20 -> Plan VR-2020/21

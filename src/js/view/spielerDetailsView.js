@@ -233,7 +233,7 @@ class SpielerDetailsView {
   /* NAME */
   bindEditNameOnSpieler(handler){
     this.name_input.on("keyup", (event) => { this._editNameKeyUpHandler(event, handler) } )
-    this.name_input.focusout( () => { this._editNameFocusOutHandler(event, handler) } )
+    this.name_input.focusout( (event) => { this._editNameFocusOutHandler(event, handler) } )
   }
 
   _editNameKeyUpHandler(event, handler) {
@@ -273,7 +273,7 @@ class SpielerDetailsView {
   /* QTTR */
   bindEditQttrOnSpieler(handler){
     this.qttr_input.on("keyup", (event) => { this._editQttrKeyUpHandler(event, handler) } )
-    this.qttr_input.focusout( () => { this._editQttrFocusOutHandler(event, handler) } )
+    this.qttr_input.focusout( (event) => { this._editQttrFocusOutHandler(event, handler) } )
   }
 
   _editQttrKeyUpHandler(event, handler) {
@@ -351,7 +351,7 @@ class SpielerDetailsView {
   /* KOMMENTAR */
   bindEditKommentarOnSpieler(handler){
     this.comment_input.on("keyup", (event) => { this._editKommentarKeyUpHandler(event, handler) } )
-    this.comment_input.focusout( () => { this._editKommentarFocusOutHandler(event, handler) } )
+    this.comment_input.focusout( (event) => { this._editKommentarFocusOutHandler(event, handler) } )
   }
 
   _editKommentarKeyUpHandler(event, handler) {

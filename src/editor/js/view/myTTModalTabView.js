@@ -18,7 +18,8 @@ class MyTTModalTabView {
             <span class="input-group-text text-muted myttmodal-loading-indicator" id="myttmodal-${id}-webview-loading-indicator"></span>
           </div>
         </div>
-        <webview id="myttmodal-${id}-webview" style="height: calc(85vh - 16em)" src="" preload="./src/js/injection/inject.js">
+        <!-- preload path relative to ./src/editor/html/editor.html -->
+        <webview id="myttmodal-${id}-webview" style="height: calc(85vh - 16em)" src="" preload="./../js/injection/inject.js">
         </webview>
         <div class="container">
           <div class="row text-muted">

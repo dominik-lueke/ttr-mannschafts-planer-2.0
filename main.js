@@ -1,10 +1,10 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow, Menu, ipcMain, shell} = require('electron')
-const ExcelExporter = require('./src/js/export/excelExporter')
+const ExcelExporter = require('./src/main/js/export/excelExporter')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow, printWindow, splashScreen
+let editorWindow, printWindow, splashScreen
 let menu 
 let pdfPrinter = "Microsoft Print to PDF"
 
@@ -28,7 +28,7 @@ function createSplashscreen() {
     frame: false
   })
   splashScreen.setIgnoreMouseEvents(true)
-  splashScreen.loadFile('./src/html/splashscreen.html')
+  splashScreen.loadFile('./src/splashscreen/html/splashscreen.html')
   splashScreen.once('ready-to-show', () => {
     splashScreen.show()
   })
@@ -39,7 +39,7 @@ function createSplashscreen() {
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({
+  editorWindow = new BrowserWindow({
     show: false,
     webPreferences: {
       nodeIntegration: true,
@@ -49,26 +49,26 @@ function createWindow () {
   })
 
   // Emitted when the window is closed.
-  mainWindow.on('close', (event) => {
+  editorWindow.on('close', (event) => {
     event.preventDefault()
-    let response = mainWindow.webContents.send('quit','Close the current File then quit')
+    let response = editorWindow.webContents.send('quit','Close the current File then quit')
   })
 
   // Emitted when the window is closed.
-  mainWindow.on('closed', () => {
+  editorWindow.on('closed', () => {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    mainWindow = null
+    editorWindow = null
   })
 
-  mainWindow.once('ready-to-show', () => {
+  editorWindow.once('ready-to-show', () => {
     setTimeout(()=>{
       splashScreen.destroy()
-      mainWindow.maximize()
-      mainWindow.show()
+      editorWindow.maximize()
+      editorWindow.show()
       if (file_to_open && file_to_open !== '.') {
-        mainWindow.webContents.send('openFilepath',file_to_open)
+        editorWindow.webContents.send('openFilepath',file_to_open)
       }
     }, 1000)
   })
@@ -173,10 +173,10 @@ function createWindow () {
   }
 
   // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
+  editorWindow.loadFile('./src/editor/html/editor.html')
 
   // Open the DevTools.
-  if ( is_dev_mode ) mainWindow.webContents.openDevTools()
+  if ( is_dev_mode ) editorWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished
@@ -196,7 +196,7 @@ app.on('window-all-closed', function () {
 app.on('activate', function () {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) createAppWindows()
+  if (editorWindow === null) createAppWindows()
 })
 
 // In this file you can include the rest of your app's specific main process
@@ -206,31 +206,31 @@ app.on('activate', function () {
  * FUNCTIONS
  */
 function newFile() {
-  let response = mainWindow.webContents.send('newFile','Create a new File')
+  let response = editorWindow.webContents.send('newFile','Create a new File')
 }
 
 function closeFile() {
-  let response = mainWindow.webContents.send('closeFile','Close the current File')
+  let response = editorWindow.webContents.send('closeFile','Close the current File')
 }
 
 function saveFile() {
-  let response = mainWindow.webContents.send('saveFile','Save the current File')
+  let response = editorWindow.webContents.send('saveFile','Save the current File')
 }
 
 function saveFileAs() {
-  let response = mainWindow.webContents.send('saveFileAs','Save the current File')
+  let response = editorWindow.webContents.send('saveFileAs','Save the current File')
 }
 
 function openFile() {
-  let response = mainWindow.webContents.send('openFile','Open a File')
+  let response = editorWindow.webContents.send('openFile','Open a File')
 }
 
 function exportFileAsXlsx() {
-  let response = mainWindow.webContents.send('exportAsExcel','Export as .xlsx file')
+  let response = editorWindow.webContents.send('exportAsExcel','Export as .xlsx file')
 }
 
 function exportFileAsPdf() {
-  mainWindow.webContents.send('showProgressbar', {type: 'danger', textcolor: 'white', message: 'PDF Export wird ausgeführt...', fullscreen: false, timeout: -1 })
+  editorWindow.webContents.send('showProgressbar', {type: 'danger', textcolor: 'white', message: 'PDF Export wird ausgeführt...', fullscreen: false, timeout: -1 })
   printFile(
     {deviceName: pdfPrinter, silent: true},
     {success: `Die Saisonplanung wurde erfolgreich als PDF exportiert.`, error: `Der PDF Export ist fehlgeschlagen oder wurde abgebrochen!` }
@@ -245,17 +245,17 @@ function printFile(printOptions={}, messages={success: `Saisonplanung erfolgreic
       webviewTag: true
     }
   })
-  printWindow.loadFile('index.html')
+  printWindow.loadFile('./src/editor/html/editor.html')
   printWindow.once('ready-to-show', () => {
     setTimeout(()=>{
       printWindow.webContents.print(printOptions, function(success, errorType) {
-        mainWindow.webContents.send('hideProgressbar', "")
+        editorWindow.webContents.send('hideProgressbar', "")
         if ( ! success ) {
           if (errorType !== 'cancelled') {
-            mainWindow.webContents.send('showAlert', {type: 'danger', message: messages.error, timeout: -1 })
+            editorWindow.webContents.send('showAlert', {type: 'danger', message: messages.error, timeout: -1 })
           }
         } else {
-          mainWindow.webContents.send('showAlert', {type: 'success', message: messages.success })
+          editorWindow.webContents.send('showAlert', {type: 'success', message: messages.success })
         }
         printWindow.close()
       })
@@ -264,15 +264,15 @@ function printFile(printOptions={}, messages={success: `Saisonplanung erfolgreic
 }
 
 function undo() {
-  let response = mainWindow.webContents.send('undo','Take last action back')
+  let response = editorWindow.webContents.send('undo','Take last action back')
 }
 
 function redo() {
-  let response = mainWindow.webContents.send('redo','Redo last action')
+  let response = editorWindow.webContents.send('redo','Redo last action')
 }
 
 function isPdfPrinterAvailable() {
-  return mainWindow.webContents.getPrinters().reduce((total, current) => { 
+  return editorWindow.webContents.getPrinters().reduce((total, current) => { 
     return total || ( current.name === pdfPrinter ) 
   }, false);
 }
@@ -325,7 +325,7 @@ ipcMain.on('exportAsExcelReply', (event, args) => {
 })
 
 ipcMain.on('quitOK', (event, args) => {
-  mainWindow.destroy()
+  editorWindow.destroy()
   app.quit()
 })
 

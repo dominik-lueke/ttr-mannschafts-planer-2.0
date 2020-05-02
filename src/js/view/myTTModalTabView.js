@@ -75,25 +75,7 @@ class MyTTModalTabView {
     } )
     this.webview.addEventListener('ipc-message', (event) => {
       this.planung = this.parseHtml(this.webview.getURL(), event.channel);
-      this.parse_result = this.getParseResult(this.planung)
-      this.status_row.html(`<small>${this.parse_result.html}</small>`)
-      if ( this.parse_result.result ){
-        this.load_button.removeProp("disabled")
-        // Add popover to button if we are about to change the planungs details with 'Aufstellung laden'
-        this.load_button.popover('dispose')
-        if ( this.id === 'Aufstellung') {
-          if ( this.parse_result.planung_changed ){
-            this.load_button.popover({
-              trigger: 'hover',
-              content: this.parse_result.popoverhtml,
-              html: true,
-              placement: 'top'
-            })
-          }
-        }
-      } else {
-        this.load_button.prop("disabled", true)
-      }
+      this._displayParseResult()
     });
     // webview url controls
     this.home_button.click( (event) => {
@@ -153,6 +135,12 @@ class MyTTModalTabView {
     }
   }
 
+  notifyPlanungUpdated() {
+    if (Object.entries(this.planung).length > 0) {
+      this._displayParseResult()
+    }
+  }
+
   _loadData(handler) {
     this.load_button.html('<i class="fa fa-circle-o-notch fa-spin"></i>')
     setTimeout( () => {
@@ -162,4 +150,24 @@ class MyTTModalTabView {
     }, 1000)
   }
 
+  _displayParseResult() {
+    this.parse_result = this.getParseResult(this.planung)
+    this.status_row.html(`<small>${this.parse_result.html}</small>`)
+    if ( this.parse_result.result ){
+      this.load_button.removeProp("disabled")
+      // Add popover to button if we are about to change the planungs details with 'Aufstellung laden'
+      this.load_button.popover('dispose')
+      if ( this.id === 'Aufstellung') {
+        this.load_button.popover({
+          trigger: 'hover',
+          content: this.parse_result.popoverhtml,
+          html: true,
+          placement: 'top',
+          template: '<div class="popover myttmodal-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>'
+        })
+      }
+    } else {
+      this.load_button.prop("disabled", true)
+    }
+  }
 }

@@ -378,7 +378,6 @@ class PlanungsModel {
           const mannschaftsListe = this.mannschaften
           /* Set Spielklasse */
           if (planung_json.hasOwnProperty("spielklasse") ) {
-            console.log(`set spielklasse -> ${planung_json.spielklasse}`)
             mannschaftsListe.spielklasse = planung_json.spielklasse
           }
           if ( planung_json.mannschaften.hasOwnProperty("liste") ) {
@@ -422,9 +421,11 @@ class PlanungsModel {
               var new_spieler = undefined
               // try to find spieler by mytt_id
               new_spieler = this.spieler.getSpielerByMyTTId(spieler.mytt_id)
-              if ( typeof new_spieler === 'undefined' && "name" in spieler) {
-                // try to find spieler by name
-                new_spieler = this.spieler.getSpielerByName(spieler.name)
+              if ( typeof new_spieler === 'undefined') {
+                // try to find spieler by internal id
+                if ( "id" in spieler ) {
+                  new_spieler = this.spieler.getSpieler(spieler.id)
+                }
                 if ( typeof new_spieler === 'undefined' ) {
                   if ( update_aufstellung ) {
                     // spieler not there yet and we want to update the aufstellung, create a new one

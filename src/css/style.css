@@ -213,6 +213,10 @@ a .spieler-farbe-selector {
   cursor: pointer;
 }
 
+.myttmodal-popover {
+  max-width: 500px !important;
+}
+
 /* NEW PLANUNG MODAL */
 #newPlanungModal .form-control:valid{
   background-image: none !important;

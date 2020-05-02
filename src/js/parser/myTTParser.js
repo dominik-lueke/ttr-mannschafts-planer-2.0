@@ -244,7 +244,6 @@ class MyTTParser {
       statusHtml += `Keine TTR-Werte gefunden ${this._getStatusIcon("danger") } `
     }
 
-    var planung_changed = false
     var planungs_difference_html = '<b><i class="fa fa-warning text-warning"></i></b> Die aktuelle Planung wird verändert.<br/>'
     const attributes = ['verein', 'spielklasse', 'saison']
     attributes.forEach( attribute => {
@@ -252,16 +251,32 @@ class MyTTParser {
       var current_value = current_planung[attribute]
       if ( attribute === 'saison') {
         // special case for saison+halbserie where we load a saison+halbserie but the start planning the next one with it
-        loaded_value = `${planung.halbserie} ${planung.saison}`
-        current_value = `${current_planung._getOtherHalbserie()} ${current_planung._getPreviousSaison()}`
+        var nextHalbserie = planung.halbserie == "Vorrunde" ? "Rückrunde" : "Vorrunde"
+        var nextSaisonRaw = `${parseInt( planung.saison.replace("/",""),10) + 101}`
+        var nextSaison = planung.halbserie == "Rückrunde" ? [nextSaisonRaw.slice(0,4),"/",nextSaisonRaw.slice(4)].join('') : planung.saison
+        loaded_value = `${nextHalbserie} ${nextSaison}`
+        current_value = `${current_planung.halbserie} ${current_planung.saison}`
       }
       if ( loaded_value !== current_value) { 
-        planung_changed = true
         planungs_difference_html += `<br/> ${current_value} &rarr; <b>${loaded_value}</b>`
       }
     })
-
-    return { result: aufstellungFound, html: statusHtml, planung_changed: planung_changed, popoverhtml: planungs_difference_html  }
+    const new_spieler_arr = planung.spieler.liste.filter( spieler => current_planung.spieler.liste.find( spieler1 => spieler1.mytt_id === spieler.mytt_id) == undefined )
+    if (new_spieler_arr.length > 0){
+      const wird = new_spieler_arr.length == 1 ? "wird" : "werden"
+      planungs_difference_html +=  `<br/> <b>${new_spieler_arr.length} Spieler</b> ${wird} der aktuellen Planung hinzugefügt.`
+    }
+    const update_spieler_arr = current_planung.spieler.liste.filter( spieler => ( planung.spieler.liste.find( spieler1 => spieler1.mytt_id === spieler.mytt_id) !== undefined ) )
+    if (update_spieler_arr.length > 0){
+      const wird = update_spieler_arr.length == 1 ? "wird" : "werden"
+      planungs_difference_html +=  `<br/> <b>${update_spieler_arr.length} Spieler</b> der aktuellen Planung ${wird} aktualisiert.`
+    }
+    const delete_spieler_arr = current_planung.spieler.liste.filter( spieler => ( planung.spieler.liste.find( spieler1 => spieler1.mytt_id === spieler.mytt_id) == undefined ) )
+    if (delete_spieler_arr.length > 0){
+      const wird = delete_spieler_arr.length == 1 ? "wird" : "werden"
+      planungs_difference_html +=  `<br/> <b>${delete_spieler_arr.length} Spieler</b> der aktuellen Planung ${wird} gelöscht.`
+    }
+    return { result: aufstellungFound, html: statusHtml, popoverhtml: planungs_difference_html  }
   }
 
   /**

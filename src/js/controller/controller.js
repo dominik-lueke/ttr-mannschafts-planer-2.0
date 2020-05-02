@@ -208,6 +208,7 @@ class Controller {
     this.editorView.bindToggleSpvOnSpieler(this.handleToggleSpvOnSpieler)
     this.editorView.bindReorderSpieler(this.handleReorderSpieler)
     this.editorView.bindReorderMannschaft(this.handleReorderMannschaft)
+    this.myTTModalView.notifyPlanungUpdated()
     this.onSidebarViewChanged()
     ipcRenderer.send('enableFileMenu', !this.planung.isNew)
   }

@@ -155,6 +155,9 @@ class Controller {
     // reset and hide Planungs Modal
     this.newPlanungModalView.destroyPlanungModal()
     this._createNewPlanungModalView()
+    // reset and hide MyTT Modal
+    this.myTTModalView.destroyMyTTModal()
+    this._createMyTTModalView()
     // Initial Display
     this.updateView()
   }

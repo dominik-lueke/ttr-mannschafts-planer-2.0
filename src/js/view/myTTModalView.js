@@ -44,6 +44,11 @@ class MyTTModalView {
     }
   }
 
+  destroyMyTTModal() {
+    $("#planung-reload-data-modal").modal('hide')
+    $("#myTTModal").empty()
+  }
+
   notifyPlanungUpdated() {
     this.tabs["aufstellung"].notifyPlanungUpdated()
   }

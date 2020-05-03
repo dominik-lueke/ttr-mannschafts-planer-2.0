@@ -579,7 +579,7 @@ class PlanungsModel {
   }
 
   _getTtrRanglisteUrl() {
-    return `https://www.mytischtennis.de/community/ranking?vereinid=${this.vereinsNummer},${this.verband}&ttrQuartalorAktuell=quartal`
+    return `https://www.mytischtennis.de/community/ranking?vereinid=${this.vereinsNummer},${this.verband}&ttrQuartalorAktuell=quartal&alleSpielberechtigen=yes`
   }
 
   _getBilanzenUrl() {

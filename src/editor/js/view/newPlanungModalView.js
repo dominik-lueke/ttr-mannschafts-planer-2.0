@@ -95,6 +95,7 @@ class NewPlanungModalView {
                   <div class="col-sm-12 mb-3">
                   <label for="newPlanungsFormVerband">Verband</label>
                   <select type="text" class="form-control" id="newPlanungsFormVerband" required>
+                    <!--
                     <option value="BaTTV">Baden (BaTTV)</option>
                     <option value="ByTTV">Bayern (ByTTV)</option>
                     <option value="TTVB">Brandenburg (TTVB)</option>
@@ -110,8 +111,11 @@ class NewPlanungModalView {
                     <option value="TTVSA">Sachsen-Anhalt (TTVSA)</option>
                     <option value="SbTTV">Südbaden (SbTTV)</option>
                     <option value="TTTV">Thüringen (TTTV)</option>
+                    -->
                     <option value="WTTV" selected>NRW (WTTV)</option>
+                    <!--
                     <option value="TTVWH">Würtemberg-Hohenzollern (TTVWH)</option>
+                    -->
                   </select>
                   <div class="invalid-feedback">
                     Bitte einen Verband eingeben

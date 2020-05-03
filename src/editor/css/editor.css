@@ -94,7 +94,7 @@ a .spieler-farbe-selector {
 }
 
 .mannschaft-header, .spieler, .mannschaft-footer {
-  padding: .25rem .5rem
+  padding: 0.1rem .5rem
 }
 
 .invalid {

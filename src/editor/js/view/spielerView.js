@@ -16,7 +16,7 @@ class SpielerView {
       this.spieler_name_div.append( this.spieler_res_badge = $(`<span class="badge badge-secondary ml-2 display-none">RES</span>`) )
       this.spieler_name_div.append( this.spieler_sbe_badge = $(`<span class="badge badge-secondary ml-2 display-none">SBE</span>`) )
       this.spieler_flex_div.append( this.spieler_spv_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-spv" class="p-2 spv"></div>`) )
-      this.spieler_spv_div.append( this.spieler_spv_badge = $(`<span class="badge badge-danger spv-badge">SPV</span>`) )
+      this.spieler_spv_div.append( this.spieler_spv_badge = $(`<span class="badge badge-danger spv-badge" data-toggle="tooltip" data-placement="top" title="Sperrvermerk setzen">SPV</span>`) )
       this.spieler_flex_div.append( this.spieler_qttr_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-qttr" class="p-2 ttr-wert text-muted">${spieler.qttr}</div>`) )
       this.spieler_flex_div.append( this.spieler_ttrdifferenz_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-ttrdifferenz" class="p-2 ttr-difference">${ttrdifferenzVorzeichen}${ttrdifferenz}</div>`) )
       this.spieler_flex_div.append( this.spieler_invalid_icon = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-invalid-icon" class="p-2 spieler-invalid-icon text-danger"><span><i class="fa fa-exclamation-triangle"></i></span></div>`) )
@@ -76,14 +76,19 @@ class SpielerView {
         this.spieler_spv_badge.removeClass("badge-danger")
         this.spieler_spv_badge.addClass("badge-light")
         this.spieler_spv_badge.addClass("link")
+        this.spieler_spv_badge.attr("title","Sperrvermerk setzen")
       } else {
         this.spieler_div.addClass("spv-set")
+        this.spieler_spv_badge.attr("title","Sperrvermerk entfernen")
       }
       if ( this.invalidSpielerFromHigherMannschaften > 0 ) {
         this.spieler_div.addClass("spv-possible")
+        this.spieler_spv_badge.attr("title","Sperrvermerk setzen")
       }
       if ( this.spvEditable ) {
         this.spieler_spv_badge.addClass("link")
+      } else {
+        this.spieler_spv_badge.attr("title","")
       }
       // add extra hover to spv-badge to hightlight the spieler which would also recieve a spv on higher positionen in the same mannschaft
       this.spieler_spv_badge.hover(
@@ -106,6 +111,7 @@ class SpielerView {
   bindToggleSpvOnSpieler(handler) {
     this.spieler_spv_badge.click( (event) => { 
       if ( this.spieler_spv_badge.hasClass("link") ){ 
+        this.spieler_spv_badge.tooltip('dispose')
         this._toggleSpvHandler(event, handler) 
       } 
     })

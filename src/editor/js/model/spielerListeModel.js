@@ -307,20 +307,20 @@ class SpielerListeModel {
     }
   }
 
-  /* Recursivly increase (spv_spieler.spv.primary == true) or decrease 
+  /* Recursivly increase (increase=true) or decrease (increase=false) 
     the secondary Spv counter of the previous spieler in the same 
     mannschaft than spv_spieler.
     Also set the primary spv if the previous spieler would need one 
     because it is invalid */
-  _updateSpvPreviousPositionOfSpieler(spv_spieler) {
+  _updateSpvPreviousPositionOfSpieler(spv_spieler, increase=true) {
     const prev_spieler = this._getPreviousSpieler(spv_spieler)
     if ( prev_spieler && ( prev_spieler.mannschaft == spv_spieler.mannschaft) ) {
-      prev_spieler.spv.secondary += ( spv_spieler.spv.primary || spv_spieler.spv.secondary > 0 ) ? 1 : -1
+      prev_spieler.spv.secondary += ( increase || spv_spieler.spv.secondary > 0 ) ? 1 : -1
       prev_spieler.spv.secondary = ( prev_spieler.spv.secondary < 0 ) ? 0 : prev_spieler.spv.secondary
       if ( ( prev_spieler.invalidSpielerFromHigherMannschaften > 0 ) && ! prev_spieler.spv.primary ) {
         this._setPrimarySpvForSpieler(prev_spieler, spv_spieler.spv.primary)
       } else {
-        this._updateSpvPreviousPositionOfSpieler(prev_spieler)
+        this._updateSpvPreviousPositionOfSpieler(prev_spieler, increase)
       }
     }
   }

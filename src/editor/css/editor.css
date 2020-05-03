@@ -55,7 +55,7 @@ a .spieler-farbe-selector {
   position: fixed;
   height: 100vh;
   top: 110px; /* Stay at the top */
-  right: 10px;
+  right: 50px;
   width: 500px;
   z-index: 3;
 }
@@ -268,6 +268,15 @@ span.badge {
 
 .progressbar-container .progress .progress-bar {
   font-size: 1.3em;
+}
+
+/* SMALL SCREEN */
+
+@media (max-width: 768px) {
+  .details-sidebar {
+    right: calc( (100vw - 500px) / 2) !important;
+    width: 500px !important;
+  }
 }
 
 /* PRINT */

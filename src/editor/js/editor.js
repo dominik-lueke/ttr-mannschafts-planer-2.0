@@ -108,13 +108,14 @@ ipcRenderer.on('redo', (event, args) => {
 
 ipcRenderer.on('quit', (event, args) => {
   // store current file
-  if (app.planung.file) {
-    localStorage.setItem('localStorageFilepath', app.planung.file)
-  } else {
-    localStorage.removeItem('localStorageFilepath')
-  }
+  const file = app.planung.file 
   app.closePlanungSave().then((result) => {
     if (result) {
+      if (file) {
+        localStorage.setItem('localStorageFilepath', file)
+      } else {
+        localStorage.removeItem('localStorageFilepath')
+      }
       ipcRenderer.send('quitOK')
     }
   })

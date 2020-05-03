@@ -89,6 +89,15 @@ class EditorView {
     })
 
     // Activate sorting
+    this.activateDragDrop()
+
+    // activate tooltips
+    $('[data-toggle="tooltip"]').tooltip();
+  }
+
+  /* DRAG-DROP */
+  activateDragDrop() {
+    // SPIELER
     $(".connected-sortable-spieler").sortable({
       connectWith: ".connected-sortable-spieler",
       update: (event, ui) => {
@@ -114,6 +123,7 @@ class EditorView {
       }
     }).disableSelection();
 
+    // MANNSCHAFTEN
     $(".connected-sortable-mannschaft").sortable({
       connectWith: ".connected-sortable-mannschaft",
       update: (event, ui) => {
@@ -133,9 +143,6 @@ class EditorView {
         $('[data-toggle="tooltip"]').tooltip();
       }
     }).disableSelection();
-
-    // activate tooltips
-    $('[data-toggle="tooltip"]').tooltip();
   }
 
   /* PLANUNG */

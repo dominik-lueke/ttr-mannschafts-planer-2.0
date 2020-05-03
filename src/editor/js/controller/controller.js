@@ -280,11 +280,11 @@ class Controller {
   }
 
   getTtrRanglisteParseResult = (planung) => {
-    return this.myTTParser.getResultOfMyTTTtrRanglisteParser(planung, this.planung.verein)
+    return this.myTTParser.getResultOfMyTTTtrRanglisteParser(planung, this.planung)
   }
 
   getBilanzenParseResult = (planung) => {
-    return this.myTTParser.getResultOfMyTTBilanzenParser(planung, this.planung.verein)
+    return this.myTTParser.getResultOfMyTTBilanzenParser(planung, this.planung)
   }
 
   handleClickAufstellungLadenButtonOnMyTTModal = (planung_json) => {

@@ -202,6 +202,7 @@ a .spieler-farbe-selector {
 
 #myTTModal .myttmodal-status {
   min-height: 5em;
+  line-height: 1.2em;
 }
 
 #myTTModal .myttmodal-load-button {

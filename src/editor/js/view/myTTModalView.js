@@ -50,7 +50,9 @@ class MyTTModalView {
   }
 
   notifyPlanungUpdated() {
-    this.tabs["aufstellung"].notifyPlanungUpdated()
+    for (var tab in this.tabs) {
+      this.tabs[tab].notifyPlanungUpdated()
+    }
   }
 
   bindHtmlParser(id, parser) {

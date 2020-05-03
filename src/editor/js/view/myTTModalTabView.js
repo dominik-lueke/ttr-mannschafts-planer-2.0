@@ -28,7 +28,9 @@ class MyTTModalTabView {
           </div>
           <div class="row">
             <div class="col-sm">
-              <button id="myttmodal-${id}-load-button" type="button" class="btn btn-success pull-right myttmodal-load-button" disabled >${id} laden</button>
+              <span class="d-inline pull-right" id="myttmodal-${id}-load-button-popover-container" >
+                <button id="myttmodal-${id}-load-button" type="button" class="btn btn-success pull-right myttmodal-load-button" disabled >${id} laden</button>
+              </span>
             </div>
           </div>
         </div>
@@ -44,6 +46,7 @@ class MyTTModalTabView {
     this.home_button = $(`#myttmodal-${id}-webview-home-button`)
     this.refresh_button = this.loading_indicator
     this.load_button = $(`#myttmodal-${id}-load-button`)
+    this.load_button_popover = $(`#myttmodal-${id}-load-button-popover-container`)
     this.status_row = $(`#myttmodal-${id}-status`)
     // properties
     this.planung = {}
@@ -113,7 +116,7 @@ class MyTTModalTabView {
 
   bindClickOnLoadButtonOnMyTTModalTab(handler) {
     this.load_button.click((event) => { 
-      this.load_button.popover('dispose')
+      this.load_button_popover.popover('dispose')
       this._loadData(handler) 
     })
   }
@@ -154,21 +157,25 @@ class MyTTModalTabView {
   _displayParseResult() {
     this.parse_result = this.getParseResult(this.planung)
     this.status_row.html(`<small>${this.parse_result.html}</small>`)
-    if ( this.parse_result.result ){
+    // enable/disable button
+    if ( this.parse_result.result ) {
       this.load_button.removeProp("disabled")
-      // Add popover to button if we are about to change the planungs details with 'Aufstellung laden'
-      this.load_button.popover('dispose')
-      if ( this.id === 'Aufstellung') {
-        this.load_button.popover({
-          trigger: 'hover',
-          content: this.parse_result.popoverhtml,
-          html: true,
-          placement: 'top',
-          template: '<div class="popover myttmodal-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>'
-        })
-      }
+      this.load_button.attr("style", "")
     } else {
       this.load_button.prop("disabled", true)
+      this.load_button.attr("style", "pointer-events: none;")
     }
+    // Add popover to button if we are about to change the planungs details with 'Aufstellung laden'
+    this.load_button_popover.popover('dispose')
+    if ( this.parse_result.popoverhtml ) {
+      this.load_button_popover.popover({
+        trigger: 'hover',
+        content: this.parse_result.popoverhtml,
+        html: true,
+        placement: 'top',
+        template: '<div class="popover myttmodal-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>'
+      })
+    }
+
   }
 }

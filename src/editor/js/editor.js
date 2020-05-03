@@ -159,7 +159,9 @@ openDialog = () => {
 exportAsXlsxDialog = (planung) => {
   const dialog = remote.dialog
   const window = remote.getCurrentWindow();
-  const filepath_suggestion = planung.file.replace("ttsp","xlsx")
+  const friendly_saison = planung.saison.replace("/","")
+  const empty_filepath_suggestion = `Saisonplanung-${planung.verein}-${planung.spielklasse}-${planung.halbserie}-${friendly_saison}.xslx`
+  const filepath_suggestion = planung.file ? planung.file.replace("ttsp","xlsx") : path.resolve(eleapp.getPath("documents"),empty_filepath_suggestion)
   let options = {
     title: "Exportiere Saisonplanung - Tischtennis Mannschafts Planer",
     defaultPath : path.resolve(filepath_suggestion),

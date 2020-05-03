@@ -265,6 +265,19 @@ class MyTTParser {
           popoverhtml += `<i class="fa fa-warning text-warning"></i> ${current_value} &rarr; <b>${loaded_value}</b><br/> `
         }
       })
+      // TTR Werte
+      const loaded_ttr_date = planung.ttrwerte.date.getTime()
+      const current_ttr_date = current_planung.ttrwerte.date.getTime()
+      if (current_ttr_date > 0) {
+        if (loaded_ttr_date < current_ttr_date) {
+          popoverhtml += `<i class="fa fa-warning text-warning"></i> TTR-Stichtag: ${current_planung.ttrwerte.datestring} &rarr; <b>${planung.ttrwerte.datestring}</b><br/> `
+        } else if (loaded_ttr_date > current_ttr_date) {
+          popoverhtml += `<i class="fa fa-refresh text-primary"></i> TTR-Stichtag: ${current_planung.ttrwerte.datestring} &rarr; <b>${planung.ttrwerte.datestring}</b><br/> `
+        }
+      } else {
+        popoverhtml += `<i class="fa fa-check-circle text-success"></i> TTR-Stichtag: <b>${planung.ttrwerte.datestring}</b><br/> `
+      }
+      // Spieler Differenz
       const new_spieler_arr = planung.spieler.liste.filter( spieler => current_planung.spieler.liste.find( spieler1 => spieler1.mytt_id === spieler.mytt_id) == undefined )
       if (new_spieler_arr.length > 0){
         const wird = new_spieler_arr.length == 1 ? "wird" : "werden"
@@ -456,11 +469,22 @@ class MyTTParser {
       ttrranglisteFound = false
     }
     // information for popover
-    var popoverhtml = ''
+    var popoverhtml = '<h6>Die Planung wird aktualisiert.</h6>'
+    // TTR Werte
+    const loaded_ttr_date = planung.ttrwerte.date.getTime()
+    const current_ttr_date = current_planung.ttrwerte.date.getTime()
+    if (current_ttr_date > 0) {
+      if (loaded_ttr_date < current_ttr_date) {
+        popoverhtml += `<i class="fa fa-warning text-warning"></i> TTR-Stichtag: ${current_planung.ttrwerte.datestring} &rarr; <b>${planung.ttrwerte.datestring}</b><br/> `
+      } else if (loaded_ttr_date > current_ttr_date) {
+        popoverhtml += `<i class="fa fa-refresh text-primary"></i> TTR-Stichtag: ${current_planung.ttrwerte.datestring} &rarr; <b>${planung.ttrwerte.datestring}</b><br/> `
+      }
+    } else {
+      popoverhtml += `<i class="fa fa-check-circle text-success"></i> TTR-Stichtag: <b>${planung.ttrwerte.datestring}</b><br/> `
+    }
+    // How many spieler are updated
     const update_spieler_arr = current_planung.spieler.liste.filter( spieler => ( planung.spieler.liste.find( spieler1 => spieler1.mytt_id === spieler.mytt_id) !== undefined ) )
-    const delete_spieler_arr = current_planung.spieler.liste.filter( spieler => ( planung.spieler.liste.find( spieler1 => spieler1.mytt_id === spieler.mytt_id) == undefined ) )
     if (update_spieler_arr.length > 0){
-      popoverhtml = '<h6>Die Planung wird aktualisiert.</h6>'
       popoverhtml += `<i class="fa fa-refresh text-primary"></i> <b>${update_spieler_arr.length} Spieler</b> der aktuellen Planung erhalten neue TTR-Werte.`
     } else {
       popoverhtml = '<i class="fa fa-warning text-warning"></i> Es werden für <b/>keine</b> Spieler TTR-Werte aktualisiert.<br/>'

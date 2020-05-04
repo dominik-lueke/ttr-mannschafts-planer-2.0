@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <title>Tischtennis Mannschafts Planer</title>
+    <!-- app styles -->
+    <script type="text/javascript" src="./../../vendor/jquery-3.3.1/jquery-3.3.1.slim.min.js"></script>
+    <script type="text/javascript" src="./../../vendor/bootstrap-4.4.1/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./../../vendor/bootstrap-4.4.1/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./../css/splashscreen.css">
+  </head>
+  <body>
+    <div class="splashscreen bg-dark">
+      <div class="container pt-2">
+        <div class="row pt-4">
+          <div class="col-4">
+            <img src="./../image/splashscreen.PNG" width="170px" height="170px" class="mt-4"/>
+          </div>
+          <div class="col-8">
+            <h4 class="pl-2 display-4">Tischtennis<br/>Mannschafts<br/>Planer</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="loader text-center">
+              <div class="wrapper">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

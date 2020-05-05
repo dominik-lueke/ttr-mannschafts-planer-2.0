@@ -115,8 +115,8 @@ class Model {
   
   /* SPIELER */
 
-  addSpieler(mannschaft, position, name, qttr) {
-    const id = this.planung.addSpieler(mannschaft, position, name, qttr)
+  addSpieler(mannschaft, variante, position, name, qttr) {
+    const id = this.planung.addSpieler(mannschaft, variante, position, name, qttr)
     this.displaySpielerDetails(id)
   }
 

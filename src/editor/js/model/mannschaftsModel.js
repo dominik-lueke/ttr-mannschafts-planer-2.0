@@ -1,9 +1,10 @@
 class MannschaftsModel {
 
-  constructor(id=0, spielklasse="", nummer=0, liga="", sollstaerke=6, spieltag="Freitag", uhrzeit="19:30", spielwoche="A") {
+  constructor(id=0, spielklasse="", nummer=0, variante=0, liga="", sollstaerke=6, spieltag="Freitag", uhrzeit="19:30", spielwoche="A") {
     this.id = id
     this.spielklasse = spielklasse
     this.nummer = nummer
+    this.variante = variante
     this.romanNumber = this._getRomanNumberOfInteger(`${this.nummer}`)
     this.name = this.spielklasse + ( this.romanNumber === "I" ? "" : " " + this.romanNumber)
     this.liga = liga,

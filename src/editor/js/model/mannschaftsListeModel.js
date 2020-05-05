@@ -9,10 +9,25 @@ class MannschaftsListeModel {
    * PUBLIC
    */
 
-  addMannschaft(nummer=0, liga="Liga", sollstaerke=6, spieltag="Freitag", uhrzeit="19:30", spielwoche="A") {
+  addMannschaft(nummer=0, variante=0, liga="Liga", sollstaerke=6, spieltag="Freitag", uhrzeit="19:30", spielwoche="A") {
     const id = this.liste.length > 0 ? Math.max.apply(null, this.liste.map(mannschaft => mannschaft.id)) + 1 : 1
-    this.liste.push(new MannschaftsModel(id, this.spielklasse, nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche))
+    this.liste.push(new MannschaftsModel(id, this.spielklasse, nummer, variante, liga, sollstaerke, spieltag, uhrzeit, spielwoche))
     return id
+  }
+
+  createVarianteOfMannschaft(id){
+    const original_mannschaft = this.liste.find(mannschaft => ( mannschaft.id == id ))
+    this.liste
+      .filter( mannschaft => ((mannschaft.nummer >= original_mannschaft.nummer) && (mannschaft.variante === original_mannschaft.variante)))
+      .forEach( mannschaft => {
+        // Clone the mannschaft
+        const mannschaft_variante = Object.assign(Object.create(Object.getPrototypeOf(mannschaft)), mannschaft)
+        // set new id and increase variante
+        mannschaft_variante.id = Math.max.apply(null, this.liste.map(mannschaft => mannschaft.id)) + 1
+        mannschaft_variante.variante = mannschaft.variante + 1
+        // push into liste
+        this.liste.push(mannschaft_variante)
+      })
   }
 
   deleteMannschaft(id) {

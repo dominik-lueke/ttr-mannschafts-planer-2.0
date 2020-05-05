@@ -168,6 +168,13 @@ class PlanungsModel {
     return new_id
   }
 
+  createVarianteOfMannschaft(id) {
+    console.log(`planung.createVarianteOfMannschaft(${id})`)
+    this.mannschaften.createVarianteOfMannschaft(id)
+    const mannschaft = this.mannschaften.getMannschaft(id)
+    this.spieler.createVarianteOfMannschaft(mannschaft.nummer, mannschaft.variante)
+  }
+
   deleteMannschaft(id, keep_spieler){
     const mannschafts_nummer = (this.mannschaften.getMannschaft(id)).nummer
     // delete tha mannschaft from spieler-liste

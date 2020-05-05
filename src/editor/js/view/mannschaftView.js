@@ -5,25 +5,34 @@ class MannschaftView {
     // Add the row for the Mannschaft
     this.html = $(`
       <div class="row mannschafts-row">
-        <div id="mannschaft-${id}" class="card mannschaft">
-          <div class="card-header mannschaft-header link">
-            <div class="d-flex justify-content-between">
-              <div class="p-2">
-                <span class="text-dark"><h5 id="mannschaft-${id}-name">${mannschaft.name}</h5></span>
-              </div>
-              <div class="p-2 text-muted">
-                <small id="mannschaft-${id}-liga">${mannschaft.liga}</small>
-              </div>
-              <div class="p-2 text-muted">
-                <small id="mannschaft-${id}-spieltag">${mannschaft.spieltag}, ${mannschaft.uhrzeit} Uhr</small>
-              </div>
-              <div class="p-2 text-muted">
-                <small id="mannschaft-${id}-spielwoche">${mannschaft.spielwoche}</small>
-              </div>
-              <div id="mannschaft-${id}-invalid-icon" class="p-2 mannschaft-invalid-icon text-danger">
-                <span><i class="fa fa-exclamation-triangle"></i></span>
+        <div class="col-11">
+          <div id="mannschaft-${id}" class="card mannschaft">
+            <div class="card-header mannschaft-header link">
+              <div class="d-flex justify-content-between">
+                <div class="p-2">
+                  <span class="text-dark"><h5 id="mannschaft-${id}-name">${mannschaft.name}</h5></span>
+                </div>
+                <div class="p-2 text-muted">
+                  <small id="mannschaft-${id}-liga">${mannschaft.liga}</small>
+                </div>
+                <div class="p-2 text-muted">
+                  <small id="mannschaft-${id}-spieltag">${mannschaft.spieltag}, ${mannschaft.uhrzeit} Uhr</small>
+                </div>
+                <div class="p-2 text-muted">
+                  <small id="mannschaft-${id}-spielwoche">${mannschaft.spielwoche}</small>
+                </div>
+                <div id="mannschaft-${id}-invalid-icon" class="p-2 mannschaft-invalid-icon text-danger">
+                  <span><i class="fa fa-exclamation-triangle"></i></span>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="col-1">
+          <div style="display: flex;flex-direction: column;height: 100%;">
+            <button id="mannschaft-${id}-create-variant-btn" class="btn btn-light text-muted" style="display: flex;flex-direction: column;flex: 1;justify-content: center;width: 50px;">
+              <i class="fa fa-random" style="opacity: 0.33"></i>
+            </a>
           </div>
         </div>
       </div>
@@ -37,6 +46,8 @@ class MannschaftView {
       this.mannschaft_print_kommentar_flex_div.append( this.spieler_print_kommentar = $(`<div id="mannschaft-${id}-print-kommentar" class="pl-2 pb-2 text-muted"><small><i class="fa fa-comment-o"></i> ${mannschaft.kommentar}</small></div>`) )
       this.mannschafts_header.append(this.mannschaft_print_kommentar_flex_div)
     }
+    this.mannschafts_variant_btn = $(`#mannschaft-${id}-create-variant-btn`)
+
     // Add all Spieler to the Mannschaft
     this.spielerListeContainer = $(`<ul id="mannschaft-${id}-spielerliste" class="list-group list-group-flush connected-sortable-spieler spielerliste"></ul>`)
     mannschafts_div.append(this.spielerListeContainer)
@@ -99,6 +110,12 @@ class MannschaftView {
   bindClickOnMannschaft(handler) {
     this.mannschafts_header.click( (event) => { 
       handler(this.mannschaft.id)
+    })
+  }
+
+  bindClickOnCreateMannschaftVariante(handler) {
+    this.mannschafts_variant_btn.click( (event) => { 
+      handler(this.mannschaft.id) 
     })
   }
 

@@ -9,13 +9,13 @@ class SpielerListeModel {
    *  Public Functions 
    */
 
-  addSpieler(mannschaft=0, position=0, name="", qttr=1) {
+  addSpieler(mannschaft=0, variante=0, position=0, name="", qttr=1) {
     const id = this.liste.length > 0 ? Math.max.apply(null, this.liste.map(spieler => spieler.id)) + 1 : 1
     // add the spieler 
     const spieler = new SpielerModel(id, name, this.spielklasse, qttr)
     this.liste.push(spieler)
     // insert the new spieler in the correct (mannschaft, position)
-    this._insertSpielerInMannschaft(spieler, mannschaft, position)
+    this._insertSpielerInMannschaft(spieler, mannschaft, variante, position)
     // return the id
     return id
   }
@@ -26,7 +26,7 @@ class SpielerListeModel {
     var keep_spv = spieler.mannschaft == new_mannschaft
     // reorder = remove from old position + insert in new position
     this._removeSpielerFromMannschaft(spieler, keep_spv)
-    this._insertSpielerInMannschaft(spieler, new_mannschaft, new_position)
+    this._insertSpielerInMannschaft(spieler, new_mannschaft, spieler.variante, new_position)
   }
 
   reorderMannschaft(old_mannschaft, new_mannschaft) {
@@ -40,6 +40,20 @@ class SpielerListeModel {
     this._sortSpielerListe()
     // validate all spieler
     this.validate()
+  }
+
+  createVarianteOfMannschaft(mannschaft, variante) {
+    this.liste
+      .filter(spieler => ((spieler.mannschaft >= mannschaft) && (spieler.variante == variante)))
+      .forEach(spieler => {
+        // Clone the mannschaft
+        const spieler_variante = Object.assign(Object.create(Object.getPrototypeOf(spieler)), spieler)
+        // set new id and increase variante
+        spieler_variante.id = Math.max.apply(null, this.liste.map(spieler => spieler.id)) + 1
+        spieler_variante.variante = spieler.variante + 1
+        // push into liste
+        this.liste.push(spieler_variante)
+      })
   }
 
   editSpielerSpv(id, spv) {
@@ -157,10 +171,10 @@ class SpielerListeModel {
    * Internal Manipulate Spieler Array Functions
    */
 
-  _insertSpielerInMannschaft(insert_spieler, mannschaft, position) {
-    const current_spieler_with_position = this.liste.find(spieler => ( spieler.mannschaft == mannschaft && spieler.position === position ) )
+  _insertSpielerInMannschaft(insert_spieler, mannschaft, variante, position) {
+    const current_spieler_with_position = this.liste.find(spieler => ( spieler.mannschaft == mannschaft && spieler.variante == variante && spieler.position === position ) )
     this.liste
-    .filter( spieler => ( spieler.mannschaft == mannschaft && spieler.position >= position ) )
+    .filter( spieler => ( spieler.mannschaft == mannschaft && spieler.variante == variante && spieler.position >= position ) )
     .forEach( spieler => {
       // increase all positionen from the same mannschaft greater or equal than position by one
       if ( current_spieler_with_position ) { spieler.position++ }
@@ -205,7 +219,7 @@ class SpielerListeModel {
     remove_spieler.position = 0
     // decrease all positionen from mannschaft greater than position by one
     this.liste
-    .filter( spieler => ( spieler.spielklasse == remove_spieler.spielklasse && spieler.mannschaft == old_mannschaft && spieler.position >= old_position ) )
+    .filter( spieler => ( spieler.spielklasse == remove_spieler.spielklasse && spieler.mannschaft == old_mannschaft && spieler.variante == remove_spieler.variante && spieler.position >= old_position ) )
     .forEach( spieler => { spieler.position-- } )
     // sort this.liste
     this._sortSpielerListe()
@@ -252,7 +266,8 @@ class SpielerListeModel {
     this.liste
     .filter(spieler => (
       ( spieler.mannschaft == check_spieler.mannschaft && spieler.position < check_spieler.position ) || ( spieler.mannschaft < check_spieler.mannschaft ) &&
-      spieler.qttr < check_spieler.qttr) )
+      spieler.qttr < check_spieler.qttr &&
+      spieler.variante == check_spieler.variante ) )
     .forEach(spieler => {
       if ( check_spieler.isInvalidBecauseOf(spieler) ) {
         check_spieler.addSpielerToInvalidList(spieler)
@@ -268,7 +283,8 @@ class SpielerListeModel {
     // Check if this spieler is invalid because of any positionen higher than its own
     this.liste
     .filter(spieler => (
-      ( spieler.mannschaft == check_spieler.mannschaft && spieler.position > check_spieler.position ) || ( spieler.mannschaft > check_spieler.mannschaft ) ) )
+      ( spieler.mannschaft == check_spieler.mannschaft && spieler.position > check_spieler.position ) || ( spieler.mannschaft > check_spieler.mannschaft ) &&
+      spieler.variante == check_spieler.variante ) )
     .forEach(spieler => {
       if ( spieler.isInvalidBecauseOf(check_spieler) ) {
         spieler.addSpielerToInvalidList(check_spieler)

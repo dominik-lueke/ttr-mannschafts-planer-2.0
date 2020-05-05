@@ -8,19 +8,21 @@ class EditorView {
             </div>
             <div id="add-mannschaft-button-container" class="container">
               <div class="row mannschafts-row">
-                <div class="empty-planung-message text-center mannschaft mb-3 display-none">
-                  <h6 class="mb-3">Es existieren noch keine Mannschaften oder Spieler</h6>
-                  <h6 class="mb-3">Lege manuell welche an</h6>
-                </div>
-                <div class="card mannschaft">
-                  <button id="add-mannschaft-button" class="btn btn-light text-muted">
-                    <i class="fa fa-plus"></i>
-                    Mannschaft hinzufügen
-                  </button>
-                </div>
-                <div class="empty-planung-message text-center mannschaft mt-3 display-none">
-                  <h6 class="mb-3">oder</h6>
-                  <h6 class="link text-success" id="lade-aufstellung-link" data-toggle="modal" data-target="#planung-reload-data-modal">lade eine Aufstellung von myTischtennis.de</h6>
+                <div class="col-11">
+                  <div class="empty-planung-message text-center mannschaft mb-3 display-none">
+                    <h6 class="mb-3">Es existieren noch keine Mannschaften oder Spieler</h6>
+                    <h6 class="mb-3">Lege manuell welche an</h6>
+                  </div>
+                  <div class="card mannschaft">
+                    <button id="add-mannschaft-button" class="btn btn-light text-muted">
+                      <i class="fa fa-plus"></i>
+                      Mannschaft hinzufügen
+                    </button>
+                  </div>
+                  <div class="empty-planung-message text-center mannschaft mt-3 display-none">
+                    <h6 class="mb-3">oder</h6>
+                    <h6 class="link text-success" id="lade-aufstellung-link" data-toggle="modal" data-target="#planung-reload-data-modal">lade eine Aufstellung von myTischtennis.de</h6>
+                  </div>
                 </div>
               </div>
             </div>
@@ -168,6 +170,10 @@ class EditorView {
 
   bindClickOnMannschaft(handler) {
     this.mannschaftViews.forEach(mannschaft => { mannschaft.bindClickOnMannschaft(handler)})
+  }
+
+  bindClickOnCreateMannschaftVariante(handler) {
+    this.mannschaftViews.forEach(mannschaft => { mannschaft.bindClickOnCreateMannschaftVariante(handler)})
   }
 
   bindAddMannschaft(handler) {

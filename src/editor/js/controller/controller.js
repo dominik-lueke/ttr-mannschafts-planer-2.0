@@ -246,6 +246,7 @@ class Controller {
   onMannschaftenChanged = (planung) => {
     this.editorView.displayMannschaften(planung)
     this.editorView.bindClickOnMannschaft(this.handleClickOnMannschaft)
+    this.editorView.bindClickOnCreateMannschaftVariante(this.handleClickOnCreateMannschaftVariante)
     this.editorView.bindAddSpieler(this.handleAddSpieler)
     this.editorView.bindClickOnSpieler(this.handleClickOnSpieler)
     this.editorView.bindToggleSpvOnSpieler(this.handleToggleSpvOnSpieler)
@@ -359,9 +360,9 @@ class Controller {
     this.model.addMannschaft(nummer)
   }
 
-  handleAddSpieler = (spielklasse, mannschaft, position, name, qttr) => {
+  handleAddSpieler = (spielklasse, mannschaft, variante, position, name, qttr) => {
     /* The spielklasse can later be used to have more than one planungs-objcet */
-    this.model.addSpieler(mannschaft, position, name, qttr)
+    this.model.addSpieler(mannschaft, variante, position, name, qttr)
   }
 
   handleReorderSpieler = (id, new_mannschaft, new_position) => {
@@ -378,6 +379,10 @@ class Controller {
 
   handleClickOnMannschaft = (id) => {
     this.model.displayMannschaftDetails(id)
+  }
+
+  handleClickOnCreateMannschaftVariante = (id) => {
+    this.planung.createVarianteOfMannschaft(id)
   }
 
   handleToggleSpvOnSpieler = (id, spv) => {

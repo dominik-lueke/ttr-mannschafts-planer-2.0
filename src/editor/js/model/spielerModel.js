@@ -6,6 +6,7 @@ class SpielerModel {
     this.name = name
     this.spielklasse = spielklasse
     this.mannschaft = 0
+    this.variante = 0
     this.position = 0
     this.qttr = qttr
     this.qttrdate = new Date(Date.now())
@@ -94,7 +95,7 @@ class SpielerModel {
   }
 
   compare(other_spieler) {
-    return ( this.mannschaft * 1000 + this.position ) - ( other_spieler.mannschaft * 1000 + other_spieler.position )
+    return ( this.variante * 10000 + this.mannschaft * 1000 + this.position ) - ( other_spieler.variante * 10000 + other_spieler.mannschaft * 1000 + other_spieler.position )
   }
 
   addSpielerToInvalidList(invalid_spieler) {
@@ -121,6 +122,7 @@ class SpielerModel {
 
   clearPosition(){
     this.mannschaft = 9999
+    this.variante = 9999
     this.position = 9999
     this.qttr = 0
     this.reserve = false

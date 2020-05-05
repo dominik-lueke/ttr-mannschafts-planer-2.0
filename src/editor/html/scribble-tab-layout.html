@@ -1,0 +1,59 @@
+<div class="tab-content">
+  <div class="tab-pane fade active show" id="editor-pane" role="tabpanel" aria-labelledby="editor-pane" style="height: calc(100vh - (80px + 3em));">
+    <!-- add old editor <body> content here -->
+  </div>
+</div>
+<ul class="nav nav-tabs" role="tablist" style="transform: rotate(180deg);">
+  <div class="flex-grow-1 text-right">
+  </div>
+  <li class="nav-item mr-2">
+    <a class="nav-link" id="editor-tab" href="#editor-pane" data-toggle="tab" role="tab" aria-controls="editor-tab" aria-selected="false">
+      <div style="transform: rotate(180deg);" class="text-dark">
+        <i class="fa fa-plus"></i>
+      </div>
+    </a>
+  </li>
+  <li class="nav-item mr-2">
+    <a class="nav-link active" id="editor-tab" href="#editor-pane" data-toggle="tab" role="tab" aria-controls="editor-tab" aria-selected="true">
+      <div style="transform: rotate(180deg);" class="text-dark">
+        Herren
+      </div>
+    </a>
+  </li>
+</ul>
+
+<!-- HEADER -->
+<div id="header">
+  <div class="d-flex bg-dark text-white text-center fixed-top">
+    <div class="p-2 flex-fill">
+      <h4><small id="planung-verein" data-toggle="tooltip" data-placement="bottom" data-html="true" title="" data-original-title="Vereins-Nr.: 187012">TuRa Elsen</small></h4>
+      
+    </div>
+    <div class="p-2 flex-fill">
+      <h4 id="planung-serie">Vorrunde 2020/21</h4>
+      
+    </div>
+    <div class="p-2 flex-fill">
+      <div id="header-mytt-status-div">
+        
+        <div class="d-flex justify-content-center pt-1">
+          <div id="header-aufstellung-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="" class="mr-2" data-original-title="Es wurde keine Aufstellung von myTischtennis geladen">
+            <span class="badge badge-dark p-1 text-muted link" data-toggle="modal" data-target="#planung-reload-data-modal">CLICK-TT</span>
+            <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
+          </div>
+          <div id="header-ttrwerte-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="" class="mr-2" data-original-title="Es wurden noch keine TTR-Werte von myTischtennis geladen">
+            <span class="badge badge-dark p-1 text-muted link" data-toggle="modal" data-target="#planung-reload-data-modal">TTR</span>
+            <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
+          </div>
+          <div id="header-bilanzen-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="" data-original-title="Es wurden noch keine Bilanzen von myTischtennis geladen">
+            <span class="badge badge-dark p-1 text-muted link" data-toggle="modal" data-target="#planung-reload-data-modal">11:9</span>
+            <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
+          </div>
+        </div>
+      </div>
+      <div id="header-print-date-div" class="display-none">
+        <h4><small id="header-print-date">4.5.2020</small></h4>
+      </div>
+    </div>
+  </div>
+</div>

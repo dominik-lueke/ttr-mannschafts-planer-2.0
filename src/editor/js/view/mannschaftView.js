@@ -31,7 +31,12 @@ class MannschaftView {
     mannschaftsContainer.append(this.html)
     const mannschafts_div = $("#mannschaft-" + id)
     this.mannschafts_header = mannschafts_div.find(".mannschaft-header")
-
+    // Add Mannschaft kommentar to print view
+    if (mannschaft.kommentar !== "") {
+      this.mannschaft_print_kommentar_flex_div = $(`<div class="display-none mannschaft-print-kommentar"></div>`)
+      this.mannschaft_print_kommentar_flex_div.append( this.spieler_print_kommentar = $(`<div id="mannschaft-${id}-print-kommentar" class="pl-2 pb-2 text-muted"><small><i class="fa fa-comment-o"></i> ${mannschaft.kommentar}</small></div>`) )
+      this.mannschafts_header.append(this.mannschaft_print_kommentar_flex_div)
+    }
     // Add all Spieler to the Mannschaft
     this.spielerListeContainer = $(`<ul id="mannschaft-${id}-spielerliste" class="list-group list-group-flush connected-sortable-spieler spielerliste"></ul>`)
     mannschafts_div.append(this.spielerListeContainer)

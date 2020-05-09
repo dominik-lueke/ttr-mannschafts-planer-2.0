@@ -325,8 +325,15 @@ span.badge {
     padding: .15rem .5rem
   }
 
+  .mannschaft-print-kommentar,
   .spieler-print-kommentar {
     display: block !important;
+  }
+  .spieler-print-kommentar {
+    margin-top: -0.75em !important;
+  }
+  .mannschaft-print-kommentar {
+    margin-top: -1em !important;
   }
 
   #sidebar,

@@ -23,7 +23,7 @@ class SpielerView {
       this.spieler_div.append(this.spieler_flex_div)
       if (spieler.kommentar !== "") {
         this.spieler_print_kommentar_flex_div = $(`<div class="display-none spieler-print-kommentar"></div>`)
-        this.spieler_print_kommentar_flex_div.append( this.spieler_print_kommentar = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-print-kommentar" class="pl-2 text-muted"><small><i class="fa fa-comment-o"></i> ${spieler.kommentar}</small></div>`) )
+        this.spieler_print_kommentar_flex_div.append( this.spieler_print_kommentar = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-print-kommentar" class="pl-2 pb-1 text-muted"><small><i class="fa fa-comment-o"></i> ${spieler.kommentar}</small></div>`) )
         this.spieler_div.append(this.spieler_print_kommentar_flex_div)
       }
       spielerListeContainer.append(this.spieler_div)

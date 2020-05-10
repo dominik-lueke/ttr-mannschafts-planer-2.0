@@ -16,6 +16,11 @@ a .spieler-farbe-selector {
   margin: 6px 11px 6px 1px;
 }
 
+/* HEADER */
+#header h4 {
+  cursor: default;
+}
+
 /* SPIELER FARBE */
 
 .spieler-farbe-green {
@@ -54,14 +59,14 @@ a .spieler-farbe-selector {
 .details-sidebar {
   position: fixed;
   height: 100vh;
-  top: 110px; /* Stay at the top */
+  top: 80px; /* Stay at the top */
   right: 50px;
   width: 550px;
   z-index: 3;
 }
 
 .details-sidebar > .card {
-  height: calc(100vh - 130px);
+  height: calc(100vh - 100px);
 }
 
 .sidebar-details-icon {
@@ -88,7 +93,7 @@ a .spieler-farbe-selector {
 /* EDITOR */
 
 .editor-container {
-  margin-top: 80px;
+  margin-top: 50px;
 }
 
 .mannschafts-row {
@@ -352,7 +357,7 @@ span.badge {
   #add-mannschaft-button-container,
   ul.add-spieler-button-container,
   div.spv span.badge-light {
-    display: none;
+    display: none !important;
   }
 
   #header-print-date-div {

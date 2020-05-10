@@ -91,4 +91,8 @@ class MannschaftsListeModel {
     return this.liste.find(mannschaft => mannschaft.nummer == nummer)
   }
 
+  getMannschaftByRomanNumber(romanNumber) {
+    return this.liste.find(mannschaft => mannschaft.romanNumber == romanNumber)
+  }
+
 }

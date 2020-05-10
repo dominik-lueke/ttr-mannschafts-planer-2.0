@@ -385,22 +385,35 @@ class PlanungsModel {
             planung_json.mannschaften.liste.forEach( (mannschaft) => {
               /* Create Mannschaft */
               var new_mannschaft = null
-              if ( ! update_aufstellung) {
-                new_mannschaft = new MannschaftsModel()
-                mannschaftsListe.liste.push(new_mannschaft)
-              } else if ("nummer" in mannschaft) {
-                if ( (mannschaft.nummer <= this.mannschaften.liste.length) ) {
-                  new_mannschaft = this.mannschaften.getMannschaftByNummer(mannschaft.nummer)
-                } else {
-                  const new_mannschaft_id = this.addMannschaft(mannschaft.nummer)
-                  new_mannschaft = this.mannschaften.getMannschaft(new_mannschaft_id)
+              if (mannschaftsListe.spielklasse === mannschaft.spielklasse){
+                if ( ! update_aufstellung) {
+                  if ("romanNumber" in mannschaft) {
+                    new_mannschaft = this.mannschaften.getMannschaftByRomanNumber(mannschaft.romanNumber)
+                  } else {
+                    new_mannschaft = new MannschaftsModel()
+                    mannschaftsListe.liste.push(new_mannschaft)
+                  }
+                } else if ("nummer" in mannschaft) {
+                  if ( (mannschaft.nummer <= this.mannschaften.liste.length) ) {
+                    new_mannschaft = this.mannschaften.getMannschaftByNummer(mannschaft.nummer)
+                  } else {
+                    const new_mannschaft_id = this.addMannschaft(mannschaft.nummer)
+                    new_mannschaft = this.mannschaften.getMannschaft(new_mannschaft_id)
+                  }
                 }
               }
               if (new_mannschaft != null){
                 /* Set properties */
                 for (var mannschafts_key in mannschaft){
                   if (mannschaft.hasOwnProperty(mannschafts_key)){
-                    new_mannschaft[mannschafts_key] = mannschaft[mannschafts_key]
+                    // Special case for bilanzen where we extend the hashmap
+                    if (mannschafts_key === 'bilanzen') {
+                      for (var saison_key in mannschaft[mannschafts_key] ){
+                        new_mannschaft[mannschafts_key][saison_key] = mannschaft[mannschafts_key][saison_key]
+                      }
+                    } else {
+                      new_mannschaft[mannschafts_key] = mannschaft[mannschafts_key]
+                    }
                   }
                 }
               }

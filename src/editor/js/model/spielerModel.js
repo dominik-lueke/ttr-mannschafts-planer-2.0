@@ -29,20 +29,20 @@ class SpielerModel {
       Vorrunde-20xx/xy": {
         saison: 20xx/xy,
         halbserie: Vorrunde,
+        position: "1.1",
         bilanzen: [
           {
-            mannschaft: 1,
-            liga: "Liga",
+            einsatz_mannschaft: "Herren",
+            name: "Nachname, Vorname"
+            rang: "1.1",
             einsaetze: 1,
-            bilanzen: {
-              1: "1:1",
-              2: "2:2",
-              3: "",
-              4: "",
-              5: "",
-              6: "",
-              gesamt: "3:3",
-            }
+            1: "1:1",
+            2: "2:2",
+            3: "",
+            4: "",
+            5: "",
+            6: "",
+            gesamt: "3:3",
           },
           {
 

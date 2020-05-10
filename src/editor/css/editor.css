@@ -56,11 +56,11 @@ a .spieler-farbe-selector {
   height: 100vh;
   top: 110px; /* Stay at the top */
   right: 50px;
-  width: 500px;
+  width: 550px;
   z-index: 3;
 }
 
-.details-sidebar .card {
+.details-sidebar > .card {
   height: calc(100vh - 130px);
 }
 
@@ -70,12 +70,19 @@ a .spieler-farbe-selector {
   line-height: 2rem;
 }
 
-.details-sidebar .card .card-body {
+.details-sidebar > .card > .card-body {
   overflow-y: auto;
 }
 
 #spieler-details-icon span {
   cursor: default;
+}
+
+#mannschaft-details-view-body-bilanzen td.bilanzen-spieler-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 180px;
 }
 
 /* EDITOR */

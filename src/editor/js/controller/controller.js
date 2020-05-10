@@ -54,6 +54,7 @@ class Controller {
     this.sidebarView = new SidebarView()
     // Handler SIDEBAR VIEW
     this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
+    this.sidebarView.bindCompareHalbserienFn(this.planung.compareHalbserien)
     // Handler SIDEBAR SPIELER VIEW
     this.sidebarView.bindEditNameOnSpieler(this.handleEditNameOnSpieler)
     this.sidebarView.bindEditQttrOnSpieler(this.handleEditQttrOnSpieler)
@@ -221,7 +222,7 @@ class Controller {
     const id = this.model.view.sidebar.id
     if (display == "spieler") {
       const spieler = this.planung.spieler.getSpieler(id)
-      this.sidebarView.displaySpieler(spieler, this.planung.compareHalbserien)
+      this.sidebarView.displaySpieler(spieler)
       this.editorView.focusSpieler(spieler)
     } else if (display == "mannschaft") {
       const mannschaft = this.planung.mannschaften.getMannschaft(id)

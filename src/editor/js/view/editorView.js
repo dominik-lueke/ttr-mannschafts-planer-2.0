@@ -3,7 +3,7 @@ class EditorView {
     $('#editor').append(`
       <div class="container editor-container">
         <div class="row">
-          <div id="editor-col" class="col-12 col-md-8" >
+          <div id="editor-col" class="col-12 col-sm-8 col-md-6" >
             <div id="mannschafts-container" class="container connected-sortable-mannschaft">
             </div>
             <div id="add-mannschaft-button-container" class="container">

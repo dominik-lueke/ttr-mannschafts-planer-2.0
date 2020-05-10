@@ -210,12 +210,13 @@ class MannschaftDetailsView {
           </table>`
         )
         var bilanzen_tablebody = saison_table.find('tbody')
+        var max_einsaetze_in_mannschaft = 0
         saison.bilanzen.forEach( spieler => {
-          bilanzen_tablebody.append(`
+          var bilanzen_tablerow = $(`
             <tr>
               <td>${spieler.rang}</td>
               <td class="bilanzen-spieler-name">${spieler.name}</td>
-              <td>${spieler.einsaetze}</td>
+              <td class="bilanzen-stammspieler-einsaetze">${spieler.einsaetze} </td>
               <td>${spieler[1]}</td>
               <td>${spieler[2]}</td>
               <td>${spieler[3]}</td>
@@ -225,7 +226,22 @@ class MannschaftDetailsView {
               <td>${spieler.gesamt}</td>
             </tr>
           `)
+          if (parseInt(spieler.einsaetze,10) > max_einsaetze_in_mannschaft) {
+            max_einsaetze_in_mannschaft = parseInt(spieler.einsaetze,10)
+          }
+          if (parseInt(spieler.rang.split('.')[0],10) !== mannschaft.nummer){
+            bilanzen_tablerow.find('.bilanzen-stammspieler-einsaetze').removeClass('bilanzen-stammspieler-einsaetze')
+          }
+          bilanzen_tablebody.append(bilanzen_tablerow)
         })
+        // Add warning icons to spieler with few einsätze
+        bilanzen_tablebody.find('.bilanzen-stammspieler-einsaetze').each( (index,element) => {
+          var einsaetze = parseInt( $(element).text(),10 )
+          if (einsaetze < (max_einsaetze_in_mannschaft / 2)) {
+            $(element).append('<small><i class="fa fa-warning text-warning" data-toggle="tooltip" data-placement="right" title="Spieler hatte wenige Einsätze in dieser Halbserie"></i></small>')
+          }
+        })
+        // Append card to sidebar
         saison_card.find(".card-body").append(saison_table)
         bilanzen_container.append(saison_card)
         saison_card.find('[data-toggle="tooltip"]').tooltip('dispose').tooltip()

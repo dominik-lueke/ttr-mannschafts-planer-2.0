@@ -25,7 +25,13 @@ class SpielerDetailsView {
       <div id="spieler-details-view-body" class="card-body">
         <div class="form-row mb-4">
           <div class="col">
-            <h6 class="text-muted">TTR-Wert <small><i id="qttr-info-icon" class="fa fa-info-circle" data-toggle="tooltip" data-html="true" data-placement="right" title="QTTR-Info"></i></small></h6>
+            <h6 class="text-muted">
+              TTR-Wert 
+              <small><i id="qttr-info-icon" class="fa fa-info-circle pr-2" data-toggle="tooltip" data-html="true" data-placement="top" title="QTTR-Info"></i></small>
+              <small>
+                <a id="mytt-info-link" class="display-none"><i class="fa fa-line-chart text-success" data-toggle="tooltip" data-html="true" data-placement="top" title="TTR-Rangliste"></i></a>
+              </small>
+            </h6>
             <input id="spieler-details-qttr-input" type="number" class="form-control form-control-sm" value="" >
           </div>
           <div class="col">
@@ -81,6 +87,7 @@ class SpielerDetailsView {
     this.spieler_icon_div = $("#spieler-details-icon")
     this.spieler_icon = this.spieler_icon_div.children("span")
     this.qttr_info_icon = $("#qttr-info-icon")
+    this.mytt_info_link = $("#mytt-info-link")
     this.name_input = $("#spieler-details-name-input")
     this.close_button = $("#spieler-details-close-button")
     this.qttr_input = $("#spieler-details-qttr-input")
@@ -129,6 +136,23 @@ class SpielerDetailsView {
     // Qttr-Info
     this.qttr_info_icon.attr("title", spieler.qttrinfo)
     this.qttr_info_icon.tooltip('dispose').tooltip();
+    // MyTischtennis Info Link
+    const spieler_mytt_url = spieler.getMyTTUrl()
+    if ( spieler_mytt_url !== "") {
+      this.mytt_info_link.removeClass("display-none")
+      this.mytt_info_link.attr('href', spieler_mytt_url)
+      const mytt_info_link_icon = this.mytt_info_link.find("i")
+      if ( spieler.mytt_id !== 0 ) {
+        mytt_info_link_icon.attr("title", "Öffne TTR-Historie bei myTischtennis.de")
+        mytt_info_link_icon.addClass("fa-line-chart").removeClass("fa-search")
+      } else {
+        mytt_info_link_icon.attr("title", "Suche Spieler bei myTischtennis.de")
+        mytt_info_link_icon.addClass("fa-search").removeClass("fa-line-chart")
+      }
+      mytt_info_link_icon.tooltip('dispose').tooltip();
+    } else {
+      this.mytt_info_link.addClass("display-none")
+    }
     // Normal Inputs
     this.name_input.val(this.spieler.name)
     this.qttr_input.val(this.spieler.qttr)

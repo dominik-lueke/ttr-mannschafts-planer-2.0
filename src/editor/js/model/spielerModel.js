@@ -57,6 +57,25 @@ class SpielerModel {
    * PUBLIC
    */
 
+  /**
+   * return the url to the spielers ttr-rangliste, if a myttid is set.
+   * else return y link to the personen suche of mytischtennis
+   */
+  getMyTTUrl(){
+    if ( this.mytt_id !== 0 ){
+      return `https://www.mytischtennis.de/community/events?personId=${this.mytt_id}`
+    } else {
+      const vorname_nachname = this.name.split(',')
+      if (vorname_nachname.length == 2) {
+        const url_vorname = vorname_nachname[1].trim().replace(' ', '+')
+        const url_nachname = vorname_nachname[0].trim().replace(' ', '+')
+        return `https://www.mytischtennis.de/community/ranking?panel=2&vorname=${url_vorname}&nachname=${url_nachname}&vereinIdPersonenSuche=&vereinPersonenSuche=Verein+suchen&goAssistentP=Anzeigen`
+      } else {
+        return ''
+      }
+    }
+  }
+
   isInvalidBecauseOf(other_spieler) {
     // Special Case for if one of the two hast qttr 0. Then it is not invalid
     if (this.qttr === 0 || other_spieler.qttr === 0 ){

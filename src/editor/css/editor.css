@@ -282,6 +282,12 @@ span.badge {
   font-size: 1.3em;
 }
 
+/* ABOUT MODAL */
+
+#tischtennis-planer-about-modal {
+  top: 50px !important;
+}
+
 /* SMALL SCREEN */
 
 @media (max-width: 768px) {

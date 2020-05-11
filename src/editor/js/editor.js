@@ -106,6 +106,10 @@ ipcRenderer.on('redo', (event, args) => {
   app.redo()
 })
 
+ipcRenderer.on('showAboutModal', (event, args) => {
+  app.displayAboutModal()
+})
+
 ipcRenderer.on('quit', (event, args) => {
   // store current file
   const file = app.planung.file 
@@ -220,6 +224,11 @@ openPlanungFromFile = (filepath) => {
 $(document).on('click', 'a[href^="http"]', function(event) {
   event.preventDefault();
   shell.openExternal(this.href);
+});
+
+$(document).on('click', 'a[href^="file://"]', function(event) {
+  event.preventDefault()
+  shell.openItem(path.resolve(__dirname, this.href.replace('file://','./../../../')))
 });
 
 /*

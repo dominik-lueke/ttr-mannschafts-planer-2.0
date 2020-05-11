@@ -18,6 +18,8 @@ class Controller {
     this._createMyTTModalView()
     // NEWPLANUNGSMODAL
     this._createNewPlanungModalView()
+    // ABOUTMODAL
+    this._createAboutModalView()
     // ALERT
     this.alertView = new AlertView()
 
@@ -91,6 +93,10 @@ class Controller {
     this.newPlanungModalView.bindClickSubmitPlanungButton(this.handleClickSubmitPlanungButton)
   }
 
+  _createAboutModalView = () => {
+    this.aboutModalView = new AboutModalView()
+  }
+
   /* UNDO + REDO */
 
   undo = () => {
@@ -99,6 +105,12 @@ class Controller {
 
   redo = () => {
     this.model.redo()
+  }
+
+  /* ABOUT MODAL */
+
+  displayAboutModal = () => {
+    this.aboutModalView.displayAboutModal()
   }
 
   /* PLANUNG */

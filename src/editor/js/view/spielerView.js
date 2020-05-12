@@ -1,5 +1,5 @@
 class SpielerView {
-  constructor(spielerListeContainer, spieler) {
+  constructor(spielerListeContainer, spieler, halbserie) {
       // Add the li for the Spieler
       // Do not display spieler.ttrdifferenz for the very first Spieler.
       this.spieler = spieler
@@ -72,18 +72,20 @@ class SpielerView {
         () => { this._removeHighlightsFromInvalidSpieler() }
       )
       // add spv-badge
+      const spv_setzen_title    = halbserie === "Vorrunde" ? "Sperrvermerk setzen" : "Achtung! Zur Rückrunde darf ein Sperrvermerk nur gesetzt werden, damit der Spieler in seiner Mannschaft verbleiben kann (vgl. WO H 2.4)."
+      const spv_entfernen_title = halbserie === "Vorrunde" ? "Sperrvermerk entfernen" : "Achtung! Zur Rückrunde darf ein Sperrvermerk nur entfernt werden, wenn der Spieler auch ohne diesen in seiner bisherigen Mannschaft oder einer unteren gemeldet werden darf (vgl. WO H 2.4)."
       if ( ! this.spielerHasSpv ){
         this.spieler_spv_badge.removeClass("badge-danger")
         this.spieler_spv_badge.addClass("badge-light")
         this.spieler_spv_badge.addClass("link")
-        this.spieler_spv_badge.attr("title","Sperrvermerk setzen")
+        this.spieler_spv_badge.attr("title", spv_setzen_title)
       } else {
         this.spieler_div.addClass("spv-set")
-        this.spieler_spv_badge.attr("title","Sperrvermerk entfernen")
+        this.spieler_spv_badge.attr("title",spv_entfernen_title)
       }
       if ( this.invalidSpielerFromHigherMannschaften > 0 ) {
         this.spieler_div.addClass("spv-possible")
-        this.spieler_spv_badge.attr("title","Sperrvermerk setzen")
+        this.spieler_spv_badge.attr("title",spv_setzen_title)
       }
       if ( this.spvEditable ) {
         this.spieler_spv_badge.addClass("link")

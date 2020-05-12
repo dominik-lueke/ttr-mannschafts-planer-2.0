@@ -80,7 +80,7 @@ class MyTTParser {
       }
       // verein
       if (url_split.length > 8) {
-        planung.verein = url_split[8].replace(/-/g," ").replace(/ae/g,"ä").replace(/ae/g,"ö").replace(/ue/g,"ü")
+        planung.verein = url_split[8].replace(/-/g," ").replace(/ae/g,"ä").replace(/ae/g,"ö").replace(/ue/g,"ü").replace(/\./g,"-")
         planung.url.verein = url_split[8]
       }
       // spielklasse
@@ -116,10 +116,11 @@ class MyTTParser {
     var jq = $('<div></div>');
     jq.html(`<html><head></head><body>${html}</body></html>`);
     // verein, spielklasse, verband, vereinsNummer
+    const verein_verband = jq.find(".panel-body > h1").first().html().split(" <small>") // "TuRa Elsen<small>WTTV</small>"
     const verein_spielklasse = jq.find(".panel-body > h3").first().text().split(", ") // "TuRa Elsen, Herren"
     const vereinsNummer = jq.find(".panel-body > h5").first().text().split(", ")[0].split(": ")[1] // "VNr.: 187012, Gründungsjahr: 1947"
     if (verein_spielklasse.length == 2 && vereinsNummer.match(/\d*/g) !== null){
-      planung.verein = verein_spielklasse[0]
+      planung.verein = verein_verband[0].trim()
       planung.vereinsNummer = vereinsNummer
       planung.spielklasse = verein_spielklasse[1]
     }

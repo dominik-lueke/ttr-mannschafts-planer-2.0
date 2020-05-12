@@ -13,7 +13,7 @@ class PlanungsModel {
     this.halbserie = halbserie
     this.spielklasse = spielklasse
     this.url = {
-      verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue"),
+      verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/\./g,"-"),
       saison: this._getPreviousSaison().replace("/","-").substring(2),
       halbserie: this._getOtherHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
       spielklasse: this._getSpielklassenUrlString(this.spielklasse)

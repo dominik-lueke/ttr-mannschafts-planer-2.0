@@ -109,7 +109,11 @@ class EditorView {
         const new_position = ui.item.index() + 1
         if (old_mannschaft != new_mannschaft || old_position != new_position) {
           const id = parseInt(ui.item.attr("id").split("-")[2],10) // spieler-SPIELKLASSE->ID<
-          this.reorderSpielerHandler(id, new_mannschaft, new_position)
+          // Be async here to first finish the sorting animation, then update the model and the complete view
+          // This takes effect when there are many players and there is a noticable delay when the whole planung is rendered new
+          // Effect without timeout: The sorting animation is delayed, then the view is updated and all spieler are correct
+          // Effect with timeout:    The sorting animation is smooth, but there is a slight delay until the sorted spieler are updated
+          setTimeout ( () => this.reorderSpielerHandler(id, new_mannschaft, new_position), 1) 
         }
       },
       start: (event, ui) => {

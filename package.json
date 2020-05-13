@@ -18,7 +18,7 @@
   "email": "dominik.lueke@gmail.com",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "7.1.6",
+    "electron": "8.2.5",
     "electron-packager": "^14.2.1"
   },
   "dependencies": {

@@ -36,8 +36,8 @@ class SpielerDetailsView {
           </div>
           <div class="col">
             <h6 class="text-muted">Sonderstatus</h6>
-            <span id="spieler-details-res-badge" class="badge ml-2 link" data-toggle="tooltip" data-placement="top" title="Reservespieler">RES</span>
-            <span id="spieler-details-sbe-badge" class="badge ml-2 link" data-toggle="tooltip" data-placement="top" title="Senioren Berechtigung">SBE</span>
+            <span id="spieler-details-res-badge" class="badge ml-2 link" data-toggle="tooltip" data-placement="top" data-html="true" title="<b>Reservespieler</b><br/>Reservespieler zählen nicht zur Sollstärke einer Mannschaft (Ausnahme: Die letzte Mannschaft). Bitte beachte WO H 1.3 zur Vergabe des RES-Status">RES</span>
+            <span id="spieler-details-sbe-badge" class="badge ml-2 link" data-toggle="tooltip" data-placement="top" data-html="true" title="<b>Senioren Berechtigung</b><br/>Spieler mit Status SBE haben erhöhte Toleranzen (+25 TTR-Punkte) in Bezug auf die Spielstärkereihenfolge">SBE</span>
           </div>
         </div>
         <div class="form-row mb-4">

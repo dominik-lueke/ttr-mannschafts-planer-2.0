@@ -103,7 +103,7 @@ class SpielerView {
   /* NAME */
 
   bindClickOnSpieler(handler) {
-    this.spieler_name_div.click( (event) => { 
+    this.spieler_div.click( (event) => { 
       handler(this.spieler.id)
     })
   }

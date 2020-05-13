@@ -488,7 +488,7 @@ class MyTTParser {
     // How many spieler are updated
     const update_spieler_arr = current_planung.spieler.liste.filter( spieler => ( planung.spieler.liste.find( spieler1 => spieler1.mytt_id === spieler.mytt_id) !== undefined ) )
     if (update_spieler_arr.length > 0){
-      popoverhtml += `<i class="fa fa-refresh text-primary"></i> <b>${update_spieler_arr.length} Spieler</b> der aktuellen Planung erhalten neue TTR-Werte.`
+      popoverhtml += `<i class="fa fa-refresh text-primary"></i> <b>${update_spieler_arr.length} Spieler</b> (von ${current_planung.spieler.liste.length}) der aktuellen Planung erhalten neue TTR-Werte.`
     } else {
       popoverhtml = '<i class="fa fa-warning text-warning"></i> Es werden für <b/>keine</b> Spieler TTR-Werte aktualisiert.<br/>'
       popoverhtml += `<br/><b>Bitte lade zunächst eine Aufstellung von myTischtennis.de.</b>`

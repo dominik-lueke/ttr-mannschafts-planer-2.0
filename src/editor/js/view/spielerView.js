@@ -1,5 +1,5 @@
 class SpielerView {
-  constructor(spielerListeContainer, spieler, halbserie) {
+  constructor(spielerListeContainer, spieler, planung) {
       // Add the li for the Spieler
       // Do not display spieler.ttrdifferenz for the very first Spieler.
       this.spieler = spieler
@@ -72,8 +72,8 @@ class SpielerView {
         () => { this._removeHighlightsFromInvalidSpieler() }
       )
       // add spv-badge
-      const spv_setzen_title    = halbserie === "Vorrunde" ? "Sperrvermerk setzen" : "Achtung! Zur Rückrunde darf ein Sperrvermerk nur gesetzt werden, damit der Spieler in seiner Mannschaft verbleiben kann (vgl. WO H 2.4)."
-      const spv_entfernen_title = halbserie === "Vorrunde" ? "Sperrvermerk entfernen" : "Achtung! Zur Rückrunde darf ein Sperrvermerk nur entfernt werden, wenn der Spieler auch ohne diesen in seiner bisherigen Mannschaft oder einer unteren gemeldet werden darf (vgl. WO H 2.4)."
+      const spv_setzen_title    = planung.halbserie === "Vorrunde" ? "Sperrvermerk setzen" : "Achtung! Zur Rückrunde darf ein Sperrvermerk nur gesetzt werden, damit der Spieler in seiner Mannschaft verbleiben kann (vgl. WO H 2.4)."
+      const spv_entfernen_title = planung.halbserie === "Vorrunde" ? "Sperrvermerk entfernen" : "Achtung! Zur Rückrunde darf ein Sperrvermerk nur entfernt werden, wenn der Spieler auch ohne diesen in seiner bisherigen Mannschaft oder einer unteren gemeldet werden darf (vgl. WO H 2.4)."
       if ( ! this.spielerHasSpv ){
         this.spieler_spv_badge.removeClass("badge-danger")
         this.spieler_spv_badge.addClass("badge-light")
@@ -97,6 +97,17 @@ class SpielerView {
         () => { if ( ! this.spielerHasSpv ) { this._addHighlightsToSpvSpieler() } },
         () => { if ( ! this.spielerHasSpv ) { this._removeHighlightsFromSpvSpieler() } }
       )
+      // add marker for TTR-Werte, which are earlier than the TTR-Werte from the planung
+      if (this.spieler.qttrdate.getTime() < planung.ttrwerte.date.getTime()){
+        this.spieler_qttr_div.addClass("spieler-qttr-outdated")
+        this.spieler_qttr_div.attr("data-toggle","tooltip")
+        this.spieler_qttr_div.attr("data-placement","top")
+        this.spieler_qttr_div.attr("title","Der QTTR-Wert dieses Spielers ist älter als die anderen in der Planung geladenen TTR-Werte")
+        this.spieler_qttr_div.tooltip()
+      } else {
+        this.spieler_qttr_div.removeClass("spieler-qttr-outdated")
+        this.spieler_qttr_div.tooltip('dispose')
+      }
 
   }
 

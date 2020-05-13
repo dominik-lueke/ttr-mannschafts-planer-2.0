@@ -331,8 +331,8 @@ class SpielerListeModel {
 
   _setQttrForSpieler(spieler, qttr){
     spieler.qttr = qttr
-    var today = new Date(Date.now())
-    spieler.qttrinfo = `Manuell eingetragen am ${today.getDate()}.${today.getMonth()+1}.${today.getFullYear()}`
+    spieler.qttrdate = new Date(Date.now())
+    spieler.qttrinfo = `Manuell eingetragen am ${spieler.qttrdate.getDate()}.${spieler.qttrdate.getMonth()+1}.${spieler.qttrdate.getFullYear()}`
     this._recomputeTtrDifferenzForSpieler(spieler)
     this._checkTtrDifferenzenForSpieler(spieler)
   }

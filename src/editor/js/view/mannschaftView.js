@@ -1,5 +1,5 @@
 class MannschaftView {
-  constructor(mannschaftsContainer, mannschaft, mannschaftsspieler, letzte_mannschaft, halbserie) {
+  constructor(mannschaftsContainer, mannschaft, mannschaftsspieler, letzte_mannschaft, planung) {
     this.mannschaft = mannschaft
     const id = `${(mannschaft.spielklasse).replace(" ", "_")}-${mannschaft.nummer}`
     // Add the row for the Mannschaft
@@ -42,7 +42,7 @@ class MannschaftView {
     mannschafts_div.append(this.spielerListeContainer)
     this.spielerViews = []
     mannschaftsspieler.forEach( spieler => {
-      this.spielerViews.push( new SpielerView(this.spielerListeContainer, spieler, halbserie) )
+      this.spielerViews.push( new SpielerView(this.spielerListeContainer, spieler, planung) )
     })
 
     // Spieler Hinzufügen Form

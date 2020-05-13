@@ -161,6 +161,10 @@ a .spieler-farbe-selector {
    filter: brightness(95%);
 }
 
+.spieler-qttr-outdated {
+  text-decoration: underline orange;
+}
+
 /* SPIELER COLUMNS */
 
 .spieler-name {

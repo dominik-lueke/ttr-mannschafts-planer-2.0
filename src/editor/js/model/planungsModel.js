@@ -465,9 +465,11 @@ class PlanungsModel {
                       for (var saison_key in spieler[spieler_key] ){
                         new_spieler[spieler_key][saison_key] = spieler[spieler_key][saison_key]
                       }
+                    } else if (spieler_key === 'qttrdate') {
+                      new_spieler.qttrdate = new Date(spieler.qttrdate)
                     } else {
-                        new_spieler[spieler_key] = spieler[spieler_key]
-                        qttr_values_changed = qttr_values_changed || spieler_key == "qttr"
+                      new_spieler[spieler_key] = spieler[spieler_key]
+                      qttr_values_changed = qttr_values_changed || spieler_key == "qttr"
                     }
                   }
                 }

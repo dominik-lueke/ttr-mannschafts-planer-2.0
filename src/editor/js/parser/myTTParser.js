@@ -174,6 +174,7 @@ class MyTTParser {
            "position" in spieler &&  ! isNaN(spieler.position)
       ) {
         // set qttr_date of spieler
+        spieler.qttrdate = planung.ttrwerte.date
         spieler.qttrinfo = `TTR-Stichtag: ${planung.ttrwerte.datestring}<br/>(${planung.ttrwerte.aktuell})`
         planung.spieler.liste.push(spieler)
         if ( spieler.mannschaft > planung.mannschaften.liste.length ) {
@@ -420,6 +421,7 @@ class MyTTParser {
            "mytt_id" in spieler && ! isNaN(spieler.mytt_id)
       ) {
         // set qttr_date of spieler
+        spieler.qttrdate = planung.ttrwerte.date
         spieler.qttrinfo = `TTR-Stichtag: ${planung.ttrwerte.datestring}<br/>(${planung.ttrwerte.aktuell})`
         planung.spieler.liste.push(spieler)
       }

@@ -22,20 +22,7 @@ ipcRenderer.on('closeFile', (event, args) => {
 })
 
 ipcRenderer.on('saveFile', (event, args) => {
-  const planung_json = JSON.parse(app.getPlanungAsJsonString())
-  // set saved to true in the planung in the file
-  planung_json.saved = true
-  const planung_json_save_str = JSON.stringify(planung_json)
-  if (planung_json.file === "") {
-    var filepath = saveAsDialog(planung_json)
-    if ( filepath ) {
-      writePlanungToFile(filepath, planung_json_save_str)
-      app.setPlanungFile(filepath)
-    }
-  } else {
-    writePlanungToFile(planung_json.file, planung_json_save_str)
-    app.setPlanungFile(planung_json.file)
-  }
+  app.saveFile()
 })
 
 ipcRenderer.on('saveFileAs', (event, args) => {

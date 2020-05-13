@@ -126,6 +126,26 @@ class Controller {
     })
   }
 
+  saveFile = () => {
+    const planung_json = JSON.parse(this.getPlanungAsJsonString())
+    // set saved to true in the planung in the file
+    planung_json.saved = true
+    const planung_json_save_str = JSON.stringify(planung_json)
+    if (planung_json.file === "") {
+      var filepath = saveAsDialog(planung_json)
+      if ( filepath ) {
+        writePlanungToFile(filepath, planung_json_save_str)
+        this.setPlanungFile(filepath)
+        return true
+      }
+    } else {
+      writePlanungToFile(planung_json.file, planung_json_save_str)
+      this.setPlanungFile(planung_json.file)
+      return true
+    }
+    return false
+  }
+
   closePlanungSave = () => {
     if ( ! this.planung.saved ) {
       // show confirm dialog if current planung is unsafed
@@ -133,10 +153,11 @@ class Controller {
       switch (confirmclosedialogresult) {
         case 0 : // Speichern
           return new Promise((resolve, reject) => {
-            ipcRenderer.invoke('saveFile', 'Save a File').then((result) => {
+            var saveDone = this.saveFile()
+            if ( saveDone ) {
               this.closePlanung()
-              resolve(true)
-            })
+            }
+            resolve(saveDone)
           })
         case 1 : // Schließen
           return new Promise((resolve, reject) => {

@@ -37,6 +37,7 @@ class Controller {
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
     this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
+    this.planung.bindErrorOccured(this.alertError)
   }
 
   _createHeaderView = () => {
@@ -165,6 +166,7 @@ class Controller {
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
     this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
+    this.planung.bindErrorOccured(this.alertError)
     // reset and hide Planungs Modal
     this.newPlanungModalView.destroyPlanungModal()
     this._createNewPlanungModalView()
@@ -184,9 +186,13 @@ class Controller {
   }
 
   openPlanung = (planung_json_string, filepath) => {
-    this.model.updatePlanung(JSON.parse(planung_json_string), true)
-    this.setPlanungFile(filepath) // unfortunately this leads to a new entry in the undo history
-    this.model.resetUndoRedo() // reset the undo history
+    try {
+      this.model.updatePlanung(JSON.parse(planung_json_string), true)
+      this.setPlanungFile(filepath) // unfortunately this leads to a new entry in the undo history
+      this.model.resetUndoRedo() // reset the undo history
+    } catch (e) {
+      this.alertError(`Die geöffnete Datei ist beschädigt. Die Planung konnte nicht geladen werden!`)
+    }
   }
 
   setPlanungFile = (filepath) => {
@@ -244,6 +250,10 @@ class Controller {
       this.sidebarView.hideSidebar()
       this.editorView.removeFocus()
     }
+  }
+
+  alertError = (error="A internal Error occured") => {
+    this.alert("danger", error, -1)
   }
 
   alert = (type="primary", html_content="", timeout=3000) => {

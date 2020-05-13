@@ -47,6 +47,7 @@ class PlanungsModel {
     this.onMannschaftenChanged = () => {}
     this.onHeaderDataChanged = () => {}
     this.onPlanungStored = () => {}
+    this.onErrorOccured = () => {}
   }
 
   /**
@@ -63,6 +64,10 @@ class PlanungsModel {
 
   bindPlanungStored(callback) {
     this.onPlanungStored = callback
+  }
+
+  bindErrorOccured(callback) {
+    this.onErrorOccured = callback
   }
 
   /**
@@ -342,7 +347,11 @@ class PlanungsModel {
    */
 
   loadFromJSON (planung_json, update_aufstellung=false, use_stored_saved=false) {
-    this._parsePlanungJson(planung_json, update_aufstellung)
+    try {
+      this._parsePlanungJson(planung_json, update_aufstellung)
+    } catch (e){
+      this.onErrorOccured(`Ein interner Fehler ist aufgetreten:<br/>${e}`)
+    }
     this.isEmpty = this._isEmpty()
     if ( ! this.isNew ) {
       this._commit(use_stored_saved ? this.saved : false)

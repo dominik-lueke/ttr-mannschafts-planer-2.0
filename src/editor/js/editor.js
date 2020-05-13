@@ -81,7 +81,7 @@ ipcRenderer.on('exportAsExcelResult', (event, args) => {
     if (args.success){
       app.alert('success', args.message)
     } else {
-      app.alert('danger', args.message, -1)
+      app.alertError(args.message)
     }
   }, 1000) // totally silly 1 second timeout to show the progressbar a decent amount of time to the user 
 })
@@ -197,7 +197,7 @@ confirmClosePlanungDialog = () => {
 writePlanungToFile = (filepath, planung_json_str) => {
   fs.writeFile(filepath, planung_json_str, (err) => {
     if(err){
-        app.alert('danger', `An error ocurred creating the file ${filepath}:<br/>${err.message}`, -1)
+        app.alertError(`An error ocurred creating the file ${filepath}:<br/>${err.message}`)
     }
   })
 }
@@ -206,7 +206,7 @@ openPlanungFromFile = (filepath) => {
   app.showProgressBar("primary","white","",true) // start "loading"
   fs.readFile(filepath, 'utf-8', (err, planung_json_str) => {
     if(err){
-        app.alert('danger', `An error ocurred reading the file ${filepath}:<br/>${err.message}`, -1);
+        app.alertError(`An error ocurred reading the file ${filepath}:<br/>${err.message}`);
         return;
     }
     app.closePlanungSave().then((result) => {

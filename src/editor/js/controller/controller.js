@@ -18,6 +18,8 @@ class Controller {
     this._createMyTTModalView()
     // NEWPLANUNGSMODAL
     this._createNewPlanungModalView()
+    // ABOUTMODAL
+    this._createAboutModalView()
     // ALERT
     this.alertView = new AlertView()
 
@@ -35,6 +37,7 @@ class Controller {
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
     this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
+    this.planung.bindErrorOccured(this.alertError)
   }
 
   _createHeaderView = () => {
@@ -54,6 +57,7 @@ class Controller {
     this.sidebarView = new SidebarView()
     // Handler SIDEBAR VIEW
     this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
+    this.sidebarView.bindCompareHalbserienFn(this.planung.compareHalbserien)
     // Handler SIDEBAR SPIELER VIEW
     this.sidebarView.bindEditNameOnSpieler(this.handleEditNameOnSpieler)
     this.sidebarView.bindEditQttrOnSpieler(this.handleEditQttrOnSpieler)
@@ -90,6 +94,10 @@ class Controller {
     this.newPlanungModalView.bindClickSubmitPlanungButton(this.handleClickSubmitPlanungButton)
   }
 
+  _createAboutModalView = () => {
+    this.aboutModalView = new AboutModalView()
+  }
+
   /* UNDO + REDO */
 
   undo = () => {
@@ -98,6 +106,12 @@ class Controller {
 
   redo = () => {
     this.model.redo()
+  }
+
+  /* ABOUT MODAL */
+
+  displayAboutModal = () => {
+    this.aboutModalView.displayAboutModal()
   }
 
   /* PLANUNG */
@@ -112,6 +126,26 @@ class Controller {
     })
   }
 
+  saveFile = () => {
+    const planung_json = JSON.parse(this.getPlanungAsJsonString())
+    // set saved to true in the planung in the file
+    planung_json.saved = true
+    const planung_json_save_str = JSON.stringify(planung_json)
+    if (planung_json.file === "") {
+      var filepath = saveAsDialog(planung_json)
+      if ( filepath ) {
+        writePlanungToFile(filepath, planung_json_save_str)
+        this.setPlanungFile(filepath)
+        return true
+      }
+    } else {
+      writePlanungToFile(planung_json.file, planung_json_save_str)
+      this.setPlanungFile(planung_json.file)
+      return true
+    }
+    return false
+  }
+
   closePlanungSave = () => {
     if ( ! this.planung.saved ) {
       // show confirm dialog if current planung is unsafed
@@ -119,10 +153,11 @@ class Controller {
       switch (confirmclosedialogresult) {
         case 0 : // Speichern
           return new Promise((resolve, reject) => {
-            ipcRenderer.invoke('saveFile', 'Save a File').then((result) => {
+            var saveDone = this.saveFile()
+            if ( saveDone ) {
               this.closePlanung()
-              resolve(true)
-            })
+            }
+            resolve(saveDone)
           })
         case 1 : // Schließen
           return new Promise((resolve, reject) => {
@@ -152,6 +187,7 @@ class Controller {
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
     this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
+    this.planung.bindErrorOccured(this.alertError)
     // reset and hide Planungs Modal
     this.newPlanungModalView.destroyPlanungModal()
     this._createNewPlanungModalView()
@@ -171,9 +207,13 @@ class Controller {
   }
 
   openPlanung = (planung_json_string, filepath) => {
-    this.model.updatePlanung(JSON.parse(planung_json_string), true)
-    this.setPlanungFile(filepath) // unfortunately this leads to a new entry in the undo history
-    this.model.resetUndoRedo() // reset the undo history
+    try {
+      this.model.updatePlanung(JSON.parse(planung_json_string), true)
+      this.setPlanungFile(filepath) // unfortunately this leads to a new entry in the undo history
+      this.model.resetUndoRedo() // reset the undo history
+    } catch (e) {
+      this.alertError(`Die geöffnete Datei ist beschädigt. Die Planung konnte nicht geladen werden!`)
+    }
   }
 
   setPlanungFile = (filepath) => {
@@ -221,7 +261,7 @@ class Controller {
     const id = this.model.view.sidebar.id
     if (display == "spieler") {
       const spieler = this.planung.spieler.getSpieler(id)
-      this.sidebarView.displaySpieler(spieler, this.planung.compareHalbserien)
+      this.sidebarView.displaySpieler(spieler)
       this.editorView.focusSpieler(spieler)
     } else if (display == "mannschaft") {
       const mannschaft = this.planung.mannschaften.getMannschaft(id)
@@ -231,6 +271,10 @@ class Controller {
       this.sidebarView.hideSidebar()
       this.editorView.removeFocus()
     }
+  }
+
+  alertError = (error="A internal Error occured") => {
+    this.alert("danger", error, -1)
   }
 
   alert = (type="primary", html_content="", timeout=3000) => {

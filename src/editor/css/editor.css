@@ -16,6 +16,11 @@ a .spieler-farbe-selector {
   margin: 6px 11px 6px 1px;
 }
 
+/* HEADER */
+#header h4 {
+  cursor: default;
+}
+
 /* SPIELER FARBE */
 
 .spieler-farbe-green {
@@ -54,14 +59,14 @@ a .spieler-farbe-selector {
 .details-sidebar {
   position: fixed;
   height: 100vh;
-  top: 110px; /* Stay at the top */
+  top: 80px; /* Stay at the top */
   right: 50px;
-  width: 500px;
+  width: 550px;
   z-index: 3;
 }
 
-.details-sidebar .card {
-  height: calc(100vh - 130px);
+.details-sidebar > .card {
+  height: calc(100vh - 100px);
 }
 
 .sidebar-details-icon {
@@ -70,7 +75,7 @@ a .spieler-farbe-selector {
   line-height: 2rem;
 }
 
-.details-sidebar .card .card-body {
+.details-sidebar > .card > .card-body {
   overflow-y: auto;
 }
 
@@ -78,10 +83,17 @@ a .spieler-farbe-selector {
   cursor: default;
 }
 
+#mannschaft-details-view-body-bilanzen td.bilanzen-spieler-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
 /* EDITOR */
 
 .editor-container {
-  margin-top: 80px;
+  margin-top: 50px;
 }
 
 .mannschafts-row {
@@ -147,6 +159,10 @@ a .spieler-farbe-selector {
 
 .spieler-focused {
    filter: brightness(95%);
+}
+
+.spieler-qttr-outdated {
+  text-decoration: underline orange;
 }
 
 /* SPIELER COLUMNS */
@@ -270,6 +286,12 @@ span.badge {
   font-size: 1.3em;
 }
 
+/* ABOUT MODAL */
+
+#tischtennis-planer-about-modal {
+  top: 50px !important;
+}
+
 /* SMALL SCREEN */
 
 @media (max-width: 768px) {
@@ -345,7 +367,7 @@ span.badge {
   #add-mannschaft-button-container,
   ul.add-spieler-button-container,
   div.spv span.badge-light {
-    display: none;
+    display: none !important;
   }
 
   #header-print-date-div {

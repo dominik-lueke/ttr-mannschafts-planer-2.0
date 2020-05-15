@@ -80,7 +80,7 @@ class MyTTParser {
       }
       // verein
       if (url_split.length > 8) {
-        planung.verein = url_split[8].replace(/-/g," ").replace(/ae/g,"ä").replace(/ae/g,"ö").replace(/ue/g,"ü")
+        planung.verein = url_split[8].replace(/-/g," ").replace(/ae/g,"ä").replace(/ae/g,"ö").replace(/ue/g,"ü").replace(/\./g,"-")
         planung.url.verein = url_split[8]
       }
       // spielklasse
@@ -116,10 +116,11 @@ class MyTTParser {
     var jq = $('<div></div>');
     jq.html(`<html><head></head><body>${html}</body></html>`);
     // verein, spielklasse, verband, vereinsNummer
+    const verein_verband = jq.find(".panel-body > h1").first().html().split(" <small>") // "TuRa Elsen<small>WTTV</small>"
     const verein_spielklasse = jq.find(".panel-body > h3").first().text().split(", ") // "TuRa Elsen, Herren"
     const vereinsNummer = jq.find(".panel-body > h5").first().text().split(", ")[0].split(": ")[1] // "VNr.: 187012, Gründungsjahr: 1947"
     if (verein_spielklasse.length == 2 && vereinsNummer.match(/\d*/g) !== null){
-      planung.verein = verein_spielklasse[0]
+      planung.verein = verein_verband[0].trim()
       planung.vereinsNummer = vereinsNummer
       planung.spielklasse = verein_spielklasse[1]
     }
@@ -173,6 +174,7 @@ class MyTTParser {
            "position" in spieler &&  ! isNaN(spieler.position)
       ) {
         // set qttr_date of spieler
+        spieler.qttrdate = planung.ttrwerte.date
         spieler.qttrinfo = `TTR-Stichtag: ${planung.ttrwerte.datestring}<br/>(${planung.ttrwerte.aktuell})`
         planung.spieler.liste.push(spieler)
         if ( spieler.mannschaft > planung.mannschaften.liste.length ) {
@@ -419,6 +421,7 @@ class MyTTParser {
            "mytt_id" in spieler && ! isNaN(spieler.mytt_id)
       ) {
         // set qttr_date of spieler
+        spieler.qttrdate = planung.ttrwerte.date
         spieler.qttrinfo = `TTR-Stichtag: ${planung.ttrwerte.datestring}<br/>(${planung.ttrwerte.aktuell})`
         planung.spieler.liste.push(spieler)
       }
@@ -485,7 +488,7 @@ class MyTTParser {
     // How many spieler are updated
     const update_spieler_arr = current_planung.spieler.liste.filter( spieler => ( planung.spieler.liste.find( spieler1 => spieler1.mytt_id === spieler.mytt_id) !== undefined ) )
     if (update_spieler_arr.length > 0){
-      popoverhtml += `<i class="fa fa-refresh text-primary"></i> <b>${update_spieler_arr.length} Spieler</b> der aktuellen Planung erhalten neue TTR-Werte.`
+      popoverhtml += `<i class="fa fa-refresh text-primary"></i> <b>${update_spieler_arr.length} Spieler</b> (von ${current_planung.spieler.liste.length}) der aktuellen Planung erhalten neue TTR-Werte.`
     } else {
       popoverhtml = '<i class="fa fa-warning text-warning"></i> Es werden für <b/>keine</b> Spieler TTR-Werte aktualisiert.<br/>'
       popoverhtml += `<br/><b>Bitte lade zunächst eine Aufstellung von myTischtennis.de.</b>`
@@ -507,6 +510,9 @@ class MyTTParser {
   parseMyTTBilanzen(url, html) {
     // init return value
     var planung = {
+      mannschaften: {
+        liste: []
+      },
       spieler: {
         liste: []
       },
@@ -580,9 +586,24 @@ class MyTTParser {
       var mannschaften_table = $(mannschaften_tables[i])
       // get the spielklasse of the current bilanzen table from the preceding h3
       var mannschaften_table_header = mannschaften_table.prev("h3").find("a").html() // TuRa Elsen Herren II <i/> (Rückrunde)
-      var mannschaft = mannschaften_table_header.replace(planung.verein, "").split("<i")[0].trim() // Herren II
-      var spielklasse = mannschaft.split(" ")[0] // Herren
-
+      var mannschaft_link = "https://mytischtennis.de" + mannschaften_table.prev("h3").find("a").attr("href")
+      var mannschaft_name = mannschaften_table_header.replace(planung.verein, "").split("<i")[0].trim() // Herren II
+      const mannschaft_nummer = mannschaft_name.split(" ")
+      var roman_number = 'I'
+      if (mannschaft_nummer.length > 1) {
+        roman_number = mannschaft_nummer[mannschaft_nummer.length - 1] // II
+        const valid_roman_numbers = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV']
+        if ( ! valid_roman_numbers.includes(roman_number) ) {
+          roman_number = 'I'
+        }
+      }
+      var spielklasse = mannschaft_name.replace(roman_number, '').trim() // Herren
+      // initialize the mannschaft
+      var mannschaft = {
+        spielklasse: spielklasse,
+        romanNumber: roman_number,
+        bilanzen: { }
+      }
       // loop over all rows in the table
       var bilanzen_trs = mannschaften_table.children("tbody").children("tr:not(.collapse)") // only get first level trs
       for (var j = 0; j < bilanzen_trs.length; j++) {
@@ -610,7 +631,8 @@ class MyTTParser {
               var einsatz_position = parseInt( rang[1], 10)
               // init bilanz for this spieler for this saison
               spieler_mannschafts_bilanz = {
-                einsatz_mannschaft: mannschaft
+                einsatz_mannschaft: mannschaft_name,
+                rang: rang_text
               }
               break;
             case 1: // name + mytt_id
@@ -618,6 +640,7 @@ class MyTTParser {
               const a = spieler_td.find("a")
               spieler.name = a.text().trim()
               spieler.mytt_id = this._getMyTTIdOfJqAWithDataBind(a)
+              spieler_mannschafts_bilanz.name = spieler.name
               break;
             case 2: //Einsätze
               const einsaetze = parseInt( spieler_td.text().trim() )
@@ -673,6 +696,20 @@ class MyTTParser {
             spieler.bilanzen[saison_id].bilanzen.push(spieler_mannschafts_bilanz)
             planung.spieler.liste.push(spieler)
           }
+          // put the spieler also in the mannschafts bilanz
+          var found_mannschaft = planung.mannschaften.liste.find(findmannschaft => (findmannschaft.spielklasse == mannschaft.spielklasse && findmannschaft.romanNumber == mannschaft.romanNumber))
+          if (found_mannschaft){
+            found_mannschaft.bilanzen[saison_id].bilanzen.push(spieler_mannschafts_bilanz)
+          } else {
+            mannschaft.bilanzen[saison_id] = {
+              saison: planung.bilanzsaison,
+              halbserie: planung.bilanzhalbserie,
+              url: mannschaft_link,
+              bilanzen: []
+            }
+            mannschaft.bilanzen[saison_id].bilanzen.push(spieler_mannschafts_bilanz)
+            planung.mannschaften.liste.push(mannschaft)
+          }
         }
       }
     }
@@ -704,6 +741,14 @@ class MyTTParser {
       bilanzenFound = false
     }
     statusHtml += "<br/>"
+    // mannschaften
+    if (planung.mannschaften.liste.length > 0) {
+      statusHtml += `${planung.mannschaften.liste.length} Mannschaften gefunden ${this._getStatusIcon("success") } `
+    } else {
+      statusHtml += `Keine Mannschaften gefunden ${this._getStatusIcon("danger") } `
+      bilanzenFound = false
+    }
+    statusHtml += "<br/>"
     // spieler
     if (planung.spieler.liste.length > 0) {
       statusHtml += `${planung.spieler.liste.length} Spieler gefunden ${this._getStatusIcon("success") } `
@@ -713,9 +758,11 @@ class MyTTParser {
     }
     // information for popover
     var popoverhtml = ''
+    const update_mannschaften_arr = current_planung.mannschaften.liste.filter( mannschaft => ( planung.mannschaften.liste.find( mannschaft1 => mannschaft1.spielklasse === mannschaft.spielklasse && mannschaft1.romanNumber === mannschaft.romanNumber) !== undefined ) )
     const update_spieler_arr = current_planung.spieler.liste.filter( spieler => ( planung.spieler.liste.find( spieler1 => spieler1.mytt_id === spieler.mytt_id) !== undefined ) )
-    if (update_spieler_arr.length > 0){
+    if (update_spieler_arr.length > 0 && update_mannschaften_arr.length > 0){
       popoverhtml = '<h6>Die Planung wird aktualisiert.</h6>'
+      popoverhtml += `<i class="fa fa-refresh text-primary"></i> Für <b>${update_mannschaften_arr.length} Mannschaften</b> der aktuellen Planung werden Bilanzen aktualisiert.<br/>`
       popoverhtml += `<i class="fa fa-refresh text-primary"></i> Für <b>${update_spieler_arr.length} Spieler</b> der aktuellen Planung werden Bilanzen aktualisiert.`
     } else {
       popoverhtml = '<i class="fa fa-warning text-warning"></i> Es werden für <b/>keine</b> Spieler Bilanzen aktualisiert.<br/>'

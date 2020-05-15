@@ -8,8 +8,8 @@ class SpielerModel {
     this.mannschaft = 0
     this.position = 0
     this.qttr = qttr
-    var today = new Date(Date.now())
-    this.qttrinfo = `Manuell eingetragen am ${today.getDate()}.${today.getMonth()+1}.${today.getFullYear()}`
+    this.qttrdate = new Date(Date.now())
+    this.qttrinfo = `Manuell eingetragen am ${this.qttrdate.getDate()}.${this.qttrdate.getMonth()+1}.${this.qttrdate.getFullYear()}`
     this.ttrdifferenz = 0
     this.farbe = "default"
     this.reserve = false
@@ -29,20 +29,20 @@ class SpielerModel {
       Vorrunde-20xx/xy": {
         saison: 20xx/xy,
         halbserie: Vorrunde,
+        position: "1.1",
         bilanzen: [
           {
-            mannschaft: 1,
-            liga: "Liga",
+            einsatz_mannschaft: "Herren",
+            name: "Nachname, Vorname"
+            rang: "1.1",
             einsaetze: 1,
-            bilanzen: {
-              1: "1:1",
-              2: "2:2",
-              3: "",
-              4: "",
-              5: "",
-              6: "",
-              gesamt: "3:3",
-            }
+            1: "1:1",
+            2: "2:2",
+            3: "",
+            4: "",
+            5: "",
+            6: "",
+            gesamt: "3:3",
           },
           {
 
@@ -56,6 +56,25 @@ class SpielerModel {
   /**
    * PUBLIC
    */
+
+  /**
+   * return the url to the spielers ttr-rangliste, if a myttid is set.
+   * else return y link to the personen suche of mytischtennis
+   */
+  getMyTTUrl(){
+    if ( this.mytt_id !== 0 ){
+      return `https://www.mytischtennis.de/community/events?personId=${this.mytt_id}`
+    } else {
+      const vorname_nachname = this.name.split(',')
+      if (vorname_nachname.length == 2) {
+        const url_vorname = vorname_nachname[1].trim().replace(' ', '+')
+        const url_nachname = vorname_nachname[0].trim().replace(' ', '+')
+        return `https://www.mytischtennis.de/community/ranking?panel=2&vorname=${url_vorname}&nachname=${url_nachname}&vereinIdPersonenSuche=&vereinPersonenSuche=Verein+suchen&goAssistentP=Anzeigen`
+      } else {
+        return ''
+      }
+    }
+  }
 
   isInvalidBecauseOf(other_spieler) {
     // Special Case for if one of the two hast qttr 0. Then it is not invalid

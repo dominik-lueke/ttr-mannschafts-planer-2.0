@@ -3,7 +3,7 @@ class EditorView {
     $('#editor').append(`
       <div class="container editor-container">
         <div class="row">
-          <div id="editor-col" class="col-12 col-md-8" >
+          <div id="editor-col" class="col-sm-12 col-md-8 col-lg-6" >
             <div id="mannschafts-container" class="container connected-sortable-mannschaft">
             </div>
             <div id="add-mannschaft-button-container" class="container">
@@ -25,7 +25,7 @@ class EditorView {
               </div>
             </div>
           </div>
-          <div id="neue-planung-col" class="col-12 display-none">
+          <div id="neue-planung-col" class="col-12 mt-4 display-none">
             <div class="container pt-4">
               <div class="row mannschafts-row">
                 <div id="neue-planung-button" class="text-center card mannschaft pt-4 pb-4 link">
@@ -85,7 +85,7 @@ class EditorView {
     // Create Mannschafts rows for each Mannschaft in state
     mannschaften.forEach(mannschaft => {
       const mannschaftsspieler = spieler.filter(spieler => spieler.mannschaft === mannschaft.nummer).sort((a,b) => { return a.position - b.position })
-      this.mannschaftViews.push( new MannschaftView(this.mannschaftsContainer, mannschaft, mannschaftsspieler, mannschaften.length) )
+      this.mannschaftViews.push( new MannschaftView(this.mannschaftsContainer, mannschaft, mannschaftsspieler, mannschaften.length, planung) )
     })
 
     // Activate sorting
@@ -109,7 +109,11 @@ class EditorView {
         const new_position = ui.item.index() + 1
         if (old_mannschaft != new_mannschaft || old_position != new_position) {
           const id = parseInt(ui.item.attr("id").split("-")[2],10) // spieler-SPIELKLASSE->ID<
-          this.reorderSpielerHandler(id, new_mannschaft, new_position)
+          // Be async here to first finish the sorting animation, then update the model and the complete view
+          // This takes effect when there are many players and there is a noticable delay when the whole planung is rendered new
+          // Effect without timeout: The sorting animation is delayed, then the view is updated and all spieler are correct
+          // Effect with timeout:    The sorting animation is smooth, but there is a slight delay until the sorted spieler are updated
+          setTimeout ( () => this.reorderSpielerHandler(id, new_mannschaft, new_position), 1) 
         }
       },
       start: (event, ui) => {

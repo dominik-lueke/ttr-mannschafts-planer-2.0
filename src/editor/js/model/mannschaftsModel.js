@@ -14,6 +14,34 @@ class MannschaftsModel {
     this.kommentar = "",
     this.invalid = true,
     this.invalidKommentar = ""
+    this.bilanzen = {}
+    /*
+    {
+      Vorrunde-20xx/xy": {
+        saison: 20xx/xy,
+        halbserie: Vorrunde,
+        url: 'https://www.mytischtennis.de/clicktt/WTTV/19-20/ligen/Verbandsliga-1/gruppe/356924/mannschaft/2227601/TuRa-Elsen/infos/'
+        bilanzen: [
+          {
+            einsatz_mannschaft: "Herren",
+            name: "Nachname, Vorname"
+            rang: "1.1",
+            einsaetze: 1,
+            1: "1:1",
+            2: "2:2",
+            3: "",
+            4: "",
+            5: "",
+            6: "",
+            gesamt: "3:3",
+          },
+          {
+
+          }
+        ]
+      }
+    }
+    */
   }
 
   setNummer(nummer) {

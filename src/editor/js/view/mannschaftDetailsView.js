@@ -21,7 +21,7 @@ class MannschaftDetailsView {
     `
     // BODY
     this.body = `
-      <div class="card-body">
+      <div id="mannschaft-details-view-body" class="card-body">
         <h6 class="text-muted">Liga <small>(Mannschaftsstärke)</small></h6>
         <div class="form-row mb-4">
           <div class="col-sm-9">
@@ -136,7 +136,7 @@ class MannschaftDetailsView {
 
   /* DISPLAY */
 
-  displayMannschaft(mannschaft){
+  displayMannschaft(mannschaft, compareHalbserienFn){
     this.mannschaft = mannschaft
     // Show this view
     this.card_div.removeClass("display-none")
@@ -151,6 +151,105 @@ class MannschaftDetailsView {
     this.comment_input.val(this.mannschaft.kommentar)
     this.delete_button.removeClass("display-none")
     this.delete_dialog.addClass("display-none")
+    // Bilanzen
+    $('#mannschaft-details-view-body-bilanzen-form-row').remove()
+    if ( Object.keys(this.mannschaft.bilanzen).length !== 0 ) {
+      $('#mannschaft-details-view-body').append(`
+        <div id="mannschaft-details-view-body-bilanzen-form-row" class="form-row mb-4">
+          <div class="col">
+            <h6 class="text-muted">Bilanzen</h6>
+            <div class="accordion" id="mannschaft-details-view-body-bilanzen">
+            </div>
+          </div>
+        </div>
+      `)
+      var bilanzen_container = $('#mannschaft-details-view-body-bilanzen')
+      var sorted_saison_keys = Object.keys(this.mannschaft.bilanzen).sort(compareHalbserienFn)
+      var expanded = 'true'
+      var show = 'show'
+      var collapsed = ''
+      sorted_saison_keys.forEach( saison_key => {
+        var saison = this.mannschaft.bilanzen[saison_key]
+        var saison_id = saison_key.replace('/','-')
+        var saison_card = $(`
+          <div class="card border-0">
+            <div class="card-header border-bottom-0 p-0 bg-white">
+              <h7 class="text-muted link ${collapsed}" data-toggle="collapse" data-target="#mannschaft-details-view-body-bilanzen-${saison_id}" aria-expanded="${expanded}" aria-controls="mannschaft-details-view-body-bilanzen-${saison_id}">
+                ${saison.halbserie} ${saison.saison} 
+                <small>
+                  <a href="${saison.url}" class="text-success pr-2" data-toggle="tooltip" data-placement="top" title="Öffne Mannschafts-Informationen bei myTischtennis.de">
+                    <i class="fa fa-external-link"></i>
+                  </a>
+                  <i class="fa fa-plus-square"></i></small>
+              </h7>
+            </div>
+            <div id="mannschaft-details-view-body-bilanzen-${saison_id}" class="collapse ${show}" data-parent="#mannschaft-details-view-body-bilanzen">
+              <div class="card-body p-0">
+              </div>
+            </div>
+          </div>`
+        )
+        var saison_table = $(`
+          <table class="table table-sm mt-2" >
+            <thead class="thead-light">
+              <tr>
+                <th class="text-center">#</th>
+                <th>Spieler</th>
+                <th>E</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>ges.</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>`
+        )
+        var bilanzen_tablebody = saison_table.find('tbody')
+        var max_einsaetze_in_mannschaft = 0
+        saison.bilanzen.forEach( spieler => {
+          var bilanzen_tablerow = $(`
+            <tr>
+              <td>${spieler.rang}</td>
+              <td class="bilanzen-spieler-name">${spieler.name}</td>
+              <td class="bilanzen-stammspieler-einsaetze">${spieler.einsaetze} </td>
+              <td>${spieler[1]}</td>
+              <td>${spieler[2]}</td>
+              <td>${spieler[3]}</td>
+              <td>${spieler[4]}</td>
+              <td>${spieler[5]}</td>
+              <td>${spieler[6]}</td>
+              <td>${spieler.gesamt}</td>
+            </tr>
+          `)
+          if (parseInt(spieler.einsaetze,10) > max_einsaetze_in_mannschaft) {
+            max_einsaetze_in_mannschaft = parseInt(spieler.einsaetze,10)
+          }
+          if (parseInt(spieler.rang.split('.')[0],10) !== mannschaft.nummer){
+            bilanzen_tablerow.find('.bilanzen-stammspieler-einsaetze').removeClass('bilanzen-stammspieler-einsaetze')
+          }
+          bilanzen_tablebody.append(bilanzen_tablerow)
+        })
+        // Add warning icons to spieler with few einsätze
+        bilanzen_tablebody.find('.bilanzen-stammspieler-einsaetze').each( (index,element) => {
+          var einsaetze = parseInt( $(element).text(),10 )
+          if (einsaetze < (max_einsaetze_in_mannschaft / 2)) {
+            $(element).append('<small><i class="fa fa-warning text-warning" data-toggle="tooltip" data-placement="right" title="Spieler hatte wenige Einsätze in dieser Halbserie"></i></small>')
+          }
+        })
+        // Append card to sidebar
+        saison_card.find(".card-body").append(saison_table)
+        bilanzen_container.append(saison_card)
+        saison_card.find('[data-toggle="tooltip"]').tooltip('dispose').tooltip()
+        expanded = 'false'
+        show = ''
+        collapsed = 'collapsed'
+      })
+    }
   }
 
   /* HIDE */
@@ -164,6 +263,7 @@ class MannschaftDetailsView {
     }
     // hide
     this.card_div.addClass("display-none")
+    this.card_div.find('[data-toggle="tooltip"]').tooltip('dispose').tooltip()
   }
 
   /* LIGA */

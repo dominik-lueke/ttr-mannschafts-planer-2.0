@@ -22,20 +22,7 @@ ipcRenderer.on('closeFile', (event, args) => {
 })
 
 ipcRenderer.on('saveFile', (event, args) => {
-  const planung_json = JSON.parse(app.getPlanungAsJsonString())
-  // set saved to true in the planung in the file
-  planung_json.saved = true
-  const planung_json_save_str = JSON.stringify(planung_json)
-  if (planung_json.file === "") {
-    var filepath = saveAsDialog(planung_json)
-    if ( filepath ) {
-      writePlanungToFile(filepath, planung_json_save_str)
-      app.setPlanungFile(filepath)
-    }
-  } else {
-    writePlanungToFile(planung_json.file, planung_json_save_str)
-    app.setPlanungFile(planung_json.file)
-  }
+  app.saveFile()
 })
 
 ipcRenderer.on('saveFileAs', (event, args) => {
@@ -81,7 +68,7 @@ ipcRenderer.on('exportAsExcelResult', (event, args) => {
     if (args.success){
       app.alert('success', args.message)
     } else {
-      app.alert('danger', args.message, -1)
+      app.alertError(args.message)
     }
   }, 1000) // totally silly 1 second timeout to show the progressbar a decent amount of time to the user 
 })
@@ -104,6 +91,10 @@ ipcRenderer.on('undo', (event, args) => {
 
 ipcRenderer.on('redo', (event, args) => {
   app.redo()
+})
+
+ipcRenderer.on('showAboutModal', (event, args) => {
+  app.displayAboutModal()
 })
 
 ipcRenderer.on('quit', (event, args) => {
@@ -193,7 +184,7 @@ confirmClosePlanungDialog = () => {
 writePlanungToFile = (filepath, planung_json_str) => {
   fs.writeFile(filepath, planung_json_str, (err) => {
     if(err){
-        app.alert('danger', `An error ocurred creating the file ${filepath}:<br/>${err.message}`, -1)
+        app.alertError(`An error ocurred creating the file ${filepath}:<br/>${err.message}`)
     }
   })
 }
@@ -202,7 +193,7 @@ openPlanungFromFile = (filepath) => {
   app.showProgressBar("primary","white","",true) // start "loading"
   fs.readFile(filepath, 'utf-8', (err, planung_json_str) => {
     if(err){
-        app.alert('danger', `An error ocurred reading the file ${filepath}:<br/>${err.message}`, -1);
+        app.alertError(`An error ocurred reading the file ${filepath}:<br/>${err.message}`);
         return;
     }
     app.closePlanungSave().then((result) => {
@@ -220,6 +211,11 @@ openPlanungFromFile = (filepath) => {
 $(document).on('click', 'a[href^="http"]', function(event) {
   event.preventDefault();
   shell.openExternal(this.href);
+});
+
+$(document).on('click', 'a[href^="file://"]', function(event) {
+  event.preventDefault()
+  shell.openItem(path.resolve(__dirname, this.href.replace('file://','./../../../')))
 });
 
 /*

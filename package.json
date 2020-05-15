@@ -15,12 +15,20 @@
     "Mannschaftsplaner"
   ],
   "author": "Dominik Lüke",
+  "email": "dominik.lueke@gmail.com",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "7.1.6",
+    "electron": "8.2.5",
     "electron-packager": "^14.2.1"
   },
   "dependencies": {
     "excel4node": "^1.7.2"
+  },
+  "vendor": {
+    "bootstrap": "4.4.1",
+    "fontawesome": "4.7.0",
+    "jquery": "3.3.1",
+    "jqueryui": "1.12.1",
+    "popperjs": "1.14.0"
   }
 }

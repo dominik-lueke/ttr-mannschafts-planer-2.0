@@ -13,7 +13,7 @@ class PlanungsModel {
     this.halbserie = halbserie
     this.spielklasse = spielklasse
     this.url = {
-      verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue"),
+      verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/\./g,"-"),
       saison: this._getPreviousSaison().replace("/","-").substring(2),
       halbserie: this._getOtherHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
       spielklasse: this._getSpielklassenUrlString(this.spielklasse)
@@ -47,6 +47,7 @@ class PlanungsModel {
     this.onMannschaftenChanged = () => {}
     this.onHeaderDataChanged = () => {}
     this.onPlanungStored = () => {}
+    this.onErrorOccured = () => {}
   }
 
   /**
@@ -63,6 +64,10 @@ class PlanungsModel {
 
   bindPlanungStored(callback) {
     this.onPlanungStored = callback
+  }
+
+  bindErrorOccured(callback) {
+    this.onErrorOccured = callback
   }
 
   /**
@@ -342,7 +347,11 @@ class PlanungsModel {
    */
 
   loadFromJSON (planung_json, update_aufstellung=false, use_stored_saved=false) {
-    this._parsePlanungJson(planung_json, update_aufstellung)
+    try {
+      this._parsePlanungJson(planung_json, update_aufstellung)
+    } catch (e){
+      this.onErrorOccured(`Ein interner Fehler ist aufgetreten:<br/>${e}`)
+    }
     this.isEmpty = this._isEmpty()
     if ( ! this.isNew ) {
       this._commit(use_stored_saved ? this.saved : false)
@@ -385,22 +394,35 @@ class PlanungsModel {
             planung_json.mannschaften.liste.forEach( (mannschaft) => {
               /* Create Mannschaft */
               var new_mannschaft = null
-              if ( ! update_aufstellung) {
-                new_mannschaft = new MannschaftsModel()
-                mannschaftsListe.liste.push(new_mannschaft)
-              } else if ("nummer" in mannschaft) {
-                if ( (mannschaft.nummer <= this.mannschaften.liste.length) ) {
-                  new_mannschaft = this.mannschaften.getMannschaftByNummer(mannschaft.nummer)
-                } else {
-                  const new_mannschaft_id = this.addMannschaft(mannschaft.nummer)
-                  new_mannschaft = this.mannschaften.getMannschaft(new_mannschaft_id)
+              if (mannschaftsListe.spielklasse === mannschaft.spielklasse){
+                if ( ! update_aufstellung) {
+                  if ("romanNumber" in mannschaft) {
+                    new_mannschaft = this.mannschaften.getMannschaftByRomanNumber(mannschaft.romanNumber)
+                  } else {
+                    new_mannschaft = new MannschaftsModel()
+                    mannschaftsListe.liste.push(new_mannschaft)
+                  }
+                } else if ("nummer" in mannschaft) {
+                  if ( (mannschaft.nummer <= this.mannschaften.liste.length) ) {
+                    new_mannschaft = this.mannschaften.getMannschaftByNummer(mannschaft.nummer)
+                  } else {
+                    const new_mannschaft_id = this.addMannschaft(mannschaft.nummer)
+                    new_mannschaft = this.mannschaften.getMannschaft(new_mannschaft_id)
+                  }
                 }
               }
               if (new_mannschaft != null){
                 /* Set properties */
                 for (var mannschafts_key in mannschaft){
                   if (mannschaft.hasOwnProperty(mannschafts_key)){
-                    new_mannschaft[mannschafts_key] = mannschaft[mannschafts_key]
+                    // Special case for bilanzen where we extend the hashmap
+                    if (mannschafts_key === 'bilanzen') {
+                      for (var saison_key in mannschaft[mannschafts_key] ){
+                        new_mannschaft[mannschafts_key][saison_key] = mannschaft[mannschafts_key][saison_key]
+                      }
+                    } else {
+                      new_mannschaft[mannschafts_key] = mannschaft[mannschafts_key]
+                    }
                   }
                 }
               }
@@ -443,9 +465,11 @@ class PlanungsModel {
                       for (var saison_key in spieler[spieler_key] ){
                         new_spieler[spieler_key][saison_key] = spieler[spieler_key][saison_key]
                       }
+                    } else if (spieler_key === 'qttrdate') {
+                      new_spieler.qttrdate = new Date(spieler.qttrdate)
                     } else {
-                        new_spieler[spieler_key] = spieler[spieler_key]
-                        qttr_values_changed = qttr_values_changed || spieler_key == "qttr"
+                      new_spieler[spieler_key] = spieler[spieler_key]
+                      qttr_values_changed = qttr_values_changed || spieler_key == "qttr"
                     }
                   }
                 }

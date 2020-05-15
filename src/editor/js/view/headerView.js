@@ -4,19 +4,14 @@ class HeaderView {
     $('#header').append(`
       <div class="d-flex bg-dark text-white text-center fixed-top">
         <div class="p-2 flex-fill">
-          <h4><small id="planung-verein" data-toggle="tooltip" data-placement="bottom" data-html="true" title=""></small></h4>
-          <h6><small id="planung-verband"></small></h6>
+          <h4><small id="planung-verein" data-toggle="tooltip" data-placement="bottom" data-html="true" title=""></small></h6>
         </div>
         <div class="p-2 flex-fill">
-          <h4 id="planung-serie"></h4>
-          <h6 id="planung-spielklasse"></h6>
+          <h4 id="planung-serie-spielklasse"></h4>
         </div>
         <div class="p-2 flex-fill">
           <div id="header-mytt-status-div">
-            <h4 class="text-muted">
-              <small>myTischtennis.de</small>
-            </h4>
-            <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-center pt-1">
               <div id="header-aufstellung-status-icon" data-toggle="tooltip" data-placement="bottom" data-html="true" title="" class="mr-2">
                 <span class="badge badge-dark p-1 text-muted link" data-toggle="modal" data-target="#planung-reload-data-modal" >CLICK-TT</span>
                 <sub><i class="fa fa-times-circle text-muted overlay-icon"></i></sub>
@@ -76,18 +71,15 @@ class HeaderView {
     this.planung = planung
     this.mytt_aufstellung_url = planung.aufstellung.url
     $('#planung-verein').text(planung.verein);
-    $('#planung-verein').attr("title", `Vereins-Nr.: ${planung.vereinsNummer}`);
-    $('#planung-verein').tooltip('dispose')
-    $('#planung-verein').tooltip()
-    $('#planung-verband').text(planung.verband);
-    $('#planung-serie').text(planung.halbserie + " " + planung.saison);
-    $('#planung-spielklasse').text(planung.spielklasse);
+    $('#planung-verein').attr("title", `Verband: ${planung.verband}<br/>Vereins-Nr.: ${planung.vereinsNummer}`);
+    $('#planung-verein').tooltip('dispose').tooltip()
+    $('#planung-serie-spielklasse').text(planung.halbserie + " " + planung.saison + " - " + planung.spielklasse);
     this._updateMyTTStatusIcons()
     if(this.planung.isNew) {
-      $('#planung-serie').text("Tischtennis Mannschafts Planer").addClass("display-4")
+      $('#planung-serie-spielklasse').text("Tischtennis Mannschafts Planer").addClass("display-4")
       this.mytt_status.div.addClass("display-none")
     } else {
-      $('#planung-serie').removeClass("display-4")
+      $('#planung-serie-spielklasse').removeClass("display-4")
       this.mytt_status.div.removeClass("display-none")
     }
     this.print_date.text(`${new Date().getDate()}.${new Date().getMonth()+1}.${new Date().getFullYear()}`)
@@ -140,7 +132,7 @@ class HeaderView {
         this.mytt_status.ttrwerte.badge.removeClass("text-muted")
         this.mytt_status.ttrwerte.icon.removeClass("fa-times-circle").removeClass("fa-check-circle").addClass("fa-warning")
         this.mytt_status.ttrwerte.icon.removeClass("text-muted").removeClass("text-success").addClass("text-warning")
-        this.mytt_status.ttrwerte.div.attr("title", `Seit dem Datum der geladenen TTR-Werte (${this.planung.ttrwerte.datestring}) wurden bereits neue Q-TTR Werte veröffentlicht`)
+        this.mytt_status.ttrwerte.div.attr("title", `Seit dem Datum der geladenen TTR-Werte (${this.planung.ttrwerte.datestring}) gab es bereits einen neuen Q-TTR Stichtag. Die neuen Werte werden kurz darauf veröffentlicht.`)
         break
       default:
         break

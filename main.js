@@ -145,6 +145,12 @@ function createWindow () {
         { type: 'separator' },
         { id: 'fullscreen', label: 'Vollbild', role: 'togglefullscreen' },
       ]
+    },
+    {
+      label: 'Hilfe',
+      submenu: [
+        { id: 'about', label: 'Info', click() { showAboutModal()} }
+      ]
     }
   ])
   Menu.setApplicationMenu(menu);
@@ -269,6 +275,10 @@ function undo() {
 
 function redo() {
   let response = editorWindow.webContents.send('redo','Redo last action')
+}
+
+function showAboutModal() {
+  let response = editorWindow.webContents.send('showAboutModal','showAboutModal')
 }
 
 function isPdfPrinterAvailable() {

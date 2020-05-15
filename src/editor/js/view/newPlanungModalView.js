@@ -3,7 +3,7 @@ class NewPlanungModalView {
   constructor() {
     $("#newPlanungModal").append(this._getHtml())
     this.fillHalbserieSaisonFromCurrentDate()
-    $('#newPlanungsFormVerband').on('change', () => { this.setVereinssucheHref() })
+    $('#newPlanungsFormVerband').on('change', () => { this.verbandChanged() })
     $('#newPlanungsFormVerein').on('change', () => { this.setVereinsseiteHref() } )
     $('#newPlanungsFormVereinsnummer').on('change', () => { this.setVereinsseiteHref() } )
     $('#newPlanungsFormSaison').on('change', () => { this.setVereinsseiteHref() } )
@@ -18,13 +18,22 @@ class NewPlanungModalView {
     $('#newPlanungsFormSaison').val(`${year}/${year - 1999}`)
   }
 
+  verbandChanged () {
+    if ($('#newPlanungsFormVerband').val() !== 'WTTV') {
+      $('#verbandHelp').show()
+    } else {
+      $('#verbandHelp').hide()
+    }
+    this.setVereinssucheHref()
+  }
+
   setVereinssucheHref() {
     $('#vereinHelp a').attr('href', `https://www.mytischtennis.de/clicktt/${ $('#newPlanungsFormVerband').val() }/vereinssuche/`)
   }
 
   setVereinsseiteHref() {
     const verband = $('#newPlanungsFormVerband').val()
-    const verein = $('#newPlanungsFormVerein').val().replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue")
+    const verein = $('#newPlanungsFormVerein').val().replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/\./g,"-")
     const vereinsnummer = $('#newPlanungsFormVereinsnummer').val()
     const saison = $('#newPlanungsFormSaison').val().replace("/","-").substring(2)
     if (verein !== "" && vereinsnummer.match('[0-9]{3}[0-9]*') && saison.match('[0-9]{2}-[0-9]{2}')) {
@@ -95,7 +104,6 @@ class NewPlanungModalView {
                   <div class="col-sm-12 mb-3">
                   <label for="newPlanungsFormVerband">Verband</label>
                   <select type="text" class="form-control" id="newPlanungsFormVerband" required>
-                    <!--
                     <option value="BaTTV">Baden (BaTTV)</option>
                     <option value="ByTTV">Bayern (ByTTV)</option>
                     <option value="TTVB">Brandenburg (TTVB)</option>
@@ -111,12 +119,10 @@ class NewPlanungModalView {
                     <option value="TTVSA">Sachsen-Anhalt (TTVSA)</option>
                     <option value="SbTTV">Südbaden (SbTTV)</option>
                     <option value="TTTV">Thüringen (TTTV)</option>
-                    -->
                     <option value="WTTV" selected>NRW (WTTV)</option>
-                    <!--
                     <option value="TTVWH">Würtemberg-Hohenzollern (TTVWH)</option>
-                    -->
                   </select>
+                  <small id="verbandHelp" class="form-text text-muted display-none"><i class="fa fa-warning text-warning"></i> Diesem Tool liegt die WTTV Wettspielordnung (<a href="file://assets/WO2020-01-01.pdf" class="text-success">Stand 01/2020</a>) zugrunde.<br/> Auch die <a href="https://mytischtennis.de" class="text-success">myTischtennis.de</a> Integration zum Laden von Aufstellungen, TTR-Werten und Bilanzen ist für die WTTV Spielklassen optimiert.</small>
                   <div class="invalid-feedback">
                     Bitte einen Verband eingeben
                   </div>

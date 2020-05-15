@@ -4,6 +4,10 @@ Autor: Dominik Lüke
 
 ---
 
+## [Releases](https://bitbucket.org/dominiklueke/ttr-mannschafts-planer-2.0/downloads)
+
+---
+
 Der **Tischtennis Mannschafts Planer** ist ein freies und quelloffenes Tool, um Aufstellungen für Tischtennis Mannschaften zu erstellen.
 
 Dieses Tool bietet eine Unterstützung zur Erstellung von WTTV-Wettspielordnungs-konformen Aufstellungen in Bezug auf Spielstärke-Reihenfolge nach QTTR-Werten und Mannschafts-Sollstärken [Stand 01/2020](assets/WO2020-01-01.pdf), Abschnitt H).

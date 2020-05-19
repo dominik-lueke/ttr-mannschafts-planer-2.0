@@ -22,14 +22,9 @@ Built with
 [jQueryUI,](https://jqueryui.com/) and
 [popper.js](https://popper.js.org/)
 
-## Installationsanleitung (Windows 10)
+## Hilfe
 
-1. Lade die aktuelleste Version des `Tischtennis Mannschafts Planers` aus dem [Download-Bereich](https://bitbucket.org/dominiklueke/ttr-mannschafts-planer-2.0/downloads) herunter
-
-2. Entpacke die geladene `.zip` Datei in einen leeren Ordner
-
-3. Starte die `TischtennisMannschaftsPlaner.exe` aus dem entpackten Verzeichnis.  
-(Ein Warnhinweis des Windows Defenders kann ignoriert werden)
+[Zur Hilfe-Seite](assets/help/HELP.md)
 
 ## License
 
@@ -45,7 +40,7 @@ Klone diese Repository:
 git clone git@bitbucket.org:dominiklueke/ttr-mannschafts-planer-2.0.git
 ```
 
-Mit node.js starten:
+Mit [node.js](https://nodejs.org) starten:
 
 ```powershell
 npm install

@@ -59,8 +59,8 @@ class MannschaftView {
       </ul>
     `)
     this.addSpielerButton = $(`<button id="mannschaft-${id}-addspielerbtn" class="btn btn-light text-muted"><i class="fa fa-plus"></i> Spieler hinzufügen</button>`)
-    this.newNameInput = $(`<input id="mannschaft-${id}-new-name-input" type="text" class="form-control display-none" placeholder="Nachname, Vorname"></input>`)
-    this.newQttrInput = $(`<input id="mannschaft-${id}-new-qttr-input" type="number" class="form-control display-none" placeholder="TTR" min="0" max="3000"></input>`)
+    this.newNameInput = $(`<input id="mannschaft-${id}-new-name-input" type="text" class="form-control display-none new-name-input" placeholder="Nachname, Vorname"></input>`)
+    this.newQttrInput = $(`<input id="mannschaft-${id}-new-qttr-input" type="number" class="form-control display-none new-qttr-input" placeholder="TTR" min="0" max="3000"></input>`)
     this.newPositionLabel = $(`#mannschaft-${id}-new-position`)
     $(`#mannschaft-${id}-new-name`).append(this.addSpielerButton)
     $(`#mannschaft-${id}-new-name`).append(this.newNameInput)
@@ -87,10 +87,6 @@ class MannschaftView {
 
     // display input form for Name and QTTR instead of button
     this.addSpielerButton.click( () => { this._displayAddSpielerForm() } )
-    
-    // if both inputs are empty -> discard
-    this.newNameInput.focusout( () => { this._hideEmptyAddSpielerForm() } )
-    this.newQttrInput.focusout( () => { this._hideEmptyAddSpielerForm() } )
 
   }
 
@@ -107,6 +103,8 @@ class MannschaftView {
   bindAddSpieler(handler) {
     this.newNameInput.on("keyup", (event) => { this._addSpielerKeyUpHandler(event, handler); } )
     this.newQttrInput.on("keyup", (event) => { this._addSpielerKeyUpHandler(event, handler); } )
+    this.newNameInput.focusout( () => { this._addSpielerFocusOutHandler(event, handler); } )
+    this.newQttrInput.focusout( () => { this._addSpielerFocusOutHandler(event, handler); } )
   }
 
   bindClickOnSpieler(handler) {
@@ -129,6 +127,15 @@ class MannschaftView {
     // On <Escape> we cancel
     } else if (event.keyCode === 27) {
       this._hideAddSpielerForm()
+    }
+  }
+
+  _addSpielerFocusOutHandler(event, handler) {
+    event.preventDefault()
+    if (this.newNameInput.val() === "" && this.newQttrInput.val() === "") {
+      this._hideAddSpielerForm()
+    } else {
+      this._addSpieler(handler)
     }
   }
 
@@ -166,12 +173,6 @@ class MannschaftView {
     this.newQttrInput.addClass("display-none")
     this.newQttrInput.val("")
     this.newPositionLabel.addClass("invisible")
-  }
-
-  _hideEmptyAddSpielerForm() {
-    if (this.newNameInput.val() === "" && this.newQttrInput.val() === "") {
-      this._hideAddSpielerForm()
-    }
   }
 
 }

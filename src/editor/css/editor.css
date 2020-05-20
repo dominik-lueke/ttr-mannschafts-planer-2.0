@@ -127,6 +127,11 @@ a .spieler-farbe-selector {
   min-height: 25px;
 }
 
+.mannschaft .new-qttr-input.is-invalid {
+  padding-right: inherit !important;
+  background-image: none;
+}
+
 .mannschaft-focused .mannschaft-header {
   background-color: rgba(0,0,0,0.1);
 }
@@ -235,7 +240,7 @@ a .spieler-farbe-selector {
 }
 
 /* NEW PLANUNG MODAL */
-#newPlanungModal .form-control:valid{
+#newPlanungModal .form-control:valid {
   background-image: none !important;
 }
 /* OVERLAY ICON */

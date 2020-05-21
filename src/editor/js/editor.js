@@ -182,11 +182,13 @@ confirmClosePlanungDialog = () => {
  */
 
 writePlanungToFile = (filepath, planung_json_str) => {
-  fs.writeFile(filepath, planung_json_str, (err) => {
-    if(err){
-        app.alertError(`An error ocurred creating the file ${filepath}:<br/>${err.message}`)
-    }
-  })
+  try {
+    fs.writeFileSync(filepath, planung_json_str)
+  } catch (err) {
+    app.alertError(`An error ocurred creating the file ${filepath}:<br/>${err.message}`)
+    return false
+  }
+  return true
 }
 
 openPlanungFromFile = (filepath) => {

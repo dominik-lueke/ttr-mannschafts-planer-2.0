@@ -131,19 +131,18 @@ class Controller {
     // set saved to true in the planung in the file
     planung_json.saved = true
     const planung_json_save_str = JSON.stringify(planung_json)
-    if (planung_json.file === "") {
+    var saveSuccess = false
+    var filepath = planung_json.file
+    if (filepath === "") {
       var filepath = saveAsDialog(planung_json)
-      if ( filepath ) {
-        writePlanungToFile(filepath, planung_json_save_str)
-        this.setPlanungFile(filepath)
-        return true
-      }
-    } else {
-      writePlanungToFile(planung_json.file, planung_json_save_str)
-      this.setPlanungFile(planung_json.file)
-      return true
     }
-    return false
+    if (filepath) {
+      saveSuccess = writePlanungToFile(filepath, planung_json_save_str)
+    }
+    if (saveSuccess) {
+      this.setPlanungFile(filepath)
+    }
+    return saveSuccess
   }
 
   closePlanungSave = () => {
@@ -153,11 +152,11 @@ class Controller {
       switch (confirmclosedialogresult) {
         case 0 : // Speichern
           return new Promise((resolve, reject) => {
-            var saveDone = this.saveFile()
-            if ( saveDone ) {
+            var saveSuccess = this.saveFile()
+            if ( saveSuccess ) {
               this.closePlanung()
             }
-            resolve(saveDone)
+            resolve(saveSuccess)
           })
         case 1 : // Schließen
           return new Promise((resolve, reject) => {

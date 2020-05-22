@@ -20,6 +20,8 @@ class Controller {
     this._createMyTTModalView()
     // NEWPLANUNGSMODAL
     this._createNewPlanungModalView()
+    // PLANUNGTAGSMODAL
+    this._createPlanungTagsModalView()
     // ABOUTMODAL
     this._createAboutModalView()
     // ALERT
@@ -99,6 +101,12 @@ class Controller {
   _createNewPlanungModalView = () => {
     this.newPlanungModalView = new NewPlanungModalView()
     this.newPlanungModalView.bindClickSubmitPlanungButton(this.handleClickSubmitPlanungButton)
+  }
+
+  _createPlanungTagsModalView = () => {
+    this.planungTagsModalView = new PlanungTagsModalView()
+    this.planungTagsModalView.bindLoadTag(this.handleClickLoadTag)
+    this.planungTagsModalView.bindDeleteTag(this.handleClickDeleteTag)
   }
 
   _createAboutModalView = () => {
@@ -403,6 +411,13 @@ class Controller {
     this.model.addTagToPlanung(tag)
   }
 
+  /* PLANUNG TAG MODAL HANDLER */
+  handleClickLoadTag = (tag_id) => {
+    this.model.loadTag(tag_id)
+  }
+  
+  handleClickDeleteTag = (tag_id) => {
+    this.model.deleteTag(tag_id)
   }
 
   /* SIDEBAR HANDLER */

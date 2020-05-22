@@ -124,6 +124,25 @@ class Model {
     localStorage.setItem("localStoragePlanungTags", JSON.stringify(this.tags))
   }
 
+  loadTag(tag_id){
+    if (this.tags.hasOwnProperty(tag_id)){
+      this.planung.loadFromJSON(JSON.parse(this.tags[tag_id].planung), true, true)
+    }
+  }
+
+  deleteTag(tag_id){
+    if (this.tags.hasOwnProperty(tag_id)){
+      if ( this.planung.tag === this.tags[tag_id].name){
+        this.planung.removeTag()
+      }
+      delete this.tags[tag_id]
+      // notify view
+      this.onFooterDataChanged(this)
+      // store tags
+      localStorage.setItem("localStoragePlanungTags", JSON.stringify(this.tags))
+    }
+  }
+
   /**
    * EVENT HANDLER
    */

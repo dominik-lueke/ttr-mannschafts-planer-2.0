@@ -26,6 +26,12 @@ a .spieler-farbe-selector {
   max-width: unset !important;
 }
 
+/* PLANUNG TAGS MODAL */
+.tag-list-item-badge {
+  white-space: normal;
+  text-align: left;
+}
+
 /* SPIELER FARBE */
 
 .spieler-farbe-green {

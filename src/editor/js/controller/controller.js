@@ -146,13 +146,18 @@ class Controller {
     // set saved to true in the planung in the file
     planung_json.saved = true
     const planung_json_save_str = JSON.stringify(planung_json)
+    const file_content = {
+      planung: planung_json_save_str,
+      tags: JSON.stringify(this.model.tags)
+    }
+    const file_content_str = JSON.stringify(file_content)
     var saveSuccess = false
     var filepath = planung_json.file
     if (filepath === "") {
       var filepath = saveAsDialog(planung_json)
     }
     if (filepath) {
-      saveSuccess = writePlanungToFile(filepath, planung_json_save_str)
+      saveSuccess = writePlanungToFile(filepath, file_content_str)
     }
     if (saveSuccess) {
       this.setPlanungFile(filepath)
@@ -221,9 +226,23 @@ class Controller {
     return this.model.planung.getPlanungAsJsonString()
   }
 
-  openPlanung = (planung_json_string, filepath) => {
+  openPlanung = (file_content_str, filepath) => {
     try {
-      this.model.updatePlanung(JSON.parse(planung_json_string), true)
+      const file_content = JSON.parse(file_content_str)
+      var planung_json_str = "{}"
+      var tag_json_str = "{}"
+      if (file_content.hasOwnProperty('planung')) {
+        planung_json_str = file_content.planung
+        tag_json_str = file_content.tags
+      } else {
+        // legacy file format before tags were introduced
+        // and the whole file content was the planung
+        planung_json_str = file_content_str
+      }
+      // set tags
+      this.model.tags = JSON.parse(tag_json_str)
+      // update planung
+      this.model.updatePlanung(JSON.parse(planung_json_str), true)
       this.setPlanungFile(filepath) // unfortunately this leads to a new entry in the undo history
       this.model.resetUndoRedo() // reset the undo history
     } catch (e) {

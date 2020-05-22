@@ -193,14 +193,14 @@ writePlanungToFile = (filepath, planung_json_str) => {
 
 openPlanungFromFile = (filepath) => {
   app.showProgressBar("primary","white","",true) // start "loading"
-  fs.readFile(filepath, 'utf-8', (err, planung_json_str) => {
+  fs.readFile(filepath, 'utf-8', (err, file_content_str) => {
     if(err){
         app.alertError(`An error ocurred reading the file ${filepath}:<br/>${err.message}`);
         return;
     }
     app.closePlanungSave().then((result) => {
       if (result) {
-        app.openPlanung(planung_json_str, filepath)
+        app.openPlanung(file_content_str, filepath)
       }
       app.hideProgressBar() // stop "loading"
     })

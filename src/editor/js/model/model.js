@@ -126,7 +126,11 @@ class Model {
 
   loadTag(tag_id){
     if (this.tags.hasOwnProperty(tag_id)){
+      const current_file = this.planung.file // keep the file of the current planung
       this.planung.loadFromJSON(JSON.parse(this.tags[tag_id].planung), true, true)
+      this.planung.file = current_file // keep the file of the current planung
+      this.planung.filename = path.parse(current_file).base // keep the file of the current planung
+      this.planung.onHeaderDataChanged(this.planung) // notify that the filepath has changed
     }
   }
 

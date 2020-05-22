@@ -55,10 +55,10 @@ ipcRenderer.on('openFilepath', (event, args) => {
 })
 
 ipcRenderer.on('exportAsExcel', (event, args) => {
-  var filepath = exportAsXlsxDialog(app.planung)
+  var filepath = exportAsXlsxDialog(app.model.planung)
   if ( filepath ) {
     app.showProgressBar('success', 'white', 'Exportiere nach Excel...')
-    ipcRenderer.send('exportAsExcelReply', {filepath: filepath, planung: app.planung.getPlanungAsJsonString()})
+    ipcRenderer.send('exportAsExcelReply', {filepath: filepath, planung: app.model.planung.getPlanungAsJsonString()})
   }
 })
 

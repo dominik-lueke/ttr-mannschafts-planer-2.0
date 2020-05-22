@@ -32,14 +32,14 @@ class Controller {
   /* CONSTRUCTORS */
   _createModel = () => {
     this.model = new Model()
-    this.planung = this.model.planung // only one planung at a time right now
     // Parser
     this.myTTParser = new MyTTParser()
     // Bind Model Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
-    this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
-    this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
-    this.planung.bindErrorOccured(this.alertError)
+    this.model.bindFooterDataChanged(this.onFooterDataChanged)
+    this.model.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
+    this.model.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
+    this.model.planung.bindErrorOccured(this.alertError)
   }
 
   _createHeaderView = () => {
@@ -64,7 +64,7 @@ class Controller {
     this.sidebarView = new SidebarView()
     // Handler SIDEBAR VIEW
     this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
-    this.sidebarView.bindCompareHalbserienFn(this.planung.compareHalbserien)
+    this.sidebarView.bindCompareHalbserienFn(this.model.planung.compareHalbserien)
     // Handler SIDEBAR SPIELER VIEW
     this.sidebarView.bindEditNameOnSpieler(this.handleEditNameOnSpieler)
     this.sidebarView.bindEditQttrOnSpieler(this.handleEditQttrOnSpieler)
@@ -153,7 +153,7 @@ class Controller {
   }
 
   closePlanungSave = () => {
-    if ( ! this.planung.saved ) {
+    if ( ! this.model.planung.saved ) {
       // show confirm dialog if current planung is unsafed
       let confirmclosedialogresult = confirmClosePlanungDialog()
       switch (confirmclosedialogresult) {
@@ -185,16 +185,16 @@ class Controller {
   closePlanung = () => {
     // New planung
     this.model.createNewPlanung()
-    this.planung = this.model.planung
     // reset local storage
     localStorage.removeItem('localStorageFilepath')
     localStorage.removeItem('localStoragePlanung')
     localStorage.removeItem('localStorageTags')
     // Bind Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
-    this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
-    this.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
-    this.planung.bindErrorOccured(this.alertError)
+    this.model.bindFooterDataChanged(this.onFooterDataChanged)
+    this.model.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
+    this.model.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
+    this.model.planung.bindErrorOccured(this.alertError)
     // reset and hide Planungs Modal
     this.newPlanungModalView.destroyPlanungModal()
     this._createNewPlanungModalView()
@@ -210,7 +210,7 @@ class Controller {
   }
 
   getPlanungAsJsonString = () => {
-    return this.planung.getPlanungAsJsonString()
+    return this.model.planung.getPlanungAsJsonString()
   }
 
   openPlanung = (planung_json_string, filepath) => {
@@ -224,22 +224,22 @@ class Controller {
   }
 
   setPlanungFile = (filepath) => {
-    this.planung.setFile(filepath)
+    this.model.planung.setFile(filepath)
   }
 
   _updateDocumentTitle = () => {
     const app_title = "Tischtennis Mannschafts Planer"
-    const separator = this.planung.isNew ? "" : " - "
-    const filename = this.planung.isNew ? "" : this.planung.filename !== "" ? this.planung.filename : "Unbenannt"
-    const saved_indicator = this.planung.saved ? "" : "*"
+    const separator = this.model.planung.isNew ? "" : " - "
+    const filename = this.model.planung.isNew ? "" : this.model.planung.filename !== "" ? this.model.planung.filename : "Unbenannt"
+    const saved_indicator = this.model.planung.saved ? "" : "*"
     $(document).attr("title", `${app_title}${separator}${filename}${saved_indicator}`);
   }
 
   /* UPDATE */
 
   updateView = () => {
-    this.onHeaderDataChanged(this.planung)
-    this.onMannschaftenChanged(this.planung)
+    this.onHeaderDataChanged(this.model.planung)
+    this.onMannschaftenChanged(this.model.planung)
     this.onFooterDataChanged(this.model)
   }
 
@@ -261,18 +261,18 @@ class Controller {
     this.editorView.bindReorderMannschaft(this.handleReorderMannschaft)
     this.myTTModalView.notifyPlanungUpdated()
     this.onSidebarViewChanged()
-    ipcRenderer.send('enableFileMenu', !this.planung.isNew)
+    ipcRenderer.send('enableFileMenu', !this.model.planung.isNew)
   }
 
   onSidebarViewChanged = () => {
     const display = this.model.view.sidebar.display 
     const id = this.model.view.sidebar.id
     if (display == "spieler") {
-      const spieler = this.planung.spieler.getSpieler(id)
+      const spieler = this.model.planung.spieler.getSpieler(id)
       this.sidebarView.displaySpieler(spieler)
       this.editorView.focusSpieler(spieler)
     } else if (display == "mannschaft") {
-      const mannschaft = this.planung.mannschaften.getMannschaft(id)
+      const mannschaft = this.model.planung.mannschaften.getMannschaft(id)
       this.sidebarView.displayMannschaft(mannschaft)
       this.editorView.focusMannschaft(mannschaft)
     } else {
@@ -333,39 +333,39 @@ class Controller {
   }
 
   getAufstellungsParseResult = (planung) => {
-    return this.myTTParser.getResultOfMyTTAufstellungsParser(planung, this.planung)
+    return this.myTTParser.getResultOfMyTTAufstellungsParser(planung, this.model.planung)
   }
 
   getTtrRanglisteParseResult = (planung) => {
-    return this.myTTParser.getResultOfMyTTTtrRanglisteParser(planung, this.planung)
+    return this.myTTParser.getResultOfMyTTTtrRanglisteParser(planung, this.model.planung)
   }
 
   getBilanzenParseResult = (planung) => {
-    return this.myTTParser.getResultOfMyTTBilanzenParser(planung, this.planung)
+    return this.myTTParser.getResultOfMyTTBilanzenParser(planung, this.model.planung)
   }
 
   handleClickAufstellungLadenButtonOnMyTTModal = (planung_json) => {
     // Hide the sidebar as the currently shown spieler/mannschaft might not be there after load
     this.model.closeSidebar()
     // load the aufstellung
-    this.planung.loadFromJSON(planung_json, true)
+    this.model.planung.loadFromJSON(planung_json, true)
     // Assume if we load the Aufstellung of a Serie, we want to start planning the next 
     // Load RR-2019/20 -> Plan VR-2020/21
-    this.planung.increaseSerie()
+    this.model.planung.increaseSerie()
   }
 
   handleClickTTRWerteLadenButtonOnMyTTModal = (planung_json) => {
-    this.planung.loadFromJSON(planung_json)
+    this.model.planung.loadFromJSON(planung_json)
   }
 
   handleClickBilanzenLadenButtonOnMyTTModal = (planung_json) => {
-    this.planung.loadFromJSON(planung_json)
+    this.model.planung.loadFromJSON(planung_json)
   }
 
   /* EDITOR HANDLER */
 
   handleClickOnLadeAufstellungLink = () => {
-    this.myTTModalView.loadUrl('aufstellung', this.planung.aufstellung.url)
+    this.myTTModalView.loadUrl('aufstellung', this.model.planung.aufstellung.url)
   }
 
   handleAddMannschaft = (nummer) => {
@@ -378,11 +378,11 @@ class Controller {
   }
 
   handleReorderSpieler = (id, new_mannschaft, new_position) => {
-    this.planung.reorderSpieler(id, new_mannschaft, new_position)
+    this.model.planung.reorderSpieler(id, new_mannschaft, new_position)
   }
 
   handleReorderMannschaft = (mannschaft, new_mannschaft) => {
-    this.planung.reorderMannschaft(mannschaft, new_mannschaft)
+    this.model.planung.reorderMannschaft(mannschaft, new_mannschaft)
   }
 
   handleClickOnSpieler = (id) => {
@@ -394,7 +394,9 @@ class Controller {
   }
 
   handleToggleSpvOnSpieler = (id, spv) => {
-    this.planung.editSpielerSpv(id, spv)
+    this.model.planung.editSpielerSpv(id, spv)
+  }
+
   /* FOOTER HANDLER */
 
   handleAddTagToPlanung = (tag) => {
@@ -412,27 +414,27 @@ class Controller {
   /* SIDEBAR SPIELER HANDLER */
 
   handleEditNameOnSpieler = (id, name) => {
-    this.planung.editSpielerName(id, name)
+    this.model.planung.editSpielerName(id, name)
   }
 
   handleEditQttrOnSpieler = (id, qttr) => {
-    this.planung.editSpielerQttr(id, qttr)
+    this.model.planung.editSpielerQttr(id, qttr)
   }
 
   handleClickResButtonOnSpieler = (id, res) => {
-    this.planung.editSpielerRes(id, res)
+    this.model.planung.editSpielerRes(id, res)
   }
 
   handleClickSbeButtonOnSpieler = (id, sbe) => {
-    this.planung.editSpielerSbe(id, sbe)
+    this.model.planung.editSpielerSbe(id, sbe)
   }
 
   handleClickFarbeButtonOnSpieler = (id, farbe) => {
-    this.planung.editSpielerFarbe(id, farbe)
+    this.model.planung.editSpielerFarbe(id, farbe)
   }
 
   handleEditKommentarOnSpieler = (id, kommentar) => {
-    this.planung.editSpielerKommentar(id, kommentar)
+    this.model.planung.editSpielerKommentar(id, kommentar)
   }
 
   handleClickDeleteButtonOnSpieler = (id) => {
@@ -442,27 +444,27 @@ class Controller {
   /* SIDEBAR MANNSCHAFT HANDLER */
 
   handleEditLigaOnMannschaft = (id, liga) => {
-    this.planung.editMannschaftLiga(id, liga)
+    this.model.planung.editMannschaftLiga(id, liga)
   }
 
   handleEditSollstaerkeOnMannschaft = (id, sollstaerke) => {
-    this.planung.editMannschaftSollstaerke(id, sollstaerke)
+    this.model.planung.editMannschaftSollstaerke(id, sollstaerke)
   }
 
   handleEditSpieltagOnMannschaft = (id, spieltag) => {
-    this.planung.editMannschaftSpieltag(id, spieltag)
+    this.model.planung.editMannschaftSpieltag(id, spieltag)
   }
 
   handleEditUhrzeitOnMannschaft = (id, uhrzeit) => {
-    this.planung.editMannschaftUhrzeit(id, uhrzeit)
+    this.model.planung.editMannschaftUhrzeit(id, uhrzeit)
   }
 
   handleEditSpielwocheOnMannschaft = (id, spielwoche) => {
-    this.planung.editMannschaftSpielwoche(id, spielwoche)
+    this.model.planung.editMannschaftSpielwoche(id, spielwoche)
   }
 
   handleEditKommentarOnMannschaft = (id, kommentar) => {
-    this.planung.editMannschaftKommentar(id, kommentar)
+    this.model.planung.editMannschaftKommentar(id, kommentar)
   }
 
   handleClickDeleteButtonOnMannschaft = (id, keep_spieler) => {

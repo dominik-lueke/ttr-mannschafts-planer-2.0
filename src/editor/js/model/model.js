@@ -10,16 +10,24 @@ class Model {
       }
     }
     this.onSidebarViewChanged = () => {}
+    this.onFooterDataChanged = () => {}
 
     this.history = {
       undo: [], // the tip of undo is always the current planung
       redo: []
     }
 
+    this.tags = {}
+
     // load planung or create new
     const stored_planung_json_str = localStorage.getItem('localStoragePlanung')
     const stored_planung_json = stored_planung_json_str ? JSON.parse(stored_planung_json_str) : undefined
     this.planung = this.createNewPlanung(stored_planung_json)
+
+    // tags
+    const stored_tags_json_str = localStorage.getItem('localStoragePlanungTags')
+    this.tags = stored_tags_json_str ? JSON.parse(stored_tags_json_str) : { } // a map of tagged planungen as json
+    
   }
 
   /**
@@ -42,6 +50,8 @@ class Model {
     }
     ipcRenderer.invoke('setUndoEnabled', this.history.undo.length > 1)
     ipcRenderer.invoke('setRedoEnabled', this.history.redo.length > 0)
+    // Tags
+    this.tags = {}
     // return this
     return this.planung
   }
@@ -57,6 +67,10 @@ class Model {
     this.history.undo.push(planung.getPlanungAsJsonString())
     ipcRenderer.invoke('setUndoEnabled', this.history.undo.length > 1)
     ipcRenderer.invoke('setRedoEnabled', this.history.redo.length > 0)
+  }
+
+  handleFooterDataChanged = () => {
+    this.onFooterDataChanged(this)
   }
 
   /**
@@ -89,8 +103,35 @@ class Model {
   }
 
   /**
+   * 
+   * PLANUNG TAGS
+   */
+
+  addTagToPlanung(tag){
+    this.planung.setTag(tag)
+    const tag_hash = tag.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0)
+    const now = new Date(Date.now())
+    const date_options = { weekday: 'long', year: 'numeric', month: '2-digit', day: 'numeric', hour: 'numeric', minute: "2-digit" }
+    this.tags[tag_hash] = {
+      name: tag,
+      date: now.toString(),
+      date_str: now.toLocaleDateString(undefined, date_options) + " Uhr",
+      planung: this.planung.getPlanungAsJsonString()
+    }
+    // notify view
+    this.onFooterDataChanged(this)
+    // store tags
+    localStorage.setItem("localStoragePlanungTags", JSON.stringify(this.tags))
+  }
+
+  /**
    * EVENT HANDLER
    */
+
+  bindFooterDataChanged(callback) {
+    this.onFooterDataChanged = callback
+    this.planung.bindFooterDataChanged(this.handleFooterDataChanged)
+  }
 
   bindSidebarViewChanged(callback) {
     this.onSidebarViewChanged = callback

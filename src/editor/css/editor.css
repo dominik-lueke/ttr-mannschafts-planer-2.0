@@ -21,6 +21,11 @@ a .spieler-farbe-selector {
   cursor: default;
 }
 
+/* FOOTER */
+.tooltip-inner-wide {
+  max-width: unset !important;
+}
+
 /* SPIELER FARBE */
 
 .spieler-farbe-green {
@@ -66,7 +71,7 @@ a .spieler-farbe-selector {
 }
 
 .details-sidebar > .card {
-  height: calc(100vh - 100px);
+  height: calc(100vh - 130px);
 }
 
 .sidebar-details-icon {
@@ -94,6 +99,7 @@ a .spieler-farbe-selector {
 
 .editor-container {
   margin-top: 50px;
+  margin-bottom: 50px;
 }
 
 .mannschafts-row {

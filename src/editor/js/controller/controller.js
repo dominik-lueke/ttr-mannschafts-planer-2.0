@@ -12,6 +12,8 @@ class Controller {
     this._createHeaderView()
     // EDITOR
     this._createEditorView()
+    // FOOTER
+    this._createFooterView()
     // SIDEBAR
     this._createSidebarView()
     // MYTTMODAL
@@ -51,6 +53,11 @@ class Controller {
     this.editorView.bindClickOnLadeAufstellungLink(this.handleClickOnLadeAufstellungLink)
     this.editorView.bindClickOnNeuePlanungButton(this.createNewPlanung)
     this.editorView.bindClickOnOeffnePlanungButton(this.handleClickOpenPlanungButton)
+  }
+
+  _createFooterView = () => {
+    this.footerView = new FooterView()
+    this.footerView.bindAddTagToPlanung(this.handleAddTagToPlanung)
   }
 
   _createSidebarView = () => {
@@ -182,6 +189,7 @@ class Controller {
     // reset local storage
     localStorage.removeItem('localStorageFilepath')
     localStorage.removeItem('localStoragePlanung')
+    localStorage.removeItem('localStorageTags')
     // Bind Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
@@ -232,6 +240,7 @@ class Controller {
   updateView = () => {
     this.onHeaderDataChanged(this.planung)
     this.onMannschaftenChanged(this.planung)
+    this.onFooterDataChanged(this.model)
   }
 
   onHeaderDataChanged = (planung) => {
@@ -270,6 +279,11 @@ class Controller {
       this.sidebarView.hideSidebar()
       this.editorView.removeFocus()
     }
+  }
+
+  onFooterDataChanged = (model) => {
+    this.footerView.update(model)
+    this.planungTagsModalView.update(model)
   }
 
   alertError = (error="A internal Error occured") => {
@@ -381,6 +395,12 @@ class Controller {
 
   handleToggleSpvOnSpieler = (id, spv) => {
     this.planung.editSpielerSpv(id, spv)
+  /* FOOTER HANDLER */
+
+  handleAddTagToPlanung = (tag) => {
+    this.model.addTagToPlanung(tag)
+  }
+
   }
 
   /* SIDEBAR HANDLER */

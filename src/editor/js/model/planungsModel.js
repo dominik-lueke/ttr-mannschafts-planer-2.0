@@ -35,6 +35,8 @@ class PlanungsModel {
       status: "offline",
       saisons: []
     }
+    // FOOTER
+    this.tag = ""
     // METADATA
     this.isEmpty = this._isEmpty()
     this.isNew = true
@@ -46,6 +48,7 @@ class PlanungsModel {
 
     this.onMannschaftenChanged = () => {}
     this.onHeaderDataChanged = () => {}
+    this.onFooterDataChanged = () => {}
     this.onPlanungStored = () => {}
     this.onErrorOccured = () => {}
   }
@@ -60,6 +63,10 @@ class PlanungsModel {
 
   bindHeaderDataChanged(callback) {
     this.onHeaderDataChanged = callback
+  }
+
+  bindFooterDataChanged(callback) {
+    this.onFooterDataChanged = callback
   }
 
   bindPlanungStored(callback) {
@@ -147,6 +154,22 @@ class PlanungsModel {
     } else {
       this.bilanzen.status = "offline"
     }
+  }
+
+  /**
+   * TAG
+   */
+
+  setTag(tag){
+    this.tag = tag
+    this.onFooterDataChanged()
+    this._storePlanung()
+  }
+
+  removeTag(){
+    this.tag = ""
+    this.onFooterDataChanged()
+    this._storePlanung()
   }
 
   /**
@@ -355,6 +378,12 @@ class PlanungsModel {
     this.isEmpty = this._isEmpty()
     if ( ! this.isNew ) {
       this._commit(use_stored_saved ? this.saved : false)
+      // the commit erases a possibly loaded tag since it assumes the planung has changed
+      // and therefor the tag is on the previous version of the planung
+      // therefore we restore it here if necessary
+      if (planung_json.hasOwnProperty('tag')) {
+        this.setTag(planung_json.tag)
+      }
     }
   }
 
@@ -561,9 +590,12 @@ class PlanungsModel {
     if ( this.allow_commit === true ) {
       this.saved = saved
       this._updateUrlStrings()
+      // remove a possibly set tag as we now have changed the planung and the tag is not there any more
+      this.tag = ""
       // trigger view update
       this.onMannschaftenChanged(this)
       this.onHeaderDataChanged(this)
+      this.onFooterDataChanged()
       // store planung
       this._storePlanung()
     }

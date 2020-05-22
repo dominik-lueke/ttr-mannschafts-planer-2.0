@@ -99,13 +99,13 @@ ipcRenderer.on('showAboutModal', (event, args) => {
 
 ipcRenderer.on('quit', (event, args) => {
   // store current file
-  const file = app.planung.file 
+  const file = app.model.file 
   app.closePlanungSave().then((result) => {
     if (result) {
       if (file) {
-        localStorage.setItem('localStorageFilepath', file)
+        localStorage.setItem('localStorageFilepathQuit', file)
       } else {
-        localStorage.removeItem('localStorageFilepath')
+        localStorage.removeItem('localStorageFilepathQuit')
       }
       ipcRenderer.send('quitOK')
     }
@@ -226,6 +226,6 @@ $(document).on('click', 'a[href^="file://"]', function(event) {
 * --------------
 */
 const app = new Controller()
-if (localStorage.getItem('localStorageFilepath')) {
-  openPlanungFromFile(localStorage.getItem('localStorageFilepath'))
+if (localStorage.getItem('localStorageFilepathQuit')) {
+  openPlanungFromFile(localStorage.getItem('localStorageFilepathQuit'))
 }

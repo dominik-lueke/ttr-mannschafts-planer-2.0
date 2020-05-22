@@ -1,10 +1,6 @@
 class PlanungsModel {
 
   constructor(verein="", verband="", vereinsNummer="", saison="", halbserie="", spielklasse="") {
-    // FILE
-    this.file = ""
-    this.filename = ""
-    this.saved = true
     // HEADER DATA
     this.verein = verein
     this.verband = verband
@@ -18,23 +14,9 @@ class PlanungsModel {
       halbserie: this._getOtherHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
       spielklasse: this._getSpielklassenUrlString(this.spielklasse)
     }
-    this.aufstellung = {
-      url: this._getAufstellungsUrl(),
-      status: "offline"
-    }
-    this.ttrwerte = {
-      url: this._getTtrRanglisteUrl(),
-      status: "offline",
-      date: new Date(0,0),
-      aktuell: "Q-TTR",
-      datestring: "",
-      spielklasse: spielklasse
-    }
-    this.bilanzen = {
-      url: this._getBilanzenUrl(),
-      status: "offline",
-      saisons: []
-    }
+    this._initAufstellungsStatus()
+    this._initTtrWerteStatus()
+    this._initBilanzenStatus()
     // FOOTER
     this.tag = ""
     // METADATA
@@ -51,6 +33,31 @@ class PlanungsModel {
     this.onFooterDataChanged = () => {}
     this.onPlanungStored = () => {}
     this.onErrorOccured = () => {}
+  }
+
+  _initAufstellungsStatus() {
+    this.aufstellung = {
+      url: this._getAufstellungsUrl(),
+      status: "offline"
+    }
+  }
+
+  _initTtrWerteStatus() {
+    this.ttrwerte = {
+      url: this._getTtrRanglisteUrl(),
+      status: "offline",
+      date: new Date(0,0),
+      aktuell: "Q-TTR",
+      datestring: ""
+    }
+  }
+
+  _initBilanzenStatus() {
+    this.bilanzen = {
+      url: this._getBilanzenUrl(),
+      status: "offline",
+      saisons: []
+    }
   }
 
   /**
@@ -75,21 +82,6 @@ class PlanungsModel {
 
   bindErrorOccured(callback) {
     this.onErrorOccured = callback
-  }
-
-  /**
-   * FILE
-   */
-  setFile(filepath){
-    this.file = filepath
-    this.filename = path.parse(filepath).base
-    this.saved = true
-    this._commit(this.saved)
-  }
-
-  setSaved(saved){
-    this.saved = saved
-    this._commit(this.saved)
   }
 
   /**
@@ -369,15 +361,15 @@ class PlanungsModel {
    * JSON LOAD
    */
 
-  loadFromJSON (planung_json, update_aufstellung=false, use_stored_saved=false) {
+  loadFromJSON(planung_json, update_aufstellung=false, purge=false) {
     try {
-      this._parsePlanungJson(planung_json, update_aufstellung)
+      this._parsePlanungJson(planung_json, update_aufstellung, purge)
     } catch (e){
       this.onErrorOccured(`Ein interner Fehler ist aufgetreten:<br/>${e}`)
     }
     this.isEmpty = this._isEmpty()
     if ( ! this.isNew ) {
-      this._commit(use_stored_saved ? this.saved : false)
+      this._commit()
       // the commit erases a possibly loaded tag since it assumes the planung has changed
       // and therefor the tag is on the previous version of the planung
       // therefore we restore it here if necessary
@@ -387,8 +379,16 @@ class PlanungsModel {
     }
   }
 
-  _parsePlanungJson(planung_json, update_aufstellung=false) {
+  _parsePlanungJson(planung_json, update_aufstellung=false, purge=false) {
     this._disableCommit() // do no commit while loading the whole json
+
+    if (purge) {
+      this.spieler.liste = []
+      this.mannschaften.liste = []
+      this._initAufstellungsStatus()
+      this._initTtrWerteStatus()
+      this._initBilanzenStatus()
+    }
 
     // set spielklasse also for mannschaften and spieler
     if (planung_json.hasOwnProperty("spielklasse")) {
@@ -409,7 +409,7 @@ class PlanungsModel {
     const current_anzahl_mannschaften = this.mannschaften.liste.length
 
     for (var key in planung_json) {
-      if (planung_json.hasOwnProperty(key)) {
+      if (this.hasOwnProperty(key)) {
 
         /* Load MannschaftsListe */
         if ( key == "mannschaften") {
@@ -586,9 +586,8 @@ class PlanungsModel {
     this.allow_commit = false
   }
 
-  _commit(saved=false) {
+  _commit() {
     if ( this.allow_commit === true ) {
-      this.saved = saved
       this._updateUrlStrings()
       // remove a possibly set tag as we now have changed the planung and the tag is not there any more
       this.tag = ""

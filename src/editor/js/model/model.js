@@ -1,6 +1,14 @@
 class Model {
 
   constructor() {
+    // FILE
+    this.file = ""
+    this.filename = ""
+    this.saved = (localStorage.getItem('localStorageFileSaved') === "true")
+    this.onFileSavedChanged = () => {}
+    const stored_filepath = localStorage.getItem('localStorageFilepath')
+    if (stored_filepath) { this.setFile(stored_filepath) }
+
     // store the view
     const stored_view_json_str = localStorage.getItem('localStorageView')
     this.view = stored_view_json_str ? JSON.parse(stored_view_json_str) : {
@@ -61,12 +69,16 @@ class Model {
   }
 
   handlePlanungStored = (planung) => {
+    // set saved to false
+    this.setSaved(false)
+    // update undo and redo
     if (this.history.undo.length > 100){
       this.history.undo.shift()
     }
     this.history.undo.push(planung.getPlanungAsJsonString())
     ipcRenderer.invoke('setUndoEnabled', this.history.undo.length > 1)
     ipcRenderer.invoke('setRedoEnabled', this.history.redo.length > 0)
+
   }
 
   handleFooterDataChanged = () => {
@@ -126,11 +138,7 @@ class Model {
 
   loadTag(tag_id){
     if (this.tags.hasOwnProperty(tag_id)){
-      const current_file = this.planung.file // keep the file of the current planung
       this.planung.loadFromJSON(JSON.parse(this.tags[tag_id].planung), true, true)
-      this.planung.file = current_file // keep the file of the current planung
-      this.planung.filename = path.parse(current_file).base // keep the file of the current planung
-      this.planung.onHeaderDataChanged(this.planung) // notify that the filepath has changed
     }
   }
 
@@ -150,6 +158,10 @@ class Model {
   /**
    * EVENT HANDLER
    */
+
+  bindFileSavedChanged(callback) {
+    this.onFileSavedChanged = callback
+  }
 
   bindFooterDataChanged(callback) {
     this.onFooterDataChanged = callback
@@ -211,6 +223,23 @@ class Model {
     this.view.sidebar.id = 0
     this._commit()
   }
+
+  /**
+   * FILE
+   */
+
+  setFile(filepath){
+    this.file = filepath
+    this.filename = path.parse(filepath).base
+    this.onFileSavedChanged()
+  }
+
+  setSaved(saved){
+    this.saved = saved
+    localStorage.setItem('localStorageFileSaved',saved)
+    this.onFileSavedChanged()
+  }
+
 
   /**
    * PRIVATE

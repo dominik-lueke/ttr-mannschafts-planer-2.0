@@ -39,6 +39,7 @@ class Controller {
     // Bind Model Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.model.bindFooterDataChanged(this.onFooterDataChanged)
+    this.model.bindFileSavedChanged(this.onFileSavedChanged)
     this.model.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
     this.model.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
     this.model.planung.bindErrorOccured(this.alertError)
@@ -142,31 +143,28 @@ class Controller {
   }
 
   saveFile = () => {
-    const planung_json = JSON.parse(this.getPlanungAsJsonString())
-    // set saved to true in the planung in the file
-    planung_json.saved = true
-    const planung_json_save_str = JSON.stringify(planung_json)
     const file_content = {
-      planung: planung_json_save_str,
+      planung: JSON.stringify(this.model.planung),
       tags: JSON.stringify(this.model.tags)
     }
     const file_content_str = JSON.stringify(file_content)
     var saveSuccess = false
-    var filepath = planung_json.file
+    var filepath = this.model.file
     if (filepath === "") {
-      var filepath = saveAsDialog(planung_json)
+      var filepath = saveAsDialog(this.model.planung)
     }
     if (filepath) {
       saveSuccess = writePlanungToFile(filepath, file_content_str)
     }
     if (saveSuccess) {
       this.setPlanungFile(filepath)
+      this.model.setSaved(true)
     }
     return saveSuccess
   }
 
   closePlanungSave = () => {
-    if ( ! this.model.planung.saved ) {
+    if ( ! this.model.saved ) {
       // show confirm dialog if current planung is unsafed
       let confirmclosedialogresult = confirmClosePlanungDialog()
       switch (confirmclosedialogresult) {
@@ -199,12 +197,13 @@ class Controller {
     // New planung
     this.model.createNewPlanung()
     // reset local storage
-    localStorage.removeItem('localStorageFilepath')
+    localStorage.removeItem('localStorageFilepathQuit')
     localStorage.removeItem('localStoragePlanung')
     localStorage.removeItem('localStorageTags')
     // Bind Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.model.bindFooterDataChanged(this.onFooterDataChanged)
+    this.model.bindFileSavedChanged(this.onFileSavedChanged)
     this.model.planung.bindMannschaftenChanged(this.onMannschaftenChanged)
     this.model.planung.bindHeaderDataChanged(this.onHeaderDataChanged)
     this.model.planung.bindErrorOccured(this.alertError)
@@ -243,22 +242,23 @@ class Controller {
       this.model.tags = JSON.parse(tag_json_str)
       // update planung
       this.model.updatePlanung(JSON.parse(planung_json_str), true)
-      this.setPlanungFile(filepath) // unfortunately this leads to a new entry in the undo history
-      this.model.resetUndoRedo() // reset the undo history
+      this.setPlanungFile(filepath)
+      this.model.setSaved(true)
     } catch (e) {
       this.alertError(`Die geöffnete Datei ist beschädigt. Die Planung konnte nicht geladen werden!`)
     }
   }
 
   setPlanungFile = (filepath) => {
-    this.model.planung.setFile(filepath)
+    this.model.setFile(filepath)
+    localStorage.setItem('localStorageFilepath', filepath)
   }
 
   _updateDocumentTitle = () => {
     const app_title = "Tischtennis Mannschafts Planer"
     const separator = this.model.planung.isNew ? "" : " - "
-    const filename = this.model.planung.isNew ? "" : this.model.planung.filename !== "" ? this.model.planung.filename : "Unbenannt"
-    const saved_indicator = this.model.planung.saved ? "" : "*"
+    const filename = this.model.planung.isNew ? "" : this.model.filename !== "" ? this.model.filename : "Unbenannt"
+    const saved_indicator = this.model.saved ? "" : "*"
     $(document).attr("title", `${app_title}${separator}${filename}${saved_indicator}`);
   }
 
@@ -268,6 +268,7 @@ class Controller {
     this.onHeaderDataChanged(this.model.planung)
     this.onMannschaftenChanged(this.model.planung)
     this.onFooterDataChanged(this.model)
+    this._updateDocumentTitle()
   }
 
   onHeaderDataChanged = (planung) => {
@@ -275,7 +276,6 @@ class Controller {
     this.myTTModalView.setHomeUrl("aufstellung", planung.aufstellung.url)
     this.myTTModalView.setHomeUrl("ttrwerte", planung.ttrwerte.url)
     this.myTTModalView.setHomeUrl("bilanzen", planung.bilanzen.url)
-    this._updateDocumentTitle()
   }
 
   onMannschaftenChanged = (planung) => {
@@ -311,6 +311,10 @@ class Controller {
   onFooterDataChanged = (model) => {
     this.footerView.update(model)
     this.planungTagsModalView.update(model)
+  }
+
+  onFileSavedChanged = () => {
+    this._updateDocumentTitle()
   }
 
   alertError = (error="A internal Error occured") => {

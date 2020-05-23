@@ -1,7 +1,6 @@
 class MannschaftsListeModel {
 
-  constructor(spielklasse="") {
-    this.spielklasse = spielklasse
+  constructor() {
     this.liste = []
   }
 
@@ -9,34 +8,55 @@ class MannschaftsListeModel {
    * PUBLIC
    */
 
-  addMannschaft(nummer=0, liga="Liga", sollstaerke=6, spieltag="Freitag", uhrzeit="19:30", spielwoche="A") {
+  addMannschaft(spielklasse="", nummer=0, liga="Liga", sollstaerke=6, spieltag="Freitag", uhrzeit="19:30", spielwoche="A") {
     const id = this.liste.length > 0 ? Math.max.apply(null, this.liste.map(mannschaft => mannschaft.id)) + 1 : 1
-    this.liste.push(new MannschaftsModel(id, this.spielklasse, nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche))
+    this.liste.push(new MannschaftsModel(id, spielklasse, nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche))
     return id
   }
 
   deleteMannschaft(id) {
+    const delete_mannschaft = this.liste.find(mannschaft => ( mannschaft.id == id ))
     this.liste = this.liste.filter(mannschaft => ( mannschaft.id !== id ))
-    this._setNumbersForAllMannschaften()
+    this._setNumbersForAllMannschaften(delete_mannschaft.spielklasse)
   }
 
-  deleteMannschaftByNummer(nummer) {
-    const mannschaft = this.getMannschaftByNummer(nummer)
-    if (mannschaft != null){
-      this.deleteMannschaft(mannschaft.id)
+  deleteEmptyMannschaften(spielerListe) {
+    for (var i=0; i<this.liste.length; i++){
+      const mannschaft = this.liste[i]
+      mannschaft._hasSpieler = spielerListe.find(spieler => spieler.spielklasse == mannschaft.spielklasse && spieler.mannschaft == mannschaft.spielklasse)
+    }
+    this.liste = this.liste.filter(mannschaft => ! mannschaft._hasSpieler)
+    this.liste.forEach(mannschaft => { delete mannschaft._hasSpieler })
+  }
+
+  reorderMannschaftByNummer(spielklasse, new_spielklasse, nummer, new_nummer){
+    // get current mannschaft
+    const mannschaft = this.getMannschaftByNummer(nummer,spielklasse)
+    if ( ! mannschaft ){ return }
+    // compute old and new index
+    const old_index = this.liste.indexOf(mannschaft)
+    const new_index = this.liste.indexOf(
+      this.liste
+      .filter(mannschaft => mannschaft.spielklasse == new_spielklasse)
+      .find(mannschaft => mannschaft.nummer == new_nummer)
+    )
+    // insert old mannschaft at new position
+    this.liste.splice(new_index, 0, this.liste.splice(new_index, 1)[0])
+    // update spielklasse
+    mannschaft.spielklasse = new_spielklasse
+    // update mannschaften nummern
+    this._setNumbersForAllMannschaften(spielklasse)
+    if (new_spielklasse !== spielklasse) {
+      this._setNumbersForAllMannschaften(new_spielklasse)
     }
   }
 
-  reorderMannschaftByNummer(nummer, new_nummer){
-    // insert old mannschaft at new position
-    this.liste.splice(new_nummer-1, 0, this.liste.splice(nummer-1, 1)[0]);
-    this._setNumbersForAllMannschaften()
-  }
-
-  _setNumbersForAllMannschaften(){
-    // set new nummern for all mannschaften
+  _setNumbersForAllMannschaften(spielklasse){
+    // set new nummern for all mannschaften of the given spielklasse
     var i = 1
-    this.liste.forEach(mannschaft => { mannschaft.setNummer(i); i++ })
+    this.liste
+    .filter(mannschaft => mannschaft.spielklasse === spielklasse)
+    .forEach(mannschaft => { mannschaft.setNummer(i); i++ })
   }
 
   /* EDIT */
@@ -73,12 +93,13 @@ class MannschaftsListeModel {
 
   /* CHECK INVALID */
 
-  checkMannschaftInvalid(nummer, spielerListe) {
-    const anzahl_mannschaften = this.liste.length
+  checkMannschaftInvalid(spielklasse, nummer, spielerListe) {
+    const anzahl_mannschaften = this.liste.filter(mannschaft => mannschaft.spielklasse === spielklasse).length
     const countable_spieler = anzahl_mannschaften == nummer ? spielerListe.length : spielerListe.filter(spieler => ! spieler.reserve).length
-    const mannschaft = this.liste.find(mannschaft => mannschaft.nummer == nummer)
     // set the invalid flag of the mannschaft
-    mannschaft.invalid = mannschaft.sollstaerke > countable_spieler
+    this.liste
+    .filter(mannschaft => (mannschaft.spielklasse == spielklasse && mannschaft.nummer == nummer))
+    .forEach(mannschaft => { mannschaft.invalid = mannschaft.sollstaerke > countable_spieler })
   }
 
   /* GETTER */
@@ -87,12 +108,16 @@ class MannschaftsListeModel {
     return this.liste.find(mannschaft => mannschaft.id == id)
   }
 
-  getMannschaftByNummer(nummer) {
-    return this.liste.find(mannschaft => mannschaft.nummer == nummer)
+  getMannschaftByNummer(nummer, spielklasse) {
+    return this.liste
+    .filter(mannschaft => mannschaft.spielklasse == spielklasse)
+    .find(mannschaft => mannschaft.nummer == nummer)
   }
 
-  getMannschaftByRomanNumber(romanNumber) {
-    return this.liste.find(mannschaft => mannschaft.romanNumber == romanNumber)
+  getMannschaftByRomanNumber(romanNumber, spielklasse) {
+    return this.liste
+    .filter(mannschaft => mannschaft.spielklasse == spielklasse)
+    .find(mannschaft => mannschaft.romanNumber == romanNumber)
   }
 
 }

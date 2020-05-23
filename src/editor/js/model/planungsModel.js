@@ -7,7 +7,9 @@ class PlanungsModel {
     this.vereinsNummer = vereinsNummer
     this.saison = saison
     this.halbserie = halbserie
-    this.spielklasse = spielklasse
+    // the spielklasse of the Planung is (Herren,Damen,Jungen,Mädchen,Senioren,Seniorinnen)
+    // whereas the spielklasse of the Mannschaften and Spieler is (Herren,Damen,Jungen 18-13,Mädchen 18-13,Senioren 40-80,Seniorinnen 40-80)
+    this.spielklasse = spielklasse.split(" ")[0]
     this.url = {
       verein: GET_URL_SLUG_OF_VEREIN(this.verein),
       saison: this._getPreviousSaison().replace("/","-").substring(2),
@@ -24,7 +26,7 @@ class PlanungsModel {
     this.isNew = true
     this.allow_commit = true
     // MANNSCHAFTEN LISTE
-    this.mannschaften = new MannschaftsListeModel(this.spielklasse)
+    this.mannschaften = new MannschaftsListeModel()
     // SPIELER LISTE
     this.spieler = new SpielerListeModel(this.spielklasse, this.saison)
 
@@ -168,14 +170,15 @@ class PlanungsModel {
    * MANNSCHAFTEN
    */
 
-  addMannschaft(nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche){
+  addMannschaft(spielklasse, nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche){
     // add the mannschaft
-    const new_id = this.mannschaften.addMannschaft(nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche)
+    const new_id = this.mannschaften.addMannschaft(spielklasse, nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche)
     // Check for the last two mannschaften if they are invalid now
-    this.mannschaften.liste
-    .filter(mannschaft => mannschaft.nummer >= this.mannschaften.liste.length - 1)
+    const spielklasse_mannschaften = this.mannschaften.liste.filter(mannschaft => mannschaft.spielklasse == spielklasse)
+    spielklasse_mannschaften
+    .filter(mannschaft => mannschaft.nummer >= spielklasse_mannschaften.length - 1)
     .forEach(mannschaft => {
-      this.mannschaften.checkMannschaftInvalid(mannschaft.nummer, this.spieler.getSpielerOfMannschaft(mannschaft.nummer))
+      this._checkMannschaftInvalid(mannschaft.spielklasse, mannschaft.nummer)
     })
     // commit
     this._commit()
@@ -184,16 +187,19 @@ class PlanungsModel {
   }
 
   deleteMannschaft(id, keep_spieler){
-    const mannschafts_nummer = (this.mannschaften.getMannschaft(id)).nummer
-    // delete tha mannschaft from spieler-liste
-    this.spieler.deleteMannschaft(mannschafts_nummer, keep_spieler)
+    const delete_mannschaft = this.mannschaften.getMannschaft(id)
+    const mannschaft_spielklasse = delete_mannschaft.spielklasse
+    const mannschaft_nummer = delete_mannschaft.nummer
+    // delete the mannschaft from spieler-liste
+    this.spieler.deleteMannschaft(mannschaft_spielklasse, mannschaft_nummer, keep_spieler)
     // delete the mannschaft from mannschafts-liste
     this.mannschaften.deleteMannschaft(id)
     // Check for the last mannschaft if it is (in)valid now
     this.mannschaften.liste
-    .filter(mannschaft => mannschaft.nummer > this.mannschaften.liste.length - 1)
+    .filter(mannschaft => mannschaft.spielklasse == mannschaft_spielklasse)
+    .slice(-1)
     .forEach(mannschaft => {
-      this.mannschaften.checkMannschaftInvalid(mannschaft.nummer, this.spieler.getSpielerOfMannschaft(mannschaft.nummer))
+      this._checkMannschaftInvalid(mannschaft.spielklasse, mannschaft.nummer)
     })
     // commit
     this._commit()
@@ -209,9 +215,9 @@ class PlanungsModel {
     // edit the sollstaerke
     this.mannschaften.editMannschaftSollstaerke(id, sollstaerke)
     // get mannschafts-nummer of mannschafts-id
-    const mannschafts_nummer = (this.mannschaften.getMannschaft(id)).nummer
+    const mannschaft = this.mannschaften.getMannschaft(id)
     // check if mannschaft is invalid
-    this.mannschaften.checkMannschaftInvalid(mannschafts_nummer, this.spieler.getSpielerOfMannschaft(mannschafts_nummer))
+    this._checkMannschaftInvalid(mannschaft.spielklasse, mannschaft.nummer)
     // commit
     this._commit()
   }
@@ -240,13 +246,42 @@ class PlanungsModel {
     this._commit()
   }
 
-  validateMannschaft(nummer) {
-    this.mannschaften.checkMannschaftInvalid(nummer, this.spieler.getSpielerOfMannschaft(nummer))
+  reorderMannschaft(spielklasse, new_spielklasse, mannschaft_nummer, new_mannschaft_nummer) {
+    const number_mannschaften_in_old_spielklasse = this.mannschaften.liste.filter(mannschaft => mannschaft.spielklasse == spielklasse).length
+    const number_mannschaften_in_new_spielklasse = this.mannschaften.liste.filter(mannschaft => mannschaft.spielklasse == new_spielklasse).length
+    // reorder mannschaften
+    this.mannschaften.reorderMannschaftByNummer(spielklasse, new_spielklasse, mannschaft_nummer, new_mannschaft_nummer)
+    // set new mannschaften for spieler
+    const temp_number = -1
+    // move the spieler in the current spielklasse to the temporary mannschaft -1
+    this.spieler.reorderMannschaft(spielklasse, spielklasse, mannschaft_nummer, temp_number)
+    if ( spielklasse == new_spielklasse) {
+      if ( mannschaft_nummer < new_mannschaft_nummer ) {
+        for (var i=mannschaft_nummer+1; i<=new_mannschaft_nummer; i++) {
+          this.spieler.reorderMannschaft(spielklasse, spielklasse, i, i-1)
+        }
+      } else {
+        for (var i=mannschaft_nummer-1; i>=new_mannschaft_nummer; i--) {
+          this.spieler.reorderMannschaft(spielklasse, spielklasse, i, i+1)
+        }
+      }
+    } else {
+      for (var i=mannschaft_nummer+1; i<=number_mannschaften_in_old_spielklasse-1; i++) {
+        this.spieler.reorderMannschaft(spielklasse, spielklasse, i, i-1)
+      }
+      for (var i=number_mannschaften_in_new_spielklasse-1; i>=new_mannschaft_nummer; i--) {
+        this.spieler.reorderMannschaft(new_spielklasse, new_spielklasse, i, i+1)
+      }
+    }
+    // move the spieler from the current spielklasse mannschaft -1 to the new spielklasse with the new mannschaft
+    this.spieler.reorderMannschaft(spielklasse, new_spielklasse, temp_number, new_mannschaft_nummer)
+    // commit
+    this._commit()
   }
 
   validateAllMannschaften() {
     this.mannschaften.liste.forEach(mannschaft => {
-      this.validateMannschaft(mannschaft.nummer)
+      this._checkMannschaftInvalid(mannschaft.spielklasse, mannschaft.nummer)
     })
   }
 
@@ -254,46 +289,28 @@ class PlanungsModel {
    * SPIELER
    */
 
-  addSpieler(mannschaft, position, name, qttr){
+  addSpieler(spielklasse, mannschaft, position, name, qttr){
     // add the spieler
-    const new_id = this.spieler.addSpieler(mannschaft, position, name, qttr)
+    const new_id = this.spieler.addSpieler(spielklasse, mannschaft, position, name, qttr)
     // check if mannschaft is invalid
-    this.mannschaften.checkMannschaftInvalid(mannschaft, this.spieler.getSpielerOfMannschaft(mannschaft))
+    this._checkMannschaftInvalid(spielklasse, mannschaft)
     // commit
     this._commit()
     // return new id
     return new_id
   }
 
-  reorderSpieler(id, new_mannschaft, new_position) {
-    const old_mannschaft = this.spieler.getSpieler(id).mannschaft
+  reorderSpieler(id, new_spielklasse, new_mannschaft, new_position) {
+    const spieler = this.spieler.getSpieler(id)
+    const old_mannschaft = spieler.mannschaft
+    const old_spielklasse = spieler.spielklasse
     // reorder the spieler
-    this.spieler.reorderSpieler(id, new_mannschaft, new_position)
+    this.spieler.reorderSpieler(id, new_spielklasse, new_mannschaft, new_position)
     // check if mannschaften are invalid
-    if (old_mannschaft !== new_mannschaft) {
-      this.mannschaften.checkMannschaftInvalid(old_mannschaft, this.spieler.getSpielerOfMannschaft(old_mannschaft))
-      this.mannschaften.checkMannschaftInvalid(new_mannschaft, this.spieler.getSpielerOfMannschaft(new_mannschaft))
+    if (old_spielklasse !== new_spielklasse || old_mannschaft !== new_mannschaft) {
+      this._checkMannschaftInvalid(old_spielklasse, old_mannschaft)
+      this._checkMannschaftInvalid(new_spielklasse, new_mannschaft)
     }
-    // commit
-    this._commit()
-  }
-
-  reorderMannschaft(mannschaft_nummer, new_mannschaft_nummer) {
-    // reorder mannschaften
-    this.mannschaften.reorderMannschaftByNummer(mannschaft_nummer, new_mannschaft_nummer)
-    // set new mannschaften for spieler
-    const temp_number = -1
-    this.spieler.reorderMannschaft(mannschaft_nummer,temp_number)
-    if ( mannschaft_nummer < new_mannschaft_nummer ) {
-      for (var i=mannschaft_nummer+1; i<=new_mannschaft_nummer; i++) {
-        this.spieler.reorderMannschaft(i,i-1)
-      }
-    } else {
-      for (var i=mannschaft_nummer-1; i>=new_mannschaft_nummer; i--) {
-        this.spieler.reorderMannschaft(i,i+1)
-      }
-    }
-    this.spieler.reorderMannschaft(temp_number,new_mannschaft_nummer)
     // commit
     this._commit()
   }
@@ -324,9 +341,9 @@ class PlanungsModel {
 
   editSpielerRes(id, res) {
     this.spieler.editSpielerRes(id, res)
-    // check if the mannschaft is no (in)valid
-    const mannschaft = this.spieler.getSpieler(id).mannschaft
-    this.mannschaften.checkMannschaftInvalid(mannschaft, this.spieler.getSpielerOfMannschaft(mannschaft))
+    // check if the mannschaft is now (in)valid
+    const spieler = this.spieler.getSpieler(id)
+    this._checkMannschaftInvalid(spieler.spielklasse, spieler.mannschaft)
     // commit
     this._commit()
   }
@@ -351,14 +368,13 @@ class PlanungsModel {
 
   deleteSpieler(id) {
     // get spieler mannschaft
-    const mannschaft_id = this.spieler.getSpieler(id).mannschaft
+    const spieler = this.spieler.getSpieler(id)
+    const mannschaft = spieler.mannschaft
+    const spielklasse = spieler.spielklasse
     // delete the spieler
     this.spieler.deleteSpieler(id)
     // check if mannschaft is now invalid
-    this.mannschaften.checkMannschaftInvalid( 
-      mannschaft_id, 
-      this.spieler.getSpielerOfMannschaft(mannschaft_id)
-    )
+    this._checkMannschaftInvalid(spielklasse, mannschaft)
     // commit
     this._commit()
   }
@@ -368,11 +384,11 @@ class PlanungsModel {
    */
 
   loadFromJSON(planung_json, update_aufstellung=false, purge=false) {
-    try {
+    //try {
       this._parsePlanungJson(planung_json, update_aufstellung, purge)
-    } catch (e){
-      this.onErrorOccured(`Ein interner Fehler ist aufgetreten:<br/>${e}`)
-    }
+    // } catch (e){
+    //   this.onErrorOccured(`Ein interner Fehler ist aufgetreten:<br/>${e}`)
+    // }
     this.isEmpty = this._isEmpty()
     if ( ! this.isNew ) {
       var save_tag = ""
@@ -396,17 +412,6 @@ class PlanungsModel {
       this._initBilanzenStatus()
     }
 
-    // set spielklasse also for mannschaften and spieler
-    if (planung_json.hasOwnProperty("spielklasse")) {
-      this.spieler.spielklasse = planung_json.spielklasse
-      this.mannschaften.spielklasse = planung_json.spielklasse
-      // reset mannschaften, spieler, bilanzen if we change the spielklasse
-      if (this.spielklasse !== planung_json.spielklasse) {
-        this.mannschaften.liste = []
-        this.bilanzen.saisons = []
-      }
-    }
-
     // set saison also for spieler
     if (planung_json.hasOwnProperty("saison")) {
       this.spieler.saison = planung_json.saison
@@ -417,38 +422,30 @@ class PlanungsModel {
     }
 
     var qttr_values_changed = false
-    const current_anzahl_mannschaften = this.mannschaften.liste.length
 
     for (var key in planung_json) {
       if (this.hasOwnProperty(key)) {
 
         /* Load MannschaftsListe */
         if ( key == "mannschaften") {
-          const mannschaftsListe = this.mannschaften
-          /* Set Spielklasse */
-          if (planung_json.hasOwnProperty("spielklasse") ) {
-            mannschaftsListe.spielklasse = planung_json.spielklasse
-          }
           if ( planung_json.mannschaften.hasOwnProperty("liste") ) {
             /* Load Mannschaften */
             planung_json.mannschaften.liste.forEach( (mannschaft) => {
               /* Create Mannschaft */
               var new_mannschaft = null
-              if (mannschaftsListe.spielklasse === mannschaft.spielklasse){
-                if ( ! update_aufstellung) {
-                  if ("romanNumber" in mannschaft) {
-                    new_mannschaft = this.mannschaften.getMannschaftByRomanNumber(mannschaft.romanNumber)
-                  } else {
-                    new_mannschaft = new MannschaftsModel()
-                    mannschaftsListe.liste.push(new_mannschaft)
-                  }
-                } else if ("nummer" in mannschaft) {
-                  if ( (mannschaft.nummer <= this.mannschaften.liste.length) ) {
-                    new_mannschaft = this.mannschaften.getMannschaftByNummer(mannschaft.nummer)
-                  } else {
-                    const new_mannschaft_id = this.addMannschaft(mannschaft.nummer)
-                    new_mannschaft = this.mannschaften.getMannschaft(new_mannschaft_id)
-                  }
+              if ( ! update_aufstellung) {
+                if ("romanNumber" in mannschaft) {
+                  new_mannschaft = this.mannschaften.getMannschaftByRomanNumber(mannschaft.romanNumber, mannschaft.spielklasse)
+                } else {
+                  new_mannschaft = new MannschaftsModel()
+                  this.mannschaften.liste.push(new_mannschaft)
+                }
+              } else if ("nummer" in mannschaft) {
+                if ( (mannschaft.nummer <= this.mannschaften.liste.filter(m=> m.spielklasse == mannschaft.spielklasse).length) ) {
+                  new_mannschaft = this.mannschaften.getMannschaftByNummer(mannschaft.nummer, mannschaft.spielklasse)
+                } else {
+                  const new_mannschaft_id = this.addMannschaft(mannschaft.spielklasse, mannschaft.nummer)
+                  new_mannschaft = this.mannschaften.getMannschaft(new_mannschaft_id)
                 }
               }
               if (new_mannschaft != null){
@@ -471,11 +468,6 @@ class PlanungsModel {
 
         /* Load SpielerListe */
         } else if (key == "spieler") {
-          const spielerListe = this.spieler
-          /* Set Spielklasse */
-          if ( planung_json.hasOwnProperty("spielklasse") ) {
-            spielerListe.spielklasse = planung_json.spielklasse
-          }
           /* Load Spieler */
           if ( planung_json.spieler.hasOwnProperty("liste") ) {
             planung_json.spieler.liste.forEach( (spieler) => {
@@ -491,7 +483,7 @@ class PlanungsModel {
                 if ( typeof new_spieler === 'undefined' ) {
                   if ( update_aufstellung ) {
                     // spieler not there yet and we want to update the aufstellung, create a new one
-                    const new_spieler_id = this.spieler.addSpieler(spieler.mannschaft, spieler.position, spieler.name)
+                    const new_spieler_id = this.spieler.addSpieler(spieler.spielklasse, spieler.mannschaft, spieler.position, spieler.name)
                     new_spieler = this.spieler.getSpieler(new_spieler_id)
                   }
                 }
@@ -551,9 +543,7 @@ class PlanungsModel {
     if ( update_aufstellung ) {
       this.spieler.cleanUp()
       this.spieler.validate()
-      for (var i = current_anzahl_mannschaften; i > planung_json.mannschaften.liste.length; i--) {
-        this.mannschaften.deleteMannschaftByNummer(i)
-      }
+      this.mannschaften.deleteEmptyMannschaften(this.spieler.liste)
       this.validateAllMannschaften()
     }
     if ( qttr_values_changed ) {
@@ -571,6 +561,10 @@ class PlanungsModel {
   /**
    *  Private
    */
+  _checkMannschaftInvalid(spielklasse, mannschaft){
+    this.mannschaften.checkMannschaftInvalid(spielklasse, mannschaft, this.spieler.getSpielerOfMannschaft(spielklasse, mannschaft))
+  }
+
   _enableCommit() {
     this.allow_commit = true
   }
@@ -623,7 +617,11 @@ class PlanungsModel {
   }
 
   _getAufstellungsUrl() {
-    return `https://www.mytischtennis.de/clicktt/${this.verband}/${this.url.saison}/verein/${this.vereinsNummer}/${this.url.verein}/mannschaftsmeldungendetails/${this.url.spielklasse}/${this.url.halbserie}/`
+    var spielklasse_halbserie = `details/${this.url.spielklasse}/${this.url.halbserie}/`
+    if (! this.url.spielklasse ) {
+      spielklasse_halbserie = "/"
+    }
+    return `https://www.mytischtennis.de/clicktt/${this.verband}/${this.url.saison}/verein/${this.vereinsNummer}/${this.url.verein}/mannschaftsmeldungen${spielklasse_halbserie}`
   }
 
   _getTtrRanglisteUrl() {

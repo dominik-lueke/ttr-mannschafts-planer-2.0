@@ -1,11 +1,13 @@
 /* DEFINE GLOBAL CONSTANTS HERE */
 
 const SPIELKLASSEN = {
-  Erwachsene:{
+  Herren: {
     "Herren":{
       name: "Herren",
       url_slug: "H"
     },
+  },
+  Damen: {
     "Damen":{
       name: "Damen",
       url_slug: "D"

@@ -52,8 +52,6 @@ class Controller {
 
   _createEditorView = () => {
     this.editorView = new EditorView()
-    this.editorView.bindAddMannschaft(this.handleAddMannschaft)
-    this.editorView.bindClickOnLadeAufstellungLink(this.handleClickOnLadeAufstellungLink)
     this.editorView.bindClickOnNeuePlanungButton(this.createNewPlanung)
     this.editorView.bindClickOnOeffnePlanungButton(this.handleClickOpenPlanungButton)
   }
@@ -230,7 +228,7 @@ class Controller {
   }
 
   openPlanung = (file_content_str, filepath) => {
-    try {
+    //try {
       const file_content = JSON.parse(file_content_str)
       // set tags
       if (file_content.hasOwnProperty('tags')){
@@ -240,9 +238,9 @@ class Controller {
       this.model.updatePlanung(file_content, true)
       this.setPlanungFile(filepath)
       this.model.setSaved(true)
-    } catch (e) {
-      this.alertError(`Die geöffnete Datei ist beschädigt. Die Planung konnte nicht geladen werden!`)
-    }
+    //} catch (e) {
+      //this.alertError(`Die geöffnete Datei ist beschädigt. Die Planung konnte nicht geladen werden!`)
+    //}
   }
 
   setPlanungFile = (filepath) => {
@@ -276,6 +274,8 @@ class Controller {
 
   onMannschaftenChanged = (planung) => {
     this.editorView.displayMannschaften(planung)
+    this.editorView.bindAddMannschaft(this.handleAddMannschaft)
+    this.editorView.bindClickOnLadeAufstellungLink(this.handleClickOnLadeAufstellungLink)
     this.editorView.bindClickOnMannschaft(this.handleClickOnMannschaft)
     this.editorView.bindAddSpieler(this.handleAddSpieler)
     this.editorView.bindClickOnSpieler(this.handleClickOnSpieler)
@@ -401,21 +401,21 @@ class Controller {
     this.myTTModalView.loadUrl('aufstellung', this.model.planung.aufstellung.url)
   }
 
-  handleAddMannschaft = (nummer) => {
-    this.model.addMannschaft(nummer)
+  handleAddMannschaft = (spielklasse, nummer) => {
+    this.model.addMannschaft(spielklasse, nummer)
   }
 
   handleAddSpieler = (spielklasse, mannschaft, position, name, qttr) => {
-    /* The spielklasse can later be used to have more than one planungs-objcet */
-    this.model.addSpieler(mannschaft, position, name, qttr)
+    console.log(spielklasse, mannschaft, position, name, qttr)
+    this.model.addSpieler(spielklasse, mannschaft, position, name, qttr)
   }
 
-  handleReorderSpieler = (id, new_mannschaft, new_position) => {
-    this.model.planung.reorderSpieler(id, new_mannschaft, new_position)
+  handleReorderSpieler = (id, spielklasse, new_mannschaft, new_position) => {
+    this.model.planung.reorderSpieler(id, spielklasse, new_mannschaft, new_position)
   }
 
-  handleReorderMannschaft = (mannschaft, new_mannschaft) => {
-    this.model.planung.reorderMannschaft(mannschaft, new_mannschaft)
+  handleReorderMannschaft = (old_spielklasse, new_spielklasse, old_mannschaft, new_mannschaft) => {
+    this.model.planung.reorderMannschaft(old_spielklasse, new_spielklasse, old_mannschaft, new_mannschaft)
   }
 
   handleClickOnSpieler = (id) => {

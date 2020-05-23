@@ -186,8 +186,8 @@ class Model {
 
   /* MANNSCHAFTEN */
 
-  addMannschaft(nummer) {
-    const id = this.planung.addMannschaft(nummer)
+  addMannschaft(spielklasse, nummer) {
+    const id = this.planung.addMannschaft(spielklasse, nummer)
     this.displayMannschaftDetails(id)
   }
 
@@ -199,8 +199,8 @@ class Model {
   
   /* SPIELER */
 
-  addSpieler(mannschaft, position, name, qttr) {
-    const id = this.planung.addSpieler(mannschaft, position, name, qttr)
+  addSpieler(spielklasse, mannschaft, position, name, qttr) {
+    const id = this.planung.addSpieler(spielklasse, mannschaft, position, name, qttr)
     this.displaySpielerDetails(id)
   }
 
@@ -261,24 +261,6 @@ class Model {
     this.onSidebarViewChanged()
     // store this object
     localStorage.setItem("localStorageView", JSON.stringify(this.view))
-  }
-
-  /**
-   * GENERATE A SAMPLE PLANUNG
-   */
-
-  _generateSamplePlanung () {
-    const sample_planung = new PlanungsModel("TuRa Elsen", "WTTV", 187012, "2019/20", "Rückrunde", "Herren")
-    /* Fill with sample Data */
-    const qttr_max = 1910
-    for (var i=1; i<=3; i++) {
-      sample_planung.addMannschaft(i, "Liga", 6, "Samstag", "18:30", "A")
-      for (var j=1; j<=6; j++) {
-        var id = ( i - 1 ) * 6 + j
-        sample_planung.addSpieler(i, j, `Nachname, Vorname ${id}`, qttr_max - 15 * i * j)
-      }
-    }
-    return sample_planung
   }
 
 }

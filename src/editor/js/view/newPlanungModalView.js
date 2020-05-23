@@ -23,13 +23,8 @@ class NewPlanungModalView {
 
   fillSpielklasseSelectFromGlobalConstants() {
     const spielklasseSelect = $('#newPlanungsFormSpielklasse')
-    Object.keys(SPIELKLASSEN).forEach(group_id => {
-      var optgroup = $(`<optgroup label="${group_id}"></optgroup>`)
-      var group = SPIELKLASSEN[group_id]
-      Object.keys(group).forEach(spielklasse => {
-        optgroup.append(`<option value="${spielklasse}">${spielklasse}</option>`)
-      })
-      spielklasseSelect.append(optgroup)
+    Object.keys(SPIELKLASSEN).forEach(spielklasse => {
+      spielklasseSelect.append($(`<option value="${spielklasse}">${spielklasse}</option>`))
     })
   }
 

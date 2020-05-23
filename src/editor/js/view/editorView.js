@@ -3,27 +3,7 @@ class EditorView {
     $('#editor').append(`
       <div class="container editor-container">
         <div class="row">
-          <div id="editor-col" class="col-sm-12 col-md-8 col-lg-6" >
-            <div id="mannschafts-container" class="container connected-sortable-mannschaft">
-            </div>
-            <div id="add-mannschaft-button-container" class="container">
-              <div class="row mannschafts-row">
-                <div class="empty-planung-message text-center mannschaft mb-3 display-none">
-                  <h6 class="mb-3">Es existieren noch keine Mannschaften oder Spieler</h6>
-                  <h6 class="mb-3">Lege manuell welche an</h6>
-                </div>
-                <div class="card mannschaft">
-                  <button id="add-mannschaft-button" class="btn btn-light text-muted">
-                    <i class="fa fa-plus"></i>
-                    Mannschaft hinzufügen
-                  </button>
-                </div>
-                <div class="empty-planung-message text-center mannschaft mt-3 display-none">
-                  <h6 class="mb-3">oder</h6>
-                  <h6 class="link text-success" id="lade-aufstellung-link" data-toggle="modal" data-target="#planung-reload-data-modal">lade eine Aufstellung von myTischtennis.de</h6>
-                </div>
-              </div>
-            </div>
+          <div id="editor-col" class="col-sm-12 col-md-8 col-lg-7 pl-0 pr-0 mt-4">
           </div>
           <div id="neue-planung-col" class="col-12 mt-4 display-none">
             <div class="container pt-4">
@@ -46,13 +26,9 @@ class EditorView {
     `)
     this.editor_col = $('#editor-col')
     this.neue_planung_col = $('#neue-planung-col')
-    this.mannschaftsContainer = $('#mannschafts-container')
-    this.add_mannschaft_button = $('#add-mannschaft-button')
-    this.empty_planung_message = $('.empty-planung-message')
-    this.lade_aufstellung_link = $('#lade-aufstellung-link')
     this.neue_planung_button = $('#neue-planung-button')
     this.oeffne_planung_button = $('#oeffne-planung-button')
-    this.mannschaftViews = []
+    this.spielklasseViews = []
     this.reorderSpielerHandler = {}
     this.reorderMannschaftHandler = {}
   }
@@ -66,27 +42,18 @@ class EditorView {
       this.editor_col.removeClass("display-none")
       this.neue_planung_col.addClass("display-none")
     }
-    // mannschaften und spieler
-    const mannschaften = planung.mannschaften.liste
-    const spieler = planung.spieler.liste
+    const spielklassen = SPIELKLASSEN[planung.spielklasse]
 
-    // Display empty message
-    if (mannschaften.length === 0){
-      this.empty_planung_message.removeClass("display-none")
-    } else {
-      this.empty_planung_message.addClass("display-none")
+    // Delete all spielklassen
+    this.spielklasseViews.forEach( spielklasse => { spielklasse.delete() })
+    this.spielklasseViews = []
+
+    // Create spielklassen
+    if (spielklassen) {
+      Object.keys(spielklassen).forEach(spielklasse => {
+        this.spielklasseViews.push( new SpielklasseView(this.editor_col, spielklasse, planung) )
+      })
     }
-
-    // Delete all nodes execpt the "Mannschaft hinzufügen" button
-    this.mannschaftViews.forEach( mannschaft => { mannschaft.delete() })
-    this.mannschaftViews = []
-    this.mannschaften = mannschaften
-
-    // Create Mannschafts rows for each Mannschaft in state
-    mannschaften.forEach(mannschaft => {
-      const mannschaftsspieler = spieler.filter(spieler => spieler.mannschaft === mannschaft.nummer).sort((a,b) => { return a.position - b.position })
-      this.mannschaftViews.push( new MannschaftView(this.mannschaftsContainer, mannschaft, mannschaftsspieler, mannschaften.length, planung) )
-    })
 
     // Activate sorting
     this.activateDragDrop()
@@ -102,18 +69,20 @@ class EditorView {
       connectWith: ".connected-sortable-spieler",
       update: (event, ui) => {
         // handle reordering
-        const old_position_array = $("#" + ui.item.attr("id") + "-position").text().split(".") // MANNSCHAFT.POSITION
-        const old_mannschaft = parseInt(old_position_array[0],10)
-        const old_position = parseInt(old_position_array[1],10)
-        const new_mannschaft = parseInt(ui.item.parent().attr("id").split("-")[2],10) // mannschaft-SPIELKLASSE->NUMMER<-spielerliste
+        const old_spielklasse = ui.item.attr("spielklasse")
+        const old_mannschaft = parseInt(ui.item.attr("mannschaft"),10)
+        const old_position = parseInt(ui.item.attr("position"),10)
+        const new_spielerliste_ul = ui.item.parent() // ul spielklasse="" nummer=""
+        const new_spielklasse = new_spielerliste_ul.attr("spielklasse")
+        const new_mannschaft = parseInt(new_spielerliste_ul.attr("nummer"),10) 
         const new_position = ui.item.index() + 1
-        if (old_mannschaft != new_mannschaft || old_position != new_position) {
-          const id = parseInt(ui.item.attr("id").split("-")[2],10) // spieler-SPIELKLASSE->ID<
+        if (old_spielklasse != new_spielklasse || old_mannschaft != new_mannschaft || old_position != new_position) {
+          const id = parseInt(ui.item.attr("spielerid"))
           // Be async here to first finish the sorting animation, then update the model and the complete view
           // This takes effect when there are many players and there is a noticable delay when the whole planung is rendered new
           // Effect without timeout: The sorting animation is delayed, then the view is updated and all spieler are correct
           // Effect with timeout:    The sorting animation is smooth, but there is a slight delay until the sorted spieler are updated
-          setTimeout ( () => this.reorderSpielerHandler(id, new_mannschaft, new_position), 1) 
+          setTimeout ( () => this.reorderSpielerHandler(id, new_spielklasse, new_mannschaft, new_position), 1) 
         }
       },
       start: (event, ui) => {
@@ -132,10 +101,12 @@ class EditorView {
       connectWith: ".connected-sortable-mannschaft",
       update: (event, ui) => {
         // handle reordering
-        const old_mannschaft = parseInt(ui.item.children('.mannschaft').attr("id").split("-")[2],10)// mannschaft-SPIELKLASSE->NUMMER<-spielerliste
+        const old_spielklasse = ui.item.attr("spielklasse")
+        const new_spielklasse = ui.item.parent().attr("spielklasse")
+        const old_mannschaft = parseInt(ui.item.attr("mannschaft"),10)
         const new_mannschaft = ui.item.index() + 1
-        if ( old_mannschaft != new_mannschaft ) {
-          this.reorderMannschaftHandler(old_mannschaft, new_mannschaft)
+        if ( old_spielklasse != new_spielklasse || old_mannschaft != new_mannschaft ) {
+          this.reorderMannschaftHandler(old_spielklasse, new_spielklasse, old_mannschaft, new_mannschaft)
         }
       },
       start: (event, ui) => {
@@ -161,31 +132,31 @@ class EditorView {
   /* LADE AUFSTELLUNG LINK */
 
   bindClickOnLadeAufstellungLink(handler) {
-    this.lade_aufstellung_link.click( (event) => { handler() } )
+    this.spielklasseViews.forEach(spielklasse => { spielklasse.bindClickOnLadeAufstellungLink(handler)})
   }
 
   /* MANNSCHAFT BINDINGS */
 
   bindClickOnMannschaft(handler) {
-    this.mannschaftViews.forEach(mannschaft => { mannschaft.bindClickOnMannschaft(handler)})
+    this.spielklasseViews.forEach(spielklasse => { spielklasse.bindClickOnMannschaft(handler)})
   }
 
   bindAddMannschaft(handler) {
-    this.add_mannschaft_button.click( (event) => { handler(this.mannschaften.length + 1)})
+    this.spielklasseViews.forEach(spielklasse => { spielklasse.bindAddMannschaft(handler)})
   }
 
   /* SPIELER BINDINGS */
 
   bindAddSpieler(handler) {
-    this.mannschaftViews.forEach(mannschaft => { mannschaft.bindAddSpieler(handler)})
+    this.spielklasseViews.forEach(spielklasse => { spielklasse.bindAddSpieler(handler)})
   }
 
   bindClickOnSpieler(handler) {
-    this.mannschaftViews.forEach(mannschaft => { mannschaft.bindClickOnSpieler(handler)})
+    this.spielklasseViews.forEach(spielklasse => { spielklasse.bindClickOnSpieler(handler)})
   }
 
   bindToggleSpvOnSpieler(handler) {
-    this.mannschaftViews.forEach(mannschaft => { mannschaft.bindToggleSpvOnSpieler(handler)})
+    this.spielklasseViews.forEach(spielklasse => { spielklasse.bindToggleSpvOnSpieler(handler)})
   }
 
   bindReorderSpieler(handler) {

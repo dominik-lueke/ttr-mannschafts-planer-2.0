@@ -118,11 +118,14 @@ class MyTTParser {
     // verein, spielklasse, verband, vereinsNummer
     const verein_verband = jq.find(".panel-body > h1").first().html().split(" <small>") // "TuRa Elsen<small>WTTV</small>"
     const verein_spielklasse = jq.find(".panel-body > h3").first().text().split(", ") // "TuRa Elsen, Herren"
+    const planung_spielklasse = verein_spielklasse[1].split(" ")[0] // Herren or Jungen
+    const spieler_spielklasse = verein_spielklasse[1] // Herren or Jungen 18
     const vereinsNummer = jq.find(".panel-body > h5").first().text().split(", ")[0].split(": ")[1] // "VNr.: 187012, Gründungsjahr: 1947"
     if (verein_spielklasse.length == 2 && vereinsNummer.match(/\d*/g) !== null){
       planung.verein = verein_verband[0].trim()
       planung.vereinsNummer = vereinsNummer
-      planung.spielklasse = verein_spielklasse[1]
+      planung.spielklasse = planung_spielklasse
+      planung.spieler_spielklasse = spieler_spielklasse
     }
     // mannschaften, spieler
     const trs = jq.find("tbody tr")
@@ -176,11 +179,13 @@ class MyTTParser {
         // set qttr_date of spieler
         spieler.qttrdate = planung.ttrwerte.date
         spieler.qttrinfo = `TTR-Stichtag: ${planung.ttrwerte.datestring}<br/>(${planung.ttrwerte.aktuell})`
+        // set spielklasse of spieler
+        spieler.spielklasse = spieler_spielklasse
         planung.spieler.liste.push(spieler)
         if ( spieler.mannschaft > planung.mannschaften.liste.length ) {
           planung.mannschaften.liste.push( {
             nummer: spieler.mannschaft,
-            spielklasse: planung.spielklasse
+            spielklasse: spieler_spielklasse
           } )
         }
       }
@@ -197,7 +202,7 @@ class MyTTParser {
   getResultOfMyTTAufstellungsParser(planung, current_planung){
     var aufstellungFound = true
     var statusHtml = ""
-    // verein + + vereinsNummer + verbandW
+    // verein + + vereinsNummer + verband
     if ("verein" in planung && "vereinsNummer" in planung && "verband" in planung) {
       if ( planung.verein == current_planung.verein ) {
         statusHtml += `Verein: ${planung.verein} (${planung.vereinsNummer} - ${planung.verband}) ${this._getStatusIcon("success") } `
@@ -219,7 +224,13 @@ class MyTTParser {
     }
     // spielklasse
     if ("spielklasse" in planung && planung.spielklasse){
-      statusHtml += `${planung.spielklasse} ${this._getStatusIcon("success") } `
+      if (planung.spielklasse == current_planung.spielklasse){
+        statusHtml += `${planung.spieler_spielklasse} ${this._getStatusIcon("success") } `
+      } else {
+        statusHtml += `${planung.spieler_spielklasse} (Nicht ${current_planung.spielklasse}) ${this._getStatusIcon("danger") } `
+        aufstellungFound = false
+      }
+      
     } else {
       statusHtml += `Keine Spielklasse gefunden ${this._getStatusIcon("danger") } `
       aufstellungFound = false
@@ -251,7 +262,7 @@ class MyTTParser {
     // Only display button tooltip if a valid aufstellung has been found
     if ( aufstellungFound ) {
       popoverhtml = '<h6>Die aktuelle Planung wird verändert.</h6>'
-      const attributes = ['verein', 'spielklasse', 'saison']
+      const attributes = ['verein', 'saison']
       attributes.forEach( attribute => {
         var loaded_value = planung[attribute]
         var current_value = current_planung[attribute]

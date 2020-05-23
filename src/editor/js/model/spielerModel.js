@@ -96,7 +96,8 @@ class SpielerModel {
   }
 
   compare(other_spieler) {
-    return ( this.mannschaft * 1000 + this.position ) - ( other_spieler.mannschaft * 1000 + other_spieler.position )
+    const spielklasse_compare = this.spielklasse.localeCompare(other_spieler.spielklasse)
+    return spielklasse_compare !== 0 ? spielklasse_compare : ( this.mannschaft * 1000 + this.position ) - ( other_spieler.mannschaft * 1000 + other_spieler.position )
   }
 
   addSpielerToInvalidList(invalid_spieler) {

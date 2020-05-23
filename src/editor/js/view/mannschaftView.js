@@ -4,8 +4,8 @@ class MannschaftView {
     const id = `${(mannschaft.spielklasse).replace(" ", "_")}-${mannschaft.nummer}`
     // Add the row for the Mannschaft
     this.html = $(`
-      <div class="row mannschafts-row">
-        <div id="mannschaft-${id}" class="card mannschaft">
+      <div class="row mannschafts-row" spielklasse="${mannschaft.spielklasse}" mannschaft="${mannschaft.nummer}">
+        <div id="mannschaft-${id}" class="card mannschaft" >
           <div class="card-header mannschaft-header link">
             <div class="d-flex justify-content-between">
               <div class="p-2">
@@ -38,7 +38,7 @@ class MannschaftView {
       this.mannschafts_header.append(this.mannschaft_print_kommentar_flex_div)
     }
     // Add all Spieler to the Mannschaft
-    this.spielerListeContainer = $(`<ul id="mannschaft-${id}-spielerliste" class="list-group list-group-flush connected-sortable-spieler spielerliste"></ul>`)
+    this.spielerListeContainer = $(`<ul id="mannschaft-${id}-spielerliste" class="list-group list-group-flush connected-sortable-spieler spielerliste" spielklasse="${mannschaft.spielklasse}" nummer="${mannschaft.nummer}"></ul>`)
     mannschafts_div.append(this.spielerListeContainer)
     this.spielerViews = []
     mannschaftsspieler.forEach( spieler => {
@@ -148,7 +148,7 @@ class MannschaftView {
     if ( newqttr !== parseInt(newqttr, 10) || newqttr < 0 ) { this.newQttrInput.addClass("is-invalid") }
     // Add the Spieler to the model in it is valid
     if ( newname !== "" && newqttr === parseInt(newqttr, 10) && newqttr >= 0 ) {
-      const spielklasse = this.newNameInput.attr("id").split("-")[1]
+      const spielklasse = this.mannschaft.spielklasse
       const mannschaft = parseInt(this.newPositionLabel.text().trim().split('.')[0], 10)
       const position = parseInt(this.newPositionLabel.text().trim().split('.')[1], 10)
       this._hideAddSpielerForm()

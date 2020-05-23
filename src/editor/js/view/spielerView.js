@@ -11,7 +11,7 @@ class SpielerView {
       this.spielklasse_slug = spieler.spielklasse.replace(" ","")
       this.spielerHtmlId = `spieler-${this.spielklasse_slug}-${spieler.id}`
       // Create the HTML Markup
-      this.spieler_div = $(`<li id="${this.spielerHtmlId}" class="list-group-item spieler spieler-farbe-${spieler.farbe} link"></li>`)
+      this.spieler_div = $(`<li id="${this.spielerHtmlId}" class="list-group-item spieler spieler-farbe-${spieler.farbe} link" mannschaft="${spieler.mannschaft}" spielerid="${spieler.id}" spielklasse="${spieler.spielklasse}" position="${spieler.position}"></li>`)
       this.spieler_flex_div = $(`<div class="d-flex"></div>`)
       this.spieler_flex_div.append( this.spieler_position_div = $(`<div id="${this.spielerHtmlId}-position" class="p-2 text-muted">${spieler.mannschaft}.${spieler.position}</div>`) )
       this.spieler_flex_div.append( this.spieler_name_div = $(`<div id="${this.spielerHtmlId}-name" class="p-2 flex-grow-1 spieler-name">${spieler.name}</div>`) )

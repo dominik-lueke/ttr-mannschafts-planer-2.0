@@ -24,7 +24,7 @@ class SpielerDetailsView {
     this.body = `
       <div id="spieler-details-view-body" class="card-body">
         <div class="form-row mb-4">
-          <div class="col">
+          <div class="col-5">
             <h6 class="text-muted">
               TTR-Wert 
               <small><i id="qttr-info-icon" class="fa fa-info-circle pr-2" data-toggle="tooltip" data-html="true" data-placement="top" title="QTTR-Info"></i></small>
@@ -41,6 +41,10 @@ class SpielerDetailsView {
           </div>
         </div>
         <div class="form-row mb-4">
+          <div class="col-5">
+            <h6 class="text-muted">Geburtsdatum</h6>
+            <input id="spieler-details-geburtsdatum-input" type="date" class="form-control form-control-sm" >
+          </div>
           <div class="col">
             <h6 class="text-muted">Farbe</h6>
             <div class="d-flex">
@@ -93,6 +97,7 @@ class SpielerDetailsView {
     this.qttr_input = $("#spieler-details-qttr-input")
     this.res_badge = $("#spieler-details-res-badge")
     this.sbe_badge = $("#spieler-details-sbe-badge")
+    this.geburtsdatum_input = $("#spieler-details-geburtsdatum-input")
     this.farbe_selectors = {
       "default": $("#spieler-details-farbe-default"),
       "green":   $("#spieler-details-farbe-green"),
@@ -156,6 +161,7 @@ class SpielerDetailsView {
     // Normal Inputs
     this.name_input.val(this.spieler.name)
     this.qttr_input.val(this.spieler.qttr)
+    this.geburtsdatum_input.val(this.spieler.geburtsdatum)
     this.comment_input.val(this.spieler.kommentar)
     this._displayBadge(this.res_badge, this.spieler.reserve)
     this._displayBadge(this.sbe_badge, this.spieler.sbe)
@@ -340,6 +346,17 @@ class SpielerDetailsView {
         handler(this.spieler.id, newqttr)
       }
     }
+  }
+
+  /* GEBURTSDATUM */
+  bindEditGeburtsdatumOnSpieler(handler){
+    this.geburtsdatum_input.on("change", (event) => { this._editGeburtsdatum(handler) } )
+  }
+
+  _editGeburtsdatum(handler){
+    // Get the inputs
+    var new_geburtsdatum = this.geburtsdatum_input.val()
+    handler(this.spieler.id, new_geburtsdatum)
   }
 
   /* RES */

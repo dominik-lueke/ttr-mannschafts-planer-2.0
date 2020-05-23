@@ -49,6 +49,10 @@ class SidebarView {
     this.spielerDetailsView.bindEditQttrOnSpieler(handler)
   }
 
+  bindEditGeburtsdatumOnSpieler(handler) {
+    this.spielerDetailsView.bindEditGeburtsdatumOnSpieler(handler)
+  }
+
   bindClickResButtonOnSpieler(handler){
     this.spielerDetailsView.bindClickResButtonOnSpieler(handler)
   }

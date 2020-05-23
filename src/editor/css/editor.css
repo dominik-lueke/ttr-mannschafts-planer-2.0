@@ -7,13 +7,14 @@ a, a:hover,
 a .spieler-farbe-selector.active,
 a .spieler-farbe-selector.active:hover,
 a .spieler-farbe-selector:hover {
+
   border: 2px solid;
-  margin: 5px 10px 5px 0px;
+  margin: 0px 10px 5px 0px !important;
 }
 
 a .spieler-farbe-selector {
   border: 1px solid;
-  margin: 6px 11px 6px 1px;
+  margin: 1px 11px 6px 1px !important;
 }
 
 /* HEADER */

@@ -316,6 +316,12 @@ class PlanungsModel {
     this._commit()
   }
 
+  editSpielerGeburtsdatum(id, geburtsdatum) {
+    this.spieler.editSpielerGeburtsdatum(id, geburtsdatum)
+    // commit
+    this._commit()
+  }
+
   editSpielerRes(id, res) {
     this.spieler.editSpielerRes(id, res)
     // check if the mannschaft is no (in)valid

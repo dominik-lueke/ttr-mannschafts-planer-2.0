@@ -58,6 +58,11 @@ class SpielerListeModel {
     this._setQttrForSpieler(spieler, qttr)
   }
 
+  editSpielerGeburtsdatum(id, geburtsdatum) {
+    const spieler = this.liste.find(spieler => spieler.id == id)
+    spieler.geburtsdatum = geburtsdatum
+  }
+
   editSpielerRes(id, res) {
     const spieler = this.liste.find(spieler => spieler.id == id)
     spieler.reserve = res

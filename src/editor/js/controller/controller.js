@@ -71,6 +71,7 @@ class Controller {
     // Handler SIDEBAR SPIELER VIEW
     this.sidebarView.bindEditNameOnSpieler(this.handleEditNameOnSpieler)
     this.sidebarView.bindEditQttrOnSpieler(this.handleEditQttrOnSpieler)
+    this.sidebarView.bindEditGeburtsdatumOnSpieler(this.handleEditGeburstdatumOnSpieler)
     this.sidebarView.bindClickResButtonOnSpieler(this.handleClickResButtonOnSpieler)
     this.sidebarView.bindClickSbeButtonOnSpieler(this.handleClickSbeButtonOnSpieler)
     this.sidebarView.bindClickFarbeButtonOnSpieler(this.handleClickFarbeButtonOnSpieler)
@@ -457,6 +458,10 @@ class Controller {
 
   handleEditQttrOnSpieler = (id, qttr) => {
     this.model.planung.editSpielerQttr(id, qttr)
+  }
+
+  handleEditGeburstdatumOnSpieler = (id, geburtsdatum) => {
+    this.model.planung.editSpielerGeburtsdatum(id, geburtsdatum)
   }
 
   handleClickResButtonOnSpieler = (id, res) => {

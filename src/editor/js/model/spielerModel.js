@@ -12,6 +12,7 @@ class SpielerModel {
     this.qttrinfo = `Manuell eingetragen am ${this.qttrdate.getDate()}.${this.qttrdate.getMonth()+1}.${this.qttrdate.getFullYear()}`
     this.ttrdifferenz = 0
     this.farbe = "default"
+    this.geburtsdatum = ""
     this.reserve = false
     this.sbe = false
     this.spv = {

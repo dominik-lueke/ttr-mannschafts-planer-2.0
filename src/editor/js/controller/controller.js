@@ -143,11 +143,13 @@ class Controller {
   }
 
   saveFile = () => {
-    const file_content = {
-      planung: JSON.stringify(this.model.planung),
-      tags: JSON.stringify(this.model.tags)
-    }
-    const file_content_str = JSON.stringify(file_content)
+    const planung_json = JSON.parse(this.getPlanungAsJsonString())
+    // set saved to true in the planung in the file
+    planung_json.saved = true
+    // store tags as part of the planung for legacy reasons 
+    // (versions prior to 2.2 need a file format where the planung is plain inside the file)
+    planung_json.tags = JSON.stringify(this.model.tags)
+    const file_content_str = JSON.stringify(planung_json)
     var saveSuccess = false
     var filepath = this.model.file
     if (filepath === "") {
@@ -228,20 +230,12 @@ class Controller {
   openPlanung = (file_content_str, filepath) => {
     try {
       const file_content = JSON.parse(file_content_str)
-      var planung_json_str = "{}"
-      var tag_json_str = "{}"
-      if (file_content.hasOwnProperty('planung')) {
-        planung_json_str = file_content.planung
-        tag_json_str = file_content.tags
-      } else {
-        // legacy file format before tags were introduced
-        // and the whole file content was the planung
-        planung_json_str = file_content_str
-      }
       // set tags
-      this.model.tags = JSON.parse(tag_json_str)
+      if (file_content.hasOwnProperty('tags')){
+        this.model.tags = JSON.parse(file_content.tags)
+      }
       // update planung
-      this.model.updatePlanung(JSON.parse(planung_json_str), true)
+      this.model.updatePlanung(file_content, true)
       this.setPlanungFile(filepath)
       this.model.setSaved(true)
     } catch (e) {

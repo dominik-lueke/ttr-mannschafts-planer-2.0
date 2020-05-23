@@ -124,11 +124,19 @@ class Model {
     const tag_hash = tag.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0)
     const now = new Date(Date.now())
     const date_options = { weekday: 'long', year: 'numeric', month: '2-digit', day: 'numeric', hour: 'numeric', minute: "2-digit" }
+    const tag_planung = this.planung.getPlanungAsJsonString()
+    var tag_size = Math.round((Buffer.byteLength(tag_planung, 'utf8') / 1024))
+    var tag_bytes = "KB"
+    if (tag_size > 900) {
+      tag_size = Math.round(tag_size / 1024)
+      tag_bytes = "MB"
+    }
     this.tags[tag_hash] = {
       name: tag,
       date: now.toString(),
       date_str: now.toLocaleDateString(undefined, date_options) + " Uhr",
-      planung: this.planung.getPlanungAsJsonString()
+      planung: tag_planung,
+      tag_size: `${tag_size} ${tag_bytes}`,
     }
     // notify view
     this.onFooterDataChanged(this)

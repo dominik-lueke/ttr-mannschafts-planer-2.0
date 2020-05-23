@@ -58,6 +58,7 @@ class PlanungTagsModalView {
               <div class="badge badge-dark tag-list-item-badge">
                 <i class="fa fa-tag"></i> ${tag_content.name}</div><br/>
                 <small class="text-muted">${tag_content.date_str}</small>
+                <small class="text-muted">(${tag_content.tag_size})</small>
               </div>
               <div class="p-1">
                 <button id="tag-load-${tag}" class="btn btn-sm btn-success"

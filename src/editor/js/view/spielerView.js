@@ -8,22 +8,24 @@ class SpielerView {
       this.spielerHasSpv = ( spieler.spv.primary || spieler.spv.secondary > 0 )
       this.spvEditable = ( spieler.spv.primary && spieler.spv.secondary == 0 )
       this.invalidSpielerFromHigherMannschaften = spieler.invalidSpielerFromHigherMannschaften
+      this.spielklasse_slug = spieler.spielklasse.replace(" ","")
+      this.spielerHtmlId = `spieler-${this.spielklasse_slug}-${spieler.id}`
       // Create the HTML Markup
-      this.spieler_div = $(`<li id="spieler-${spieler.spielklasse}-${spieler.id}" class="list-group-item spieler spieler-farbe-${spieler.farbe} link"></li>`)
+      this.spieler_div = $(`<li id="${this.spielerHtmlId}" class="list-group-item spieler spieler-farbe-${spieler.farbe} link"></li>`)
       this.spieler_flex_div = $(`<div class="d-flex"></div>`)
-      this.spieler_flex_div.append( this.spieler_position_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-position" class="p-2 text-muted">${spieler.mannschaft}.${spieler.position}</div>`) )
-      this.spieler_flex_div.append( this.spieler_name_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-name" class="p-2 flex-grow-1 spieler-name">${spieler.name}</div>`) )
+      this.spieler_flex_div.append( this.spieler_position_div = $(`<div id="${this.spielerHtmlId}-position" class="p-2 text-muted">${spieler.mannschaft}.${spieler.position}</div>`) )
+      this.spieler_flex_div.append( this.spieler_name_div = $(`<div id="${this.spielerHtmlId}-name" class="p-2 flex-grow-1 spieler-name">${spieler.name}</div>`) )
       this.spieler_name_div.append( this.spieler_res_badge = $(`<span class="badge badge-secondary ml-2 display-none">RES</span>`) )
       this.spieler_name_div.append( this.spieler_sbe_badge = $(`<span class="badge badge-secondary ml-2 display-none">SBE</span>`) )
-      this.spieler_flex_div.append( this.spieler_spv_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-spv" class="p-2 spv"></div>`) )
+      this.spieler_flex_div.append( this.spieler_spv_div = $(`<div id="${this.spielerHtmlId}-spv" class="p-2 spv"></div>`) )
       this.spieler_spv_div.append( this.spieler_spv_badge = $(`<span class="badge badge-danger spv-badge" data-toggle="tooltip" data-placement="right" title="Sperrvermerk setzen">SPV</span>`) )
-      this.spieler_flex_div.append( this.spieler_qttr_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-qttr" class="p-2 ttr-wert text-muted">${spieler.qttr}</div>`) )
-      this.spieler_flex_div.append( this.spieler_ttrdifferenz_div = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-ttrdifferenz" class="p-2 ttr-difference">${ttrdifferenzVorzeichen}${ttrdifferenz}</div>`) )
-      this.spieler_flex_div.append( this.spieler_invalid_icon = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-invalid-icon" class="p-2 spieler-invalid-icon text-danger"><span><i class="fa fa-exclamation-triangle"></i></span></div>`) )
+      this.spieler_flex_div.append( this.spieler_qttr_div = $(`<div id="${this.spielerHtmlId}-qttr" class="p-2 ttr-wert text-muted">${spieler.qttr}</div>`) )
+      this.spieler_flex_div.append( this.spieler_ttrdifferenz_div = $(`<div id="${this.spielerHtmlId}-ttrdifferenz" class="p-2 ttr-difference">${ttrdifferenzVorzeichen}${ttrdifferenz}</div>`) )
+      this.spieler_flex_div.append( this.spieler_invalid_icon = $(`<div id="${this.spielerHtmlId}-invalid-icon" class="p-2 spieler-invalid-icon text-danger"><span><i class="fa fa-exclamation-triangle"></i></span></div>`) )
       this.spieler_div.append(this.spieler_flex_div)
       if (spieler.kommentar !== "") {
         this.spieler_print_kommentar_flex_div = $(`<div class="display-none spieler-print-kommentar"></div>`)
-        this.spieler_print_kommentar_flex_div.append( this.spieler_print_kommentar = $(`<div id="spieler-${spieler.spielklasse}-${spieler.id}-print-kommentar" class="pl-2 pb-1 text-muted"><small><i class="fa fa-comment-o"></i> ${spieler.kommentar}</small></div>`) )
+        this.spieler_print_kommentar_flex_div.append( this.spieler_print_kommentar = $(`<div id="${this.spielerHtmlId}-print-kommentar" class="pl-2 pb-1 text-muted"><small><i class="fa fa-comment-o"></i> ${spieler.kommentar}</small></div>`) )
         this.spieler_div.append(this.spieler_print_kommentar_flex_div)
       }
       spielerListeContainer.append(this.spieler_div)
@@ -163,13 +165,13 @@ class SpielerView {
 
   _addHighlightsToInvalidSpieler(){
     this.spieler.invalid.forEach(invalid_spieler => {
-      $(`#spieler-${this.spieler.spielklasse}-${invalid_spieler.id}`).addClass("highlight-invalid")
+      $(`#spieler-${this.spielklasse_slug}-${invalid_spieler.id}`).addClass("highlight-invalid")
     })
   }
 
   _removeHighlightsFromInvalidSpieler(){
     this.spieler.invalid.forEach(invalid_spieler => {
-      $(`#spieler-${this.spieler.spielklasse}-${invalid_spieler.id}`).removeClass("highlight-invalid")
+      $(`#spieler-${this.spielklasse_slug}-${invalid_spieler.id}`).removeClass("highlight-invalid")
     })
   }
 

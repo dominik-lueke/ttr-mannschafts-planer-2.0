@@ -200,12 +200,14 @@ class EditorView {
 
   focusSpieler(spieler){
     this.removeFocus()
-    $(`#spieler-${spieler.spielklasse}-${spieler.id}`).addClass("spieler-focused")
+    const spielklasse_slug = spieler.spielklasse.replace(" ","")
+    $(`#spieler-${spielklasse_slug}-${spieler.id}`).addClass("spieler-focused")
   }
 
   focusMannschaft(mannschaft){
     this.removeFocus()
-    $(`#mannschaft-${mannschaft.spielklasse}-${mannschaft.nummer}`).addClass("mannschaft-focused")
+    const spielklasse_slug = mannschaft.spielklasse.replace(" ","")
+    $(`#mannschaft-${spielklasse_slug}-${mannschaft.nummer}`).addClass("mannschaft-focused")
   }
 
   removeFocus(){

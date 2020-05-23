@@ -24,6 +24,7 @@ class SpielerModel {
     this.kommentar = ""
     this.invalid = [] // Store all players because of which this spieler is invalid
     this.invalidSpielerFromHigherMannschaften = 0 // Store how many spieler because of which we are invalid are from higher mannschaften
+    this.wrongAgeForSpielklasse = false
     this.bilanzen = {}
     /*
     {

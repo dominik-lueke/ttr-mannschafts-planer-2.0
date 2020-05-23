@@ -47,25 +47,34 @@ class SpielerView {
       }
 
       // add invalid class, invalid-icon, tooltip
-      if ( 
-          ( spieler.invalid && spieler.invalid.length > 0 ) && 
-          ( spieler.invalid.some(invalid_spieler => invalid_spieler.mannschaft == spieler.mannschaft) || ! this.spielerHasSpv )
-         ) {
+      const spieler_invalid_reihenfolge = 
+        ( spieler.invalid && spieler.invalid.length > 0 ) && 
+        ( spieler.invalid.some(invalid_spieler => invalid_spieler.mannschaft == spieler.mannschaft) || ! this.spielerHasSpv )
+      
+      if ( spieler_invalid_reihenfolge || spieler.wrongAgeForSpielklasse ){
         this.spieler_div.addClass("invalid")
         this.spieler_div.addClass("spieler-invalid")
         this.spieler_invalid_icon.attr("data-toggle","tooltip")
         this.spieler_invalid_icon.attr("data-placement","right")
         this.spieler_invalid_icon.attr("data-html","true")
-        var tooltip_title = "<h6>Ungültige Reihenfolge</h6>"
-        var i = 2
-        for (var invalid_spieler of spieler.invalid ) {
-          tooltip_title += `<b>${invalid_spieler.mannschaft}.${invalid_spieler.position} ${invalid_spieler.name}</b><br/>+${invalid_spieler.differenz} TTR-Punkte<br/>`
-          i -= 1
-          if ((i == 0) && (spieler.invalid.length - 2) !== 0 ){
-            tooltip_title += `und <b>${spieler.invalid.length - 2} weitere</b>`
-            break
+        var tooltip_title = ""
+        if ( spieler.wrongAgeForSpielklasse ) {
+          tooltip_title += "<h6>Falsches Alter</h6>"
+          tooltip_title += "Der Spieler darf aufgrund seines Alters nicht in dieser Spielklasse gemeldet werden.<br/>"
+        }
+        if (spieler_invalid_reihenfolge ) {
+          tooltip_title += "<h6>Ungültige Reihenfolge</h6>"
+          var i = 2
+          for (var invalid_spieler of spieler.invalid ) {
+            tooltip_title += `<b>${invalid_spieler.mannschaft}.${invalid_spieler.position} ${invalid_spieler.name}</b><br/>+${invalid_spieler.differenz} TTR-Punkte<br/>`
+            i -= 1
+            if ((i == 0) && (spieler.invalid.length - 2) !== 0 ){
+              tooltip_title += `und <b>${spieler.invalid.length - 2} weitere</b>`
+              break
+            }
           }
         }
+        
         this.spieler_invalid_icon.attr("title",tooltip_title)
       }
       // add extra hover to tooltip to hightlight the spieler which are the reason that this spieler is invalid

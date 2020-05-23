@@ -26,7 +26,7 @@ class PlanungsModel {
     // MANNSCHAFTEN LISTE
     this.mannschaften = new MannschaftsListeModel(this.spielklasse)
     // SPIELER LISTE
-    this.spieler = new SpielerListeModel(this.spielklasse)
+    this.spieler = new SpielerListeModel(this.spielklasse, this.saison)
 
     this.onMannschaftenChanged = () => {}
     this.onHeaderDataChanged = () => {}
@@ -405,6 +405,11 @@ class PlanungsModel {
         this.mannschaften.liste = []
         this.bilanzen.saisons = []
       }
+    }
+
+    // set saison also for spieler
+    if (planung_json.hasOwnProperty("saison")) {
+      this.spieler.saison = planung_json.saison
     }
 
     if (update_aufstellung){

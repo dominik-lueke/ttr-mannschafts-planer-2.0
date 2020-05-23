@@ -1,7 +1,8 @@
 class SpielerListeModel {
 
-  constructor(spielklasse="") {
+  constructor(spielklasse="", saison="") {
     this.spielklasse = spielklasse
+    this.saison = ""
     this.liste = []
   }
 
@@ -61,6 +62,7 @@ class SpielerListeModel {
   editSpielerGeburtsdatum(id, geburtsdatum) {
     const spieler = this.liste.find(spieler => spieler.id == id)
     spieler.geburtsdatum = geburtsdatum
+    this._checkAgeForSpielklasseForSpieler(spieler)
   }
 
   editSpielerRes(id, res) {
@@ -135,6 +137,8 @@ class SpielerListeModel {
       this._recomputeTtrDifferenzForSpieler(spieler)
       // check if any ttrdifferenzen are invalids
       this._checkTtrDifferenzenForSpieler(spieler)
+      // check if spieler has correct age
+      this._checkAgeForSpielklasseForSpieler(spieler)
     })
   }
 
@@ -340,6 +344,34 @@ class SpielerListeModel {
     spieler.qttrinfo = `Manuell eingetragen am ${spieler.qttrdate.getDate()}.${spieler.qttrdate.getMonth()+1}.${spieler.qttrdate.getFullYear()}`
     this._recomputeTtrDifferenzForSpieler(spieler)
     this._checkTtrDifferenzenForSpieler(spieler)
+  }
+
+  /**
+   * check if the spieler has the correct age for his or her spielklasse
+   */
+  _checkAgeForSpielklasseForSpieler(spieler){
+    if (this.spielklasse !== "Herren" && this.spielklasse !== "Damen" && spieler.geburtsdatum !== "") {
+      spieler.wrongAgeForSpielklasse = false
+      const saison_year = parseInt(this.saison.substring(0,4),10)
+      const spielklassen_age_str = this.spielklasse.match(/\d+/).join()
+      var spielklassen_age
+      if (spielklassen_age_str) {
+        spielklassen_age = parseInt(spielklassen_age_str)
+      } else {
+        return
+      }
+      if (spielklassen_age <= 18) {
+        // Jugend
+        if ( ( saison_year + 1 - spielklassen_age ) > new Date(Date.parse(spieler.geburtsdatum)).getFullYear()) {
+          spieler.wrongAgeForSpielklasse = true
+        }
+      } else {
+        // Senioren
+        if ( ( saison_year + 1 - spielklassen_age ) < new Date(Date.parse(spieler.geburtsdatum)).getFullYear()) {
+          spieler.wrongAgeForSpielklasse = true
+        }
+      }
+    }
   }
 
   /**

@@ -196,12 +196,14 @@ class Controller {
   }
 
   closePlanung = () => {
-    // New planung
-    this.model.createNewPlanung()
     // reset local storage
+    localStorage.removeItem('localStorageFilepath')
     localStorage.removeItem('localStorageFilepathQuit')
     localStorage.removeItem('localStoragePlanung')
     localStorage.removeItem('localStorageTags')
+    localStorage.setItem('localStorageFileSaved',"true")
+    // New planung
+    this.model = new Model()
     // Bind Handlers
     this.model.bindSidebarViewChanged(this.onSidebarViewChanged)
     this.model.bindFooterDataChanged(this.onFooterDataChanged)

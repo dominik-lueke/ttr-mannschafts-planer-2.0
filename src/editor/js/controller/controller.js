@@ -70,7 +70,7 @@ class Controller {
     // Handler SIDEBAR SPIELER VIEW
     this.sidebarView.bindEditNameOnSpieler(this.handleEditNameOnSpieler)
     this.sidebarView.bindEditQttrOnSpieler(this.handleEditQttrOnSpieler)
-    this.sidebarView.bindEditGeburtsdatumOnSpieler(this.handleEditGeburstdatumOnSpieler)
+    this.sidebarView.bindEditJahrgangOnSpieler(this.handleEditGeburstdatumOnSpieler)
     this.sidebarView.bindClickResButtonOnSpieler(this.handleClickResButtonOnSpieler)
     this.sidebarView.bindClickSbeButtonOnSpieler(this.handleClickSbeButtonOnSpieler)
     this.sidebarView.bindClickFarbeButtonOnSpieler(this.handleClickFarbeButtonOnSpieler)
@@ -236,7 +236,6 @@ class Controller {
       if (file_content.hasOwnProperty('tags')){
         this.model.tags = JSON.parse(file_content.tags)
       }
-      console.log(this.model)
       // update planung
       this.model.updatePlanung(file_content, true)
       this.setPlanungFile(filepath)
@@ -462,8 +461,8 @@ class Controller {
     this.model.planung.editSpielerQttr(id, qttr)
   }
 
-  handleEditGeburstdatumOnSpieler = (id, geburtsdatum) => {
-    this.model.planung.editSpielerGeburtsdatum(id, geburtsdatum)
+  handleEditGeburstdatumOnSpieler = (id, jahrgang) => {
+    this.model.planung.editSpielerJahrgang(id, jahrgang)
   }
 
   handleClickResButtonOnSpieler = (id, res) => {

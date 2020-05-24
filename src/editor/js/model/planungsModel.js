@@ -316,8 +316,8 @@ class PlanungsModel {
     this._commit()
   }
 
-  editSpielerGeburtsdatum(id, geburtsdatum) {
-    this.spieler.editSpielerGeburtsdatum(id, geburtsdatum)
+  editSpielerJahrgang(id, jahrgang) {
+    this.spieler.editSpielerJahrgang(id, jahrgang)
     // commit
     this._commit()
   }

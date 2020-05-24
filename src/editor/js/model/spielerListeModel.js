@@ -59,9 +59,9 @@ class SpielerListeModel {
     this._setQttrForSpieler(spieler, qttr)
   }
 
-  editSpielerGeburtsdatum(id, geburtsdatum) {
+  editSpielerJahrgang(id, jahrgang) {
     const spieler = this.liste.find(spieler => spieler.id == id)
-    spieler.geburtsdatum = geburtsdatum
+    spieler.jahrgang = jahrgang
     this._checkAgeForSpielklasseForSpieler(spieler)
   }
 
@@ -350,7 +350,7 @@ class SpielerListeModel {
    * check if the spieler has the correct age for his or her spielklasse
    */
   _checkAgeForSpielklasseForSpieler(spieler){
-    if (this.spielklasse !== "Herren" && this.spielklasse !== "Damen" && spieler.geburtsdatum !== "") {
+    if (this.spielklasse !== "Herren" && this.spielklasse !== "Damen" && spieler.jahrgang !== "") {
       spieler.wrongAgeForSpielklasse = false
       const saison_year = parseInt(this.saison.substring(0,4),10)
       const spielklassen_age_str = this.spielklasse.match(/\d+/).join()
@@ -362,12 +362,12 @@ class SpielerListeModel {
       }
       if (spielklassen_age <= 18) {
         // Jugend
-        if ( ( saison_year + 1 - spielklassen_age ) > new Date(Date.parse(spieler.geburtsdatum)).getFullYear()) {
+        if ( ( saison_year + 1 - spielklassen_age ) > spieler.jahrgang ) {
           spieler.wrongAgeForSpielklasse = true
         }
       } else {
         // Senioren
-        if ( ( saison_year + 1 - spielklassen_age ) < new Date(Date.parse(spieler.geburtsdatum)).getFullYear()) {
+        if ( ( saison_year + 1 - spielklassen_age ) < spieler.jahrgang ){
           spieler.wrongAgeForSpielklasse = true
         }
       }

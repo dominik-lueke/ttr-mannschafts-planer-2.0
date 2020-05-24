@@ -24,7 +24,7 @@ class SpielerDetailsView {
     this.body = `
       <div id="spieler-details-view-body" class="card-body">
         <div class="form-row mb-4">
-          <div class="col-5">
+          <div class="col-4">
             <h6 class="text-muted">
               TTR-Wert 
               <small><i id="qttr-info-icon" class="fa fa-info-circle pr-2" data-toggle="tooltip" data-html="true" data-placement="top" title="QTTR-Info"></i></small>
@@ -34,6 +34,10 @@ class SpielerDetailsView {
             </h6>
             <input id="spieler-details-qttr-input" type="number" class="form-control form-control-sm" value="" >
           </div>
+          <div class="col-4">
+            <h6 class="text-muted">Jahrgang</h6>
+            <input id="spieler-details-jahrgang-input" type="number" min="1900" max="${new Date(Date.now()).getFullYear()}" class="form-control form-control-sm" >
+          </div>
           <div class="col">
             <h6 class="text-muted">Sonderstatus</h6>
             <span id="spieler-details-res-badge" class="badge ml-2 link" data-toggle="tooltip" data-placement="top" data-html="true" title="<b>Reservespieler</b><br/>Reservespieler zählen nicht zur Sollstärke einer Mannschaft (Ausnahme: Die letzte Mannschaft). Bitte beachte WO H 1.3 zur Vergabe des RES-Status">RES</span>
@@ -41,10 +45,6 @@ class SpielerDetailsView {
           </div>
         </div>
         <div class="form-row mb-4">
-          <div class="col-5">
-            <h6 class="text-muted">Geburtsdatum</h6>
-            <input id="spieler-details-geburtsdatum-input" type="date" class="form-control form-control-sm" >
-          </div>
           <div class="col">
             <h6 class="text-muted">Farbe</h6>
             <div class="d-flex">
@@ -97,7 +97,7 @@ class SpielerDetailsView {
     this.qttr_input = $("#spieler-details-qttr-input")
     this.res_badge = $("#spieler-details-res-badge")
     this.sbe_badge = $("#spieler-details-sbe-badge")
-    this.geburtsdatum_input = $("#spieler-details-geburtsdatum-input")
+    this.jahrgang_input = $("#spieler-details-jahrgang-input")
     this.farbe_selectors = {
       "default": $("#spieler-details-farbe-default"),
       "green":   $("#spieler-details-farbe-green"),
@@ -161,7 +161,7 @@ class SpielerDetailsView {
     // Normal Inputs
     this.name_input.val(this.spieler.name)
     this.qttr_input.val(this.spieler.qttr)
-    this.geburtsdatum_input.val(this.spieler.geburtsdatum)
+    this.jahrgang_input.val(this.spieler.jahrgang)
     this.comment_input.val(this.spieler.kommentar)
     this._displayBadge(this.res_badge, this.spieler.reserve)
     this._displayBadge(this.sbe_badge, this.spieler.sbe)
@@ -348,15 +348,52 @@ class SpielerDetailsView {
     }
   }
 
-  /* GEBURTSDATUM */
-  bindEditGeburtsdatumOnSpieler(handler){
-    this.geburtsdatum_input.on("change", (event) => { this._editGeburtsdatum(handler) } )
+  /* JAHRGANG */
+  bindEditJahrgangOnSpieler(handler){
+    this.jahrgang_input.on("keyup", (event) => { this._editJahrgangKeyUpHandler(event, handler) } )
+    this.jahrgang_input.focusout( (event) => { this._editJahrgangFocusOutHandler(event, handler) } )
   }
 
-  _editGeburtsdatum(handler){
+  _editJahrgangKeyUpHandler(event, handler) {
+    event.preventDefault()
+    // On <Enter> we edit jahrgang
+    if (event.keyCode === 13) {
+      this._editJahrgang(handler)
+      this.jahrgang_input.blur()
+    // On <Escape> we cancel
+    } else if (event.keyCode === 27) {
+      this.jahrgang_input.removeClass("is-invalid") 
+      this.jahrgang_input.val(this.spieler.jahrgang)
+      this.jahrgang_input.blur()
+    }
+  }
+
+  _editJahrgangFocusOutHandler(event, handler) {
+    event.preventDefault()
+    var input = this.jahrgang_input.val()
+    // If not empty we edit jahrgang
+    if (input !== "") { 
+      this._editJahrgang(handler)
+    // Else we cancel
+    } else {
+      this.jahrgang_input.removeClass("is-invalid") 
+      this.jahrgang_input.val(this.spieler.jahrgang)
+    }
+  }
+
+  _editJahrgang(handler){
     // Get the inputs
-    var new_geburtsdatum = this.geburtsdatum_input.val()
-    handler(this.spieler.id, new_geburtsdatum)
+    var newjahrgang = parseInt(this.jahrgang_input.val(), 10)
+    // Test if inputs are valid
+    if ( newjahrgang !== parseInt(newjahrgang, 10) || newjahrgang < 1900 || newjahrgang > (new Date(Date.now()).getFullYear()) ) { 
+      this.jahrgang_input.addClass("is-invalid") 
+    } else {
+      // Fire the handler if necessary
+      this.jahrgang_input.removeClass("is-invalid") 
+      if (newjahrgang !== this.spieler.jahrgang ) {
+        handler(this.spieler.id, newjahrgang)
+      }
+    }
   }
 
   /* RES */

@@ -200,7 +200,7 @@ class Controller {
     localStorage.removeItem('localStorageFilepath')
     localStorage.removeItem('localStorageFilepathQuit')
     localStorage.removeItem('localStoragePlanung')
-    localStorage.removeItem('localStorageTags')
+    localStorage.removeItem('localStoragePlanungTags')
     localStorage.setItem('localStorageFileSaved',"true")
     // New planung
     this.model = new Model()
@@ -236,6 +236,7 @@ class Controller {
       if (file_content.hasOwnProperty('tags')){
         this.model.tags = JSON.parse(file_content.tags)
       }
+      console.log(this.model)
       // update planung
       this.model.updatePlanung(file_content, true)
       this.setPlanungFile(filepath)

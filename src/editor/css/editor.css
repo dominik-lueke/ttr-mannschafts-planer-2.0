@@ -65,6 +65,9 @@ a .spieler-farbe-selector {
 .display-none {
   display: none;
 }
+.invisible {
+  visibility: hidden;
+}
 
 /* SIDEBAR */
 

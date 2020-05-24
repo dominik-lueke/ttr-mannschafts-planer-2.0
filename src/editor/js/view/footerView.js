@@ -11,18 +11,19 @@ class FooterView {
             <div id="planung-tag-input-group" class="input-group">
               <div
                 id="planung-tag-input-button"
-                type="button" class="btn btn-light pt-0 pb-0" 
+                type="button" class="btn btn-light text-muted pt-0 pb-0" 
                 data-toggle="tooltip" data-placement="right" data-html="true" 
                 data-template="<div class=&quot;tooltip&quot; role=&quot;tooltip&quot;><div class=&quot;arrow&quot;></div><div class=&quot;tooltip-inner tooltip-inner-wide&quot;></div></div>"
                 title="Markiere den aktuellen Stand der Planung, um ihn später wieder zu laden">
                 <i class="fa fa-tag"></i>
+                <sub class="overlay-icon"><i class="fa fa-plus-circle"></i><sub>
               </div>
-              <input id="planung-tag-input-text" type="text" class="form-control form-control-sm rounded-sm bg-light d-none" size="30" placeholder="Zwischenstand #1"> 
+              <input id="planung-tag-input-text" type="text" class="form-control form-control-sm rounded-sm bg-light invisible" size="30"> 
             </div>
           </div>
           <div class="p-1 flex-fill">
           </div>
-          <div class="p-1 mt-1 mr-4" >
+          <div class="p-1 mr-4" >
             <button id="planung-show-tags-button" type="button" class="btn btn-light pt-0 pb-0"
               data-toggle="modal" data-target="#planung-tags-modal">
               <div 
@@ -49,7 +50,7 @@ class FooterView {
     // Ui events
     this.planung_tag_input_button.on('click', (event) => {
       this.planung_tag_input_button.tooltip('hide')
-      this.planung_tag_input_text.toggleClass('d-none')
+      this.planung_tag_input_text.toggleClass('invisible')
       this.planung_tag_input_text.focus()
     })
   }
@@ -75,7 +76,7 @@ class FooterView {
 
     // display "tag selection button"
     const tag_count = Object.keys(model.tags).length
-    this.planung_tag_text.attr('placeholder', `Zwischtenstand #${tag_count+1}`)
+    this.planung_tag_input_text.attr('placeholder', `Zwischtenstand #${tag_count+1}`)
     if (tag_count) {
       this.planung_show_tags_button.removeClass('d-none')
       this.planung_show_tags_button_number.text(tag_count)
@@ -94,11 +95,11 @@ class FooterView {
     // On <Enter> we edit name
     if (event.keyCode === 13) {
       this.planung_tag_input_text.blur() // delegate to the focusout handler
-      this.planung_tag_input_text.addClass('d-none')
+      this.planung_tag_input_text.addClass('invisible')
     // On <Escape> we cancel
     } else if (event.keyCode === 27) {
       this.planung_tag_input_text.val("")
-      this.planung_tag_input_text.addClass('d-none')
+      this.planung_tag_input_text.addClass('invisible')
     }
   }
 
@@ -112,7 +113,7 @@ class FooterView {
     } else {
       this.planung_tag_input_text.val("")
     }
-    this.planung_tag_input_text.addClass('d-none')
+    this.planung_tag_input_text.addClass('invisible')
   }
 
   _addTag(handler){

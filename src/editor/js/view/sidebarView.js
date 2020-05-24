@@ -15,12 +15,14 @@ class SidebarView {
   /* DISPLAY */
 
   displaySpieler(spieler){
+    this._removeInvalidClassFromInputs()
     this.sidebar_div.removeClass("display-none")
     this.mannschaftDetailsView.hide()
     this.spielerDetailsView.displaySpieler(spieler)
   }
 
   displayMannschaft(mannschaft){
+    this._removeInvalidClassFromInputs()
     this.sidebar_div.removeClass("display-none")
     this.spielerDetailsView.hide()
     this.mannschaftDetailsView.displayMannschaft(mannschaft)
@@ -29,6 +31,7 @@ class SidebarView {
   /* HIDE */
 
   hideSidebar(){
+    this._removeInvalidClassFromInputs()
     this.sidebar_div.addClass("display-none")
     this.mannschaftDetailsView.hide()
     this.spielerDetailsView.hide()
@@ -96,6 +99,12 @@ class SidebarView {
 
   bindClickDeleteButtonOnMannschaft(handler) {
     this.mannschaftDetailsView.bindClickDeleteButtonOnMannschaft(handler)
+  }
+
+  /* FUNCTIONS */
+
+  _removeInvalidClassFromInputs(){
+    this.sidebar_div.find('input.is-invalid').removeClass('is-invalid')
   }
 
 }

@@ -2,11 +2,26 @@ class NewPlanungModalView {
 
   constructor() {
     $("#newPlanungModal").append(this._getHtml())
+    // fill form
+    this.fillSpielklasseSelectFromGlobalConstants()
     this.fillHalbserieSaisonFromCurrentDate()
+    // bind handlers
     $('#newPlanungsFormVerband').on('change', () => { this.verbandChanged() })
     $('#newPlanungsFormVerein').on('change', () => { this.setVereinsseiteHref() } )
     $('#newPlanungsFormVereinsnummer').on('change', () => { this.setVereinsseiteHref() } )
     $('#newPlanungsFormSaison').on('change', () => { this.setVereinsseiteHref() } )
+  }
+
+  fillSpielklasseSelectFromGlobalConstants() {
+    const spielklasseSelect = $('#newPlanungsFormSpielklasse')
+    Object.keys(SPIELKLASSEN).forEach(group_id => {
+      var optgroup = $(`<optgroup label="${group_id}"></optgroup>`)
+      var group = SPIELKLASSEN[group_id]
+      Object.keys(group).forEach(spielklasse => {
+        optgroup.append(`<option value="${spielklasse}">${spielklasse}</option>`)
+      })
+      spielklasseSelect.append(optgroup)
+    })
   }
 
   fillHalbserieSaisonFromCurrentDate() {
@@ -180,34 +195,6 @@ class NewPlanungModalView {
                 <div class="col-sm-12 mb-3">
                   <label for="newPlanungsFormSpielklasse">Spielklasse</label>
                   <select id="newPlanungsFormSpielklasse" class="form-control" required>
-                    <optgroup label="Erwachsene">
-                      <option value="Herren">Herren</option>
-                      <option value="Damen">Damen</option>
-                    </optgroup>
-                    <optgroup label="Mädchen">
-                      <option value="Mädchen 18">Mädchen 18</option>
-                      <option value="Mädchen 15">Mädchen 15</option>
-                      <option value="Mädchen 13">Mädchen 13</option>
-                      <option value="Mädchen 11">Mädchen 11</option>
-                    </optgroup>
-                    <optgroup label="Jungen">
-                      <option value="Jungen 18">Jungen 18</option>
-                      <option value="Jungen 15">Jungen 15</option>
-                      <option value="Jungen 13">Jungen 13</option>
-                      <option value="Jungen 11">Jungen 11</option>
-                    </optgroup>
-                    <optgroup label="Seniorinnen">
-                      <option value="Seniorinnen 40">Seniorinnen 40</option>
-                      <option value="Seniorinnen 50">Seniorinnen 50</option>
-                      <option value="Seniorinnen 60">Seniorinnen 60</option>
-                      <option value="Seniorinnen 70">Seniorinnen 70</option>
-                    </optgroup>
-                    <optgroup label="Senioren">
-                      <option value="Senioren 40">Senioren 40</option>
-                      <option value="Senioren 50">Senioren 50</option>
-                      <option value="Senioren 60">Senioren 60</option>
-                      <option value="Senioren 70">Senioren 70</option>
-                    </optgroup>
                   </select>
                   <div class="invalid-feedback">
                     Bitte eine Spielklasse eingeben

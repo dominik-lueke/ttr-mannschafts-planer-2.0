@@ -12,7 +12,7 @@ class PlanungsModel {
       verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/\./g,"-").replace(/\//g,"-"),
       saison: this._getPreviousSaison().replace("/","-").substring(2),
       halbserie: this._getOtherHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
-      spielklasse: this._getSpielklassenUrlString(this.spielklasse)
+      spielklasse: this._getSpielklassenUrlSlug(this.spielklasse)
     }
     this._initAufstellungsStatus()
     this._initTtrWerteStatus()
@@ -632,7 +632,7 @@ class PlanungsModel {
       verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/\./g,"-").replace(/\//g,"-"),
       saison: this._getPreviousSaison().replace("/","-").substring(2),
       halbserie: this._getOtherHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
-      spielklasse: this._getSpielklassenUrlString(this.spielklasse)
+      spielklasse: this._getSpielklassenUrlSlug(this.spielklasse)
     }
     // update urls
     this.aufstellung.url = this._getAufstellungsUrl()
@@ -652,29 +652,12 @@ class PlanungsModel {
     return `https://www.mytischtennis.de/clicktt/${this.verband}/${this.url.saison}/verein/${this.vereinsNummer}/${this.url.verein}/bilanzen/${this.url.halbserie}/`
   }
 
-  _getSpielklassenUrlString(spielklasse) {
-    var valid_spielklassen_map = {
-      "Herren": "H",
-      "Damen": "D",
-      "Jungen 18": "J18",
-      "Jungen 15": "J15",
-      "Jungen 13": "J13",
-      "Jungen 11": "J11",
-      "Mädchen 18": "M18",
-      "Mädchen 15": "M15",
-      "Mädchen 13": "M13",
-      "Mädchen 11": "M11",
-      "Seniorinnen 40": "wS40",
-      "Seniorinnen 50": "wS50",
-      "Seniorinnen 60": "wS60",
-      "Seniorinnen 70": "wS70",
-      "Senioren 40": "mS40",
-      "Senioren 50": "mS50",
-      "Senioren 60": "mS60",
-      "Senioren 70": "mS70"
-    }
-    if ( valid_spielklassen_map.hasOwnProperty(spielklasse) ) {
-      return valid_spielklassen_map[spielklasse]
+  _getSpielklassenUrlSlug(spielklasse) {
+    for (var group_id of Object.keys(SPIELKLASSEN)) {
+      var group = SPIELKLASSEN[group_id]
+      if ( group.hasOwnProperty(spielklasse) ) {
+        return group[spielklasse].url_slug
+      }
     }
     return ""
   }

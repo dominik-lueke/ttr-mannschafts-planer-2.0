@@ -143,8 +143,16 @@ class SpielerModel {
    */
 
   _getAllowedTtrDifferenz(other_spieler) {
-    var delta = this.mannschaft == other_spieler.mannschaft ? 35 : 50
-    delta += this.sbe || other_spieler.sbe ? 35 : 0
+    var delta = this.mannschaft == other_spieler.mannschaft ? TTR_TOLERANZ_INTERN : TTR_TOLERANZ
+    // Add Jugend Bonus
+    var jugend_spielklasse = false
+    JUGEND_SPIELKLASSEN.forEach(spielklasse => {
+      jugend_spielklasse = this.spielklasse.match(new RegExp(`${spielklasse}.*`))
+    })
+    delta += ( this.sbe || other_spieler.sbe || jugend_spielklasse ) ? TTR_TOLERANZ_JUGEND_BONUS : 0
+    // Add D-Kader Bonus
+    delta += ( this.dkader || other_spieler.dkader ) ? TTR_TOLERANZ_DKADER_BONUS : 0
+    // return allowed delta
     return delta
   }
 

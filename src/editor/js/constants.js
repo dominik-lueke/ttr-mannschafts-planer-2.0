@@ -84,6 +84,7 @@ const SPIELKLASSEN = {
     }
   },
 }
+const JUGEND_SPIELKLASSEN = ["Mädchen","Jungen"]
 
 const VERBÄNDE = {
   BaTTV: "Baden",
@@ -104,3 +105,9 @@ const VERBÄNDE = {
   TTBW: "Baden Würrtemberg"
 }
 DEFAULT_VERBAND = "WTTV"
+
+
+TTR_TOLERANZ = 50
+TTR_TOLERANZ_INTERN = 35
+TTR_TOLERANZ_JUGEND_BONUS = 35
+TTR_TOLERANZ_DKADER_BONUS = 35

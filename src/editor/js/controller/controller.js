@@ -67,7 +67,6 @@ class Controller {
     this.sidebarView = new SidebarView()
     // Handler SIDEBAR VIEW
     this.sidebarView.bindClickCloseButtonOnSidebar(this.handleClickCloseButtonOnSidebar)
-    this.sidebarView.bindCompareHalbserienFn(this.model.planung.compareHalbserien)
     // Handler SIDEBAR SPIELER VIEW
     this.sidebarView.bindEditNameOnSpieler(this.handleEditNameOnSpieler)
     this.sidebarView.bindEditQttrOnSpieler(this.handleEditQttrOnSpieler)

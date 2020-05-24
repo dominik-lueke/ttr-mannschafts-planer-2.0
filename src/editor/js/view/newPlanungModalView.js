@@ -57,7 +57,7 @@ class NewPlanungModalView {
 
   setVereinsseiteHref() {
     const verband = $('#newPlanungsFormVerband').val()
-    const verein = $('#newPlanungsFormVerein').val().replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/\./g,"-").replace(/\//g,"-")
+    const verein = GET_URL_SLUG_OF_VEREIN($('#newPlanungsFormVerein').val())
     const vereinsnummer = $('#newPlanungsFormVereinsnummer').val()
     const saison = $('#newPlanungsFormSaison').val().replace("/","-").substring(2)
     if (verein !== "" && vereinsnummer.match('[0-9]{3}[0-9]*') && saison.match('[0-9]{2}-[0-9]{2}')) {

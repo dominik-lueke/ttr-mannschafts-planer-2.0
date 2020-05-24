@@ -136,7 +136,7 @@ class MannschaftDetailsView {
 
   /* DISPLAY */
 
-  displayMannschaft(mannschaft, compareHalbserienFn){
+  displayMannschaft(mannschaft){
     this.mannschaft = mannschaft
     // Show this view
     this.card_div.removeClass("display-none")
@@ -164,7 +164,7 @@ class MannschaftDetailsView {
         </div>
       `)
       var bilanzen_container = $('#mannschaft-details-view-body-bilanzen')
-      var sorted_saison_keys = Object.keys(this.mannschaft.bilanzen).sort(compareHalbserienFn)
+      var sorted_saison_keys = Object.keys(this.mannschaft.bilanzen).sort(COMPARE_HALBSERIEN)
       var expanded = 'true'
       var show = 'show'
       var collapsed = ''

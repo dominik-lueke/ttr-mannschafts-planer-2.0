@@ -5,7 +5,6 @@ class SidebarView {
     this.sidebar_div.addClass("display-none")
     this.spielerDetailsView = new SpielerDetailsView(this.sidebar_div)
     this.mannschaftDetailsView = new MannschaftDetailsView(this.sidebar_div)
-    this.compareHalbserienFn = {}
   }
 
   bindClickCloseButtonOnSidebar(handler){
@@ -13,22 +12,18 @@ class SidebarView {
     this.mannschaftDetailsView.bindClickCloseButtonOnSidebar(handler)
   }
 
-  bindCompareHalbserienFn(compareFn){
-    this.compareHalbserienFn = compareFn
-  }
-
   /* DISPLAY */
 
   displaySpieler(spieler){
     this.sidebar_div.removeClass("display-none")
     this.mannschaftDetailsView.hide()
-    this.spielerDetailsView.displaySpieler(spieler, this.compareHalbserienFn)
+    this.spielerDetailsView.displaySpieler(spieler)
   }
 
   displayMannschaft(mannschaft){
     this.sidebar_div.removeClass("display-none")
     this.spielerDetailsView.hide()
-    this.mannschaftDetailsView.displayMannschaft(mannschaft,  this.compareHalbserienFn)
+    this.mannschaftDetailsView.displayMannschaft(mannschaft)
   }
 
   /* HIDE */

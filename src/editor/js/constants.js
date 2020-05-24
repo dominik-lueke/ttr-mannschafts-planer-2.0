@@ -111,3 +111,25 @@ TTR_TOLERANZ = 50
 TTR_TOLERANZ_INTERN = 35
 TTR_TOLERANZ_JUGEND_BONUS = 35
 TTR_TOLERANZ_DKADER_BONUS = 35
+
+GET_URL_SLUG_OF_VEREIN = (verein="") => {
+  return verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/\./g,"-").replace(/\//g,"-")
+}
+
+COMPARE_HALBSERIEN = (a,b) => {
+  // Sort halbserien descending
+  // valid inputs: for a and b [Vorrunde|Rückrunde][ |-]d+[/]d*
+  var a_split = " "
+  if (a.includes("-")) { a_split = "-" }
+  var b_split = " "
+  if (b.includes("-")) { b_split = "-" }
+  var a_sort_halbserie = a.split(a_split)[0]
+  var a_sort_saison = parseInt(a.split(a_split)[1].replace("/",0), 10)
+  var b_sort_halbserie = b.split(b_split)[0]
+  var b_sort_saison = parseInt(b.split(b_split)[1].replace("/",0), 10)
+  if ( (a_sort_saison - b_sort_saison) === 0 ){
+    return a_sort_halbserie.localeCompare(b_sort_halbserie) // Vorrunde > Rückrunde
+  } else {
+    return b_sort_saison - a_sort_saison
+  }
+}

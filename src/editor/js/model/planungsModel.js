@@ -9,7 +9,7 @@ class PlanungsModel {
     this.halbserie = halbserie
     this.spielklasse = spielklasse
     this.url = {
-      verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/\./g,"-").replace(/\//g,"-"),
+      verein: GET_URL_SLUG_OF_VEREIN(this.verein),
       saison: this._getPreviousSaison().replace("/","-").substring(2),
       halbserie: this._getOtherHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
       spielklasse: this._getSpielklassenUrlSlug(this.spielklasse)
@@ -138,7 +138,7 @@ class PlanungsModel {
   _setBilanzenStatus(){
     // Check if the latest saison from Bilanzen is at least the previous halbserie of this planung
     if (this.bilanzen.saisons.length > 0) {
-      if ( this.compareHalbserien(this.bilanzen.saisons[0], this._getOtherHalbserie() + " " + this._getPreviousSaison()) <= 0 ){
+      if ( COMPARE_HALBSERIEN(this.bilanzen.saisons[0], this._getOtherHalbserie() + " " + this._getPreviousSaison()) <= 0 ){
         this.bilanzen.status = "ok"
       } else {
         this.bilanzen.status = "outdated"
@@ -526,7 +526,7 @@ class PlanungsModel {
                   this.bilanzen.saisons.push(saison)
                 }
               })
-              this.bilanzen.saisons.sort(this.compareHalbserien)
+              this.bilanzen.saisons.sort(COMPARE_HALBSERIEN)
             } else {
               this.bilanzen[key] = planung_json.bilanzen[key]
             }
@@ -566,24 +566,6 @@ class PlanungsModel {
     const store_planung = jQuery.extend({}, this);
     store_planung.allow_commit = false
     return JSON.stringify(store_planung)
-  }
-
-  compareHalbserien(a,b) {
-    // Sort halbserien descending
-    // valid inputs: for a and b [Vorrunde|Rückrunde][ |-]d+[/]d*
-    var a_split = " "
-    if (a.includes("-")) { a_split = "-" }
-    var b_split = " "
-    if (b.includes("-")) { b_split = "-" }
-    var a_sort_halbserie = a.split(a_split)[0]
-    var a_sort_saison = parseInt(a.split(a_split)[1].replace("/",0), 10)
-    var b_sort_halbserie = b.split(b_split)[0]
-    var b_sort_saison = parseInt(b.split(b_split)[1].replace("/",0), 10)
-    if ( (a_sort_saison - b_sort_saison) === 0 ){
-      return a_sort_halbserie.localeCompare(b_sort_halbserie) // Vorrunde > Rückrunde
-    } else {
-      return b_sort_saison - a_sort_saison
-    }
   }
 
   /**
@@ -629,7 +611,7 @@ class PlanungsModel {
   _updateUrlStrings() {
     // compute the correct url strings
     this.url = {
-      verein: this.verein.replace(/ /g,"-").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/\./g,"-").replace(/\//g,"-"),
+      verein: GET_URL_SLUG_OF_VEREIN(this.verein),
       saison: this._getPreviousSaison().replace("/","-").substring(2),
       halbserie: this._getOtherHalbserie().replace("Vorrunde","vr").replace("Rückrunde","rr"),
       spielklasse: this._getSpielklassenUrlSlug(this.spielklasse)

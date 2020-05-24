@@ -84,3 +84,23 @@ const SPIELKLASSEN = {
     }
   },
 }
+
+const VERBÄNDE = {
+  BaTTV: "Baden",
+  ByTTV: "Bayern",
+  TTVB: "Brandenburg",
+  FTTB: "Bremen",
+  HaTTV: "Hamburg",
+  HeTTV: "Hessen",
+  TTVMV: "Mecklenburg-Vorpommern",
+  TTVN: "Niedersachsen",
+  PTTV: "Pfalz",
+  RTTVR: "Rheinland Rheinhessen",
+  STTB: "Saarland",
+  TTVSA: "Sachsen-Anhalt",
+  SbTTV: "Südbaden",
+  TTTV: "Thüringen",
+  WTTV: "NRW",
+  TTBW: "Baden Würrtemberg"
+}
+DEFAULT_VERBAND = "WTTV"

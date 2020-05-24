@@ -31,7 +31,7 @@ class AboutModalView {
               Der <b>Tischtennis Mannschafts Planer</b> ist ein freies <small><i class="fa fa-heart text-danger"></i></small> und quelloffenes Tool, um Aufstellungen für Tischtennis Mannschaften zu erstellen.
             </p>
             <p>
-              Dieses Tool bietet eine Unterstützung zur Erstellung von WTTV-Wettspielordnungs-konformen Aufstellungen in Bezug auf Spielstärke-Reihenfolge nach QTTR-Werten und Mannschafts-Sollstärken (<a href="file://assets/WO2020-01-01.pdf" class="text-success">Stand 01/2020</a>, Abschnitt H).
+              Dieses Tool bietet eine Unterstützung zur Erstellung von ${DEFAULT_VERBAND}-Wettspielordnungs-konformen Aufstellungen in Bezug auf Spielstärke-Reihenfolge nach QTTR-Werten und Mannschafts-Sollstärken (<a href="file://assets/WO2020-01-01.pdf" class="text-success">Stand 01/2020</a>, Abschnitt H).
             </p>
             <p>
               Es garantiert allerdings nicht, dass die mit diesem Tool erstellten Aufstellungen vollständig WO-konform sind. Bitte überprüfe die erstellten Aufstellung stets noch einmal auf Richtigkeit. Einige Sonderstatus wie z.B. Jugend-Ersatzspieler oder gleichgestellte Ausländer werden nicht berücksichtigt.

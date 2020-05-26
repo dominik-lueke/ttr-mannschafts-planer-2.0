@@ -43,14 +43,6 @@ class Model {
    */
 
   createNewPlanung(planung_json=undefined){
-    // View
-    this.closeSidebar()
-    // Planung
-    this.planung = new PlanungsModel()
-    if ( planung_json ) {
-      this.planung.loadFromJSON(planung_json, true, true)
-    }
-    this.planung.bindPlanungStored(this.handlePlanungStored)
     // History
     this.history = {
       undo: [], // the tip of undo is always the current planung
@@ -60,6 +52,14 @@ class Model {
     ipcRenderer.invoke('setRedoEnabled', this.history.redo.length > 0)
     // Tags
     this.tags = {}
+    // View
+    this.closeSidebar()
+    // Planung
+    this.planung = new PlanungsModel()
+    this.planung.bindPlanungStored(this.handlePlanungStored)
+    if ( planung_json ) {
+      this.planung.loadFromJSON(planung_json, true, true)
+    }
     // return this
     return this.planung
   }

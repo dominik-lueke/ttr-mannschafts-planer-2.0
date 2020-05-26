@@ -375,13 +375,13 @@ class PlanungsModel {
     }
     this.isEmpty = this._isEmpty()
     if ( ! this.isNew ) {
-      this._commit()
-      // the commit erases a possibly loaded tag since it assumes the planung has changed
-      // and therefor the tag is on the previous version of the planung
-      // therefore we restore it here if necessary
+      var save_tag = ""
       if (planung_json.hasOwnProperty('tag')) {
-        this.setTag(planung_json.tag)
+        // Do not use setTag function as we do not want to notify that the planung has changed
+        // and then create a new entry in the "undo" list of the model
+        save_tag = planung_json.tag
       }
+      this._commit(save_tag)
     }
   }
 
@@ -579,11 +579,11 @@ class PlanungsModel {
     this.allow_commit = false
   }
 
-  _commit() {
+  _commit(tag="") {
     if ( this.allow_commit === true ) {
       this._updateUrlStrings()
       // remove a possibly set tag as we now have changed the planung and the tag is not there any more
-      this.tag = ""
+      this.tag = tag
       // trigger view update
       this.onMannschaftenChanged(this)
       this.onHeaderDataChanged(this)

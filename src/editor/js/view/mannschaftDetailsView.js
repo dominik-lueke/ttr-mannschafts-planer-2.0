@@ -175,12 +175,13 @@ class MannschaftDetailsView {
           <div class="card border-0">
             <div class="card-header border-bottom-0 p-0 bg-white">
               <h7 class="text-muted link ${collapsed}" data-toggle="collapse" data-target="#mannschaft-details-view-body-bilanzen-${saison_id}" aria-expanded="${expanded}" aria-controls="mannschaft-details-view-body-bilanzen-${saison_id}">
+                <small><i class="fa fa-caret-down ml-1"></i></small>
                 ${saison.halbserie} ${saison.saison} 
                 <small>
                   <a href="${saison.url}" class="text-success pr-2" data-toggle="tooltip" data-placement="top" title="Öffne Mannschafts-Informationen bei myTischtennis.de">
                     <i class="fa fa-external-link"></i>
                   </a>
-                  <i class="fa fa-plus-square"></i></small>
+                </small>
               </h7>
             </div>
             <div id="mannschaft-details-view-body-bilanzen-${saison_id}" class="collapse ${show}" data-parent="#mannschaft-details-view-body-bilanzen">

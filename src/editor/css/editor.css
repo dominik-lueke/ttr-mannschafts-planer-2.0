@@ -98,6 +98,14 @@ a .spieler-farbe-selector {
   cursor: default;
 }
 
+#mannschaft-details-view-body-bilanzen .card-header h7 i.fa-caret-down,
+  transition: 0.5s;
+}
+
+#mannschaft-details-view-body-bilanzen .card-header h7.collapsed i.fa-caret-down,
+  transform: rotate(-90deg);
+}
+
 #mannschaft-details-view-body-bilanzen td.bilanzen-spieler-name {
   overflow: hidden;
   white-space: nowrap;

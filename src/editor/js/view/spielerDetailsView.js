@@ -179,16 +179,34 @@ class SpielerDetailsView {
         <div id="spieler-details-view-body-bilanzen-form-row" class="form-row mb-4">
           <div class="col">
             <h6 class="text-muted">Bilanzen</h6>
-            <div id="spieler-details-view-body-bilanzen">
+            <div class="accordion" id="spieler-details-view-body-bilanzen">
             </div>
           </div>
         </div>
       `)
       var bilanzen_container = $('#spieler-details-view-body-bilanzen')
       var sorted_saison_keys = Object.keys(this.spieler.bilanzen).sort(COMPARE_HALBSERIEN)
+      var expanded = 'true'
+      var show = 'show'
+      var collapsed = ''
       sorted_saison_keys.forEach( saison_key => {
         var saison = this.spieler.bilanzen[saison_key]
-        bilanzen_container.append(`<h7 class="text-muted">${saison.halbserie} ${saison.saison} <small>(Position ${saison.position})</small></h7>`)
+        var saison_id = saison_key.replace('/','-')
+        var saison_card = $(`
+          <div class="card border-0">
+            <div class="card-header border-bottom-0 p-0 bg-white">
+              <h7 class="text-muted link ${collapsed}" data-toggle="collapse" data-target="#spieler-details-view-body-bilanzen-${saison_id}" aria-expanded="${expanded}" aria-controls="mannschaft-details-view-body-bilanzen-${saison_id}">
+                <small><i class="fa fa-caret-down ml-1"></i></small>
+                ${saison.halbserie} ${saison.saison} 
+                <small>(Position ${saison.position} - Einsätze: ${saison.bilanzen.reduce((a,c)=>a+c.einsaetze,0)})</small>
+              </h7>
+            </div>
+            <div id="spieler-details-view-body-bilanzen-${saison_id}" class="collapse ${show}" data-parent="#spieler-details-view-body-bilanzen">
+              <div class="card-body p-0">
+              </div>
+            </div>
+          </div>`
+        )
         var saison_table = $(`
           <table class="table table-sm mt-2">
             <thead class="thead-light">
@@ -224,7 +242,12 @@ class SpielerDetailsView {
             </tr>
           `)
         })
-        bilanzen_container.append(saison_table)
+        // Append card to sidebar
+        saison_card.find(".card-body").append(saison_table)
+        bilanzen_container.append(saison_card)
+        expanded = 'false'
+        show = ''
+        collapsed = 'collapsed'
       })
     }
   }

@@ -172,9 +172,9 @@ class MannschaftDetailsView {
         var saison = this.mannschaft.bilanzen[saison_key]
         var saison_id = saison_key.replace('/','-')
         var saison_card = $(`
-          <div class="card border-0">
-            <div class="card-header border-bottom-0 p-0 bg-white">
-              <h7 class="text-muted link ${collapsed}" data-toggle="collapse" data-target="#mannschaft-details-view-body-bilanzen-${saison_id}" aria-expanded="${expanded}" aria-controls="mannschaft-details-view-body-bilanzen-${saison_id}">
+          <div class="card card-collapseable border-0">
+            <div class="card-header border-bottom-0 p-0 bg-white ${collapsed}" data-toggle="collapse" data-target="#mannschaft-details-view-body-bilanzen-${saison_id}" aria-expanded="${expanded}" aria-controls="mannschaft-details-view-body-bilanzen-${saison_id}">
+              <h7 class="text-muted link">
                 <small><i class="fa fa-caret-down ml-1"></i></small>
                 ${saison.halbserie} ${saison.saison} 
                 <small>

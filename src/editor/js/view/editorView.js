@@ -53,6 +53,14 @@ class EditorView {
       Object.keys(spielklassen).forEach(spielklasse => {
         this.spielklasseViews.push( new SpielklasseView(this.editor_col, spielklasse, planung) )
       })
+      // Expand the first spielklasse
+      this.spielklasseViews[0].expand()
+      // hide spielklassen header if there is only 1 spielklasse
+      if (Object.keys(spielklassen).length == 1) {
+        this.editor_col.addClass("single-spielklasse")
+      } else {
+        this.editor_col.removeClass("single-spielklasse")
+      }
     }
 
     // Activate sorting

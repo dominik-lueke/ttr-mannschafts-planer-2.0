@@ -3,12 +3,11 @@ class SpielklasseView {
     this.spielklasse = spielklasse
     this.id = spielklasse.replace(" ","")
     this.html = $(`
-      <div id="${this.id}" class="card mb-4 p-0" spielklasse="${spielklasse}">
-        <div class="card-header link d-flex justify-content-between">
-          <h5>${spielklasse}</h5>
-          <i class="fa fa-plus-square text-muted mt-2"></i>
+      <div id="${this.id}" class="card card-spielklasse card-collapseable mb-4 p-0" spielklasse="${spielklasse}">
+        <div class="card-header collapsed link d-flex justify-content-between" data-toggle="collapse" data-target="#${this.id}-card-body" aria-expanded="false" aria-controls="#${this.id}-card-body">
+          <h5><small><i class="fa fa-caret-down ml-1"></i></small> ${spielklasse}</h5>
         </div>
-        <div class="card-body p-0">
+        <div id="${this.id}-card-body" class="card-body p-0 collapse" data-parent="#${this.id}">
           <div id="${this.id}-mannschafts-container" class="container connected-sortable-mannschaft" spielklasse="${spielklasse}">
           </div>
           <div id="${this.id}-add-mannschaft-button-container" class="container">
@@ -33,6 +32,8 @@ class SpielklasseView {
       </div>
     `)
     spielklasseContainer.append(this.html)
+    this.card_header = $(`#${this.id} .card-header`)
+    this.card_body = $(`#${this.id}-card-body`)
     this.mannschaftsContainer = $(`#${this.id}-mannschafts-container`)
     this.add_mannschaft_button = $(`#${this.id}-add-mannschaft-button`)
     this.empty_planung_message = $(`.${this.id}-empty-planung-message`)
@@ -62,6 +63,12 @@ class SpielklasseView {
       const mannschaftsspieler = spieler.filter(spieler => spieler.mannschaft === mannschaft.nummer).sort((a,b) => { return a.position - b.position })
       this.mannschaftViews.push( new MannschaftView(this.mannschaftsContainer, mannschaft, mannschaftsspieler, mannschaften.length, planung) )
     })
+  }
+
+  expand(){
+    this.card_header.removeClass("collapsed")
+    this.card_header.attr("aria-expanded","true")
+    this.card_body.addClass("show")
   }
 
   delete(){

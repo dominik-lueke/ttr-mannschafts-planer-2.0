@@ -98,13 +98,15 @@ a .spieler-farbe-selector {
   cursor: default;
 }
 
-#mannschaft-details-view-body-bilanzen .card-header h7 i.fa-caret-down,
-#spieler-details-view-body-bilanzen .card-header h7 i.fa-caret-down {
+.card-collapseable .card-header i.fa-caret-down {
   transition: 0.5s;
 }
 
-#mannschaft-details-view-body-bilanzen .card-header h7.collapsed i.fa-caret-down,
-#spieler-details-view-body-bilanzen .card-header h7.collapsed i.fa-caret-down {
+.card-collapseable .card-header.collapsed {
+  border-bottom: none;
+}
+
+.card-collapseable .card-header.collapsed i.fa-caret-down {
   transform: rotate(-90deg);
 }
 
@@ -120,6 +122,13 @@ a .spieler-farbe-selector {
 .editor-container {
   margin-top: 50px;
   margin-bottom: 50px;
+}
+
+#editor-col.single-spielklasse .card-spielklasse {
+  border: none !important;
+}
+#editor-col.single-spielklasse .card-spielklasse > .card-header{
+  display: none !important;
 }
 
 .mannschafts-row {

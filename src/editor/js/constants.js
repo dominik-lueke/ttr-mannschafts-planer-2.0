@@ -5,7 +5,7 @@ const SPIELKLASSEN = {
     "Herren":{
       name: "Herren",
       url_slug: "H"
-    },
+    }
   },
   Damen: {
     "Damen":{
@@ -83,10 +83,19 @@ const SPIELKLASSEN = {
     "Senioren 70":{
       name: "Senioren 70",
       url_slug: "mS70"
-    }
-  },
+    },
+  }
 }
 const JUGEND_SPIELKLASSEN = ["Mädchen","Jungen"]
+
+const SOLLSTAERKEN = {
+  Herren: 6,
+  Damen: 4,
+  Mädchen: 4,
+  Jungen: 4,
+  Seniorinnen: 4,
+  Senioren: 4,
+}
 
 const VERBÄNDE = {
   BaTTV: "Baden",

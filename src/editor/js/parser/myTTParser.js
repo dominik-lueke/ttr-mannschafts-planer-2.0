@@ -185,7 +185,8 @@ class MyTTParser {
         if ( spieler.mannschaft > planung.mannschaften.liste.length ) {
           planung.mannschaften.liste.push( {
             nummer: spieler.mannschaft,
-            spielklasse: spieler_spielklasse
+            spielklasse: spieler_spielklasse,
+            sollstaerke: SOLLSTAERKEN[planung_spielklasse]
           } )
         }
       }

@@ -172,7 +172,7 @@ class PlanungsModel {
 
   addMannschaft(spielklasse, nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche){
     // add the mannschaft
-    const new_id = this.mannschaften.addMannschaft(spielklasse, nummer, liga, sollstaerke, spieltag, uhrzeit, spielwoche)
+    const new_id = this.mannschaften.addMannschaft(spielklasse, nummer, liga, SOLLSTAERKEN[this.spielklasse], spieltag, uhrzeit, spielwoche)
     // Check for the last two mannschaften if they are invalid now
     const spielklasse_mannschaften = this.mannschaften.liste.filter(mannschaft => mannschaft.spielklasse == spielklasse)
     spielklasse_mannschaften

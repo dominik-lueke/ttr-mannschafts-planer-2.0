@@ -406,7 +406,6 @@ class Controller {
   }
 
   handleAddSpieler = (spielklasse, mannschaft, position, name, qttr) => {
-    console.log(spielklasse, mannschaft, position, name, qttr)
     this.model.addSpieler(spielklasse, mannschaft, position, name, qttr)
   }
 

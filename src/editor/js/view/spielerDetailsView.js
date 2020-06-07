@@ -34,7 +34,7 @@ class SpielerDetailsView {
             </h6>
             <input id="spieler-details-qttr-input" type="number" class="form-control form-control-sm" value="" >
           </div>
-          <div class="col-4">
+          <div id="spieler-details-jahrgang" class="col-4">
             <h6 class="text-muted">Jahrgang</h6>
             <input id="spieler-details-jahrgang-input" type="number" min="1900" max="${new Date(Date.now()).getFullYear()}" class="form-control form-control-sm" >
           </div>
@@ -97,6 +97,7 @@ class SpielerDetailsView {
     this.qttr_input = $("#spieler-details-qttr-input")
     this.res_badge = $("#spieler-details-res-badge")
     this.sbe_badge = $("#spieler-details-sbe-badge")
+    this.jahrgang_div = $("#spieler-details-jahrgang")
     this.jahrgang_input = $("#spieler-details-jahrgang-input")
     this.farbe_selectors = {
       "default": $("#spieler-details-farbe-default"),
@@ -125,6 +126,14 @@ class SpielerDetailsView {
     this.spieler = spieler
     // Show this view
     this.card_div.removeClass("display-none")
+    // show elements based on spielklasse
+    if (["Herren", "Damen"].includes(this.spieler.spielklasse)){
+      this.jahrgang_div.addClass("display-none")
+      this.sbe_badge.removeClass("display-none")
+    } else {
+      this.jahrgang_div.removeClass("display-none")
+      this.sbe_badge.addClass("display-none")
+    }
     // Icon
     this.spieler_icon.text(this._getSpielerInitialen())
     if (spieler.mytt_id === 0){

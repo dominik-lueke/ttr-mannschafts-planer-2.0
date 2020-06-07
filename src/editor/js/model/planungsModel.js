@@ -418,7 +418,11 @@ class PlanungsModel {
     }
 
     if (update_aufstellung){
-      this.spieler.clearAllSpielerPositionen()
+      if (planung_json.hasOwnProperty("spieler_spielklasse")) {
+        this.spieler.clearAllSpielerPositionen(planung_json.spieler_spielklasse)
+      } else if (planung_json.hasOwnProperty("spielklasse")) {
+        this.spieler.clearAllSpielerPositionen(planung_json.spielklasse)
+      }
     }
 
     var qttr_values_changed = false
@@ -441,7 +445,7 @@ class PlanungsModel {
                   this.mannschaften.liste.push(new_mannschaft)
                 }
               } else if ("nummer" in mannschaft) {
-                if ( (mannschaft.nummer <= this.mannschaften.liste.filter(m=> m.spielklasse == mannschaft.spielklasse).length) ) {
+                if ( (mannschaft.nummer <= this.mannschaften.liste.filter(m => m.spielklasse == mannschaft.spielklasse).length) ) {
                   new_mannschaft = this.mannschaften.getMannschaftByNummer(mannschaft.nummer, mannschaft.spielklasse)
                 } else {
                   const new_mannschaft_id = this.addMannschaft(mannschaft.spielklasse, mannschaft.nummer)
@@ -474,7 +478,7 @@ class PlanungsModel {
               /* Create Spieler */
               var new_spieler = undefined
               // try to find spieler by mytt_id
-              new_spieler = this.spieler.getSpielerByMyTTId(spieler.mytt_id)
+              new_spieler = this.spieler.getSpielerByMyTTId(spieler.mytt_id, spieler.spielklasse)
               if ( typeof new_spieler === 'undefined') {
                 // try to find spieler by internal id
                 if ( "id" in spieler ) {

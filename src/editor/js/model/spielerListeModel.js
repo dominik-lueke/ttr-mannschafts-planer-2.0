@@ -118,12 +118,15 @@ class SpielerListeModel {
     })
     // Then decrease the mannschaft of all spieler with greater mannschaft than nummer
     this.liste
+    .filter(spieler => ( spieler.spielklasse > spielklasse ))
     .filter(spieler => ( spieler.mannschaft > nummer ))
     .forEach(spieler => spieler.mannschaft = spieler.mannschaft - 1)
   }
 
-  clearAllSpielerPositionen(){
-    this.liste.forEach( spieler => { spieler.clearPosition() } )
+  clearAllSpielerPositionen(spielklasse){
+    this.liste
+    .filter( spieler => spieler.spielklasse.startsWith(spielklasse))
+    .forEach( spieler => { spieler.clearPosition() } )
   }
 
   cleanUp(){
@@ -150,13 +153,17 @@ class SpielerListeModel {
     return this.liste.find(spieler => (spieler.id == id))
   }
 
-  getSpielerByName(name) {
-    return this.liste.find(spieler => ( spieler.name == name) )
+  getSpielerByName(name, spielklasse) {
+    return this.liste
+    .filter(spieler => ( spieler.spielklasse == spielklasse))
+    .find(spieler => ( spieler.name == name) )
   }
 
-  getSpielerByMyTTId(mytt_id) {
+  getSpielerByMyTTId(mytt_id, spielklasse) {
     if (mytt_id == 0) { return undefined }
-    return this.liste.find(spieler => ( spieler.mytt_id == mytt_id) )
+    return this.liste
+    .filter(spieler => ( spieler.spielklasse == spielklasse))
+    .find(spieler => ( spieler.mytt_id == mytt_id) )
   }
 
   getSpielerOfMannschaft(spielklasse, nummer) {

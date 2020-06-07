@@ -29,26 +29,20 @@ class MannschaftsListeModel {
     this.liste.forEach(mannschaft => { delete mannschaft._hasSpieler })
   }
 
-  reorderMannschaftByNummer(spielklasse, new_spielklasse, nummer, new_nummer){
+  reorderMannschaftByNummer(spielklasse, nummer, new_nummer){
     // get current mannschaft
     const mannschaft = this.getMannschaftByNummer(nummer,spielklasse)
     if ( ! mannschaft ){ return }
     // compute old and new index
-    const old_index = this.liste.indexOf(mannschaft)
     const new_index = this.liste.indexOf(
       this.liste
-      .filter(mannschaft => mannschaft.spielklasse == new_spielklasse)
+      .filter(mannschaft => mannschaft.spielklasse == spielklasse)
       .find(mannschaft => mannschaft.nummer == new_nummer)
     )
     // insert old mannschaft at new position
     this.liste.splice(new_index, 0, this.liste.splice(new_index, 1)[0])
-    // update spielklasse
-    mannschaft.spielklasse = new_spielklasse
     // update mannschaften nummern
     this._setNumbersForAllMannschaften(spielklasse)
-    if (new_spielklasse !== spielklasse) {
-      this._setNumbersForAllMannschaften(new_spielklasse)
-    }
   }
 
   _setNumbersForAllMannschaften(spielklasse){

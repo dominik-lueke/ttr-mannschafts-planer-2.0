@@ -29,13 +29,12 @@ class SpielerListeModel {
     this._insertSpielerInMannschaft(spieler, new_spielklasse, new_mannschaft, new_position)
   }
 
-  reorderMannschaft(old_spielklasse, new_spielklasse, old_mannschaft, new_mannschaft) {
+  reorderMannschaft(spielklasse, old_mannschaft, new_mannschaft) {
     // reorder
     this.liste
-    .filter(spieler => ( spieler.spielklasse == old_spielklasse ))
+    .filter(spieler => ( spieler.spielklasse == spielklasse ))
     .filter(spieler => ( spieler.mannschaft == old_mannschaft ))
     .forEach(spieler => {
-      spieler.spielklasse = new_spielklasse
       spieler.mannschaft = new_mannschaft
     })
     // sort liste

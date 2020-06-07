@@ -247,36 +247,30 @@ class PlanungsModel {
   }
 
   reorderMannschaft(spielklasse, new_spielklasse, mannschaft_nummer, new_mannschaft_nummer) {
-    const number_mannschaften_in_old_spielklasse = this.mannschaften.liste.filter(mannschaft => mannschaft.spielklasse == spielklasse).length
-    const number_mannschaften_in_new_spielklasse = this.mannschaften.liste.filter(mannschaft => mannschaft.spielklasse == new_spielklasse).length
-    // reorder mannschaften
-    this.mannschaften.reorderMannschaftByNummer(spielklasse, new_spielklasse, mannschaft_nummer, new_mannschaft_nummer)
-    // set new mannschaften for spieler
-    const temp_number = -1
-    // move the spieler in the current spielklasse to the temporary mannschaft -1
-    this.spieler.reorderMannschaft(spielklasse, spielklasse, mannschaft_nummer, temp_number)
-    if ( spielklasse == new_spielklasse) {
+    if (spielklasse == new_spielklasse) {
+      // reorder mannschaften
+      this.mannschaften.reorderMannschaftByNummer(spielklasse, mannschaft_nummer, new_mannschaft_nummer)
+      // set new mannschaften for spieler
+      const temp_number = -1
+      this.spieler.reorderMannschaft(spielklasse, mannschaft_nummer, temp_number)
       if ( mannschaft_nummer < new_mannschaft_nummer ) {
         for (var i=mannschaft_nummer+1; i<=new_mannschaft_nummer; i++) {
-          this.spieler.reorderMannschaft(spielklasse, spielklasse, i, i-1)
+          this.spieler.reorderMannschaft(spielklasse,i,i-1)
         }
       } else {
         for (var i=mannschaft_nummer-1; i>=new_mannschaft_nummer; i--) {
-          this.spieler.reorderMannschaft(spielklasse, spielklasse, i, i+1)
+          this.spieler.reorderMannschaft(spielklasse,i,i+1)
         }
       }
+      this.spieler.reorderMannschaft(spielklasse,temp_number,new_mannschaft_nummer)
+      // commit
+      this._commit()
     } else {
-      for (var i=mannschaft_nummer+1; i<=number_mannschaften_in_old_spielklasse-1; i++) {
-        this.spieler.reorderMannschaft(spielklasse, spielklasse, i, i-1)
-      }
-      for (var i=number_mannschaften_in_new_spielklasse-1; i>=new_mannschaft_nummer; i--) {
-        this.spieler.reorderMannschaft(new_spielklasse, new_spielklasse, i, i+1)
-      }
+      // reset the view
+      this.onMannschaftenChanged(this)
+      this.onErrorOccured(`Es ist nicht erlaubt, Mannschaften zwischen Spielklassen zu verschieben`)
     }
-    // move the spieler from the current spielklasse mannschaft -1 to the new spielklasse with the new mannschaft
-    this.spieler.reorderMannschaft(spielklasse, new_spielklasse, temp_number, new_mannschaft_nummer)
-    // commit
-    this._commit()
+    
   }
 
   validateAllMannschaften() {
@@ -384,11 +378,11 @@ class PlanungsModel {
    */
 
   loadFromJSON(planung_json, update_aufstellung=false, purge=false) {
-    //try {
+    try {
       this._parsePlanungJson(planung_json, update_aufstellung, purge)
-    // } catch (e){
-    //   this.onErrorOccured(`Ein interner Fehler ist aufgetreten:<br/>${e}`)
-    // }
+    } catch (e){
+      this.onErrorOccured(`Ein interner Fehler ist aufgetreten:<br/>${e}`)
+    }
     this.isEmpty = this._isEmpty()
     if ( ! this.isNew ) {
       var save_tag = ""

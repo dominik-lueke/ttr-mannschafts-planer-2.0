@@ -6,6 +6,7 @@ class NewPlanungModalView {
     this.fillVerbandSelectFromGlobalConstants()
     this.fillSpielklasseSelectFromGlobalConstants()
     this.fillHalbserieSaisonFromCurrentDate()
+    this.fillFromLocalStorage()
     // bind handlers
     $('#newPlanungsFormVerband').on('change', () => { this.verbandChanged() })
     $('#newPlanungsFormVerein').on('change', () => { this.setVereinsseiteHref() } )
@@ -35,6 +36,18 @@ class NewPlanungModalView {
     $('#newPlanungsFormHalbserie').val(halbserie)
     const year = today.getFullYear()
     $('#newPlanungsFormSaison').val(`${year}/${year - 1999}`)
+  }
+
+  fillFromLocalStorage() {
+    const stored_info_str = localStorage.getItem('localStorageVereinsInfos')
+    if (stored_info_str) {
+      const stored_info = JSON.parse(stored_info_str)
+      $('#newPlanungsFormVerein').val(stored_info.verein)
+      $('#newPlanungsFormVereinsnummer').val(stored_info.vereinsNummer)
+      if (Object.keys(VERBÄNDE).includes(stored_info.verband)) {
+        $('#newPlanungsFormVerband').val(stored_info.verband)
+      }
+    }
   }
 
   verbandChanged () {

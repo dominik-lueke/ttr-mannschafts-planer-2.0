@@ -595,6 +595,7 @@ class PlanungsModel {
   _storePlanung(){
     // store this object
     localStorage.setItem("localStoragePlanung", JSON.stringify(this))
+    localStorage.setItem('localStorageVereinsInfos',JSON.stringify({'verein':this.verein,'verband':this.verband,'vereinsNummer':this.vereinsNummer}))
     this.onPlanungStored(this)
   }
 

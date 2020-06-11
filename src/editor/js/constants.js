@@ -25,10 +25,6 @@ const SPIELKLASSEN = {
     "Mädchen 13":{
       name: "Mädchen 13",
       url_slug: "M13"
-    },
-    "Mädchen 11":{
-      name: "Mädchen 11",
-      url_slug: "M11"
     }
   },
   Jungen: {
@@ -43,10 +39,6 @@ const SPIELKLASSEN = {
     "Jungen 13":{
       name: "Jungen 13",
       url_slug: "J13"
-    },
-    "Jungen 11":{
-      name: "Jungen 11",
-      url_slug: "J11"
     }
   },
   Seniorinnen: {

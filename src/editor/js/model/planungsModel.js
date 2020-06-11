@@ -329,13 +329,27 @@ class PlanungsModel {
   }
 
   editSpielerQttr(id, qttr) {
-    this.spieler.editSpielerQttr(id, qttr)
+    const spieler = this.spieler.getSpieler(id)
+    if (spieler.mytt_id !== 0) {
+      this.spieler.getSpielerListeByMyTTId(spieler.mytt_id).forEach(s => {
+        this.spieler.editSpielerQttr(s.id, qttr)
+      })
+    } else {
+      this.spieler.editSpielerQttr(id, qttr)
+    }
     // commit
     this._commit()
   }
 
   editSpielerJahrgang(id, jahrgang) {
-    this.spieler.editSpielerJahrgang(id, jahrgang)
+    const spieler = this.spieler.getSpieler(id)
+    if (spieler.mytt_id !== 0) {
+      this.spieler.getSpielerListeByMyTTId(spieler.mytt_id).forEach(s => {
+        this.spieler.editSpielerJahrgang(s.id, jahrgang)
+      })
+    } else {
+      this.spieler.editSpielerJahrgang(id, jahrgang)
+    }
     // commit
     this._commit()
   }

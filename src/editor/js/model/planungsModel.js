@@ -298,15 +298,22 @@ class PlanungsModel {
     const spieler = this.spieler.getSpieler(id)
     const old_mannschaft = spieler.mannschaft
     const old_spielklasse = spieler.spielklasse
-    // reorder the spieler
-    this.spieler.reorderSpieler(id, new_spielklasse, new_mannschaft, new_position)
-    // check if mannschaften are invalid
-    if (old_spielklasse !== new_spielklasse || old_mannschaft !== new_mannschaft) {
-      this._checkMannschaftInvalid(old_spielklasse, old_mannschaft)
-      this._checkMannschaftInvalid(new_spielklasse, new_mannschaft)
+    try {
+      // reorder the spieler
+      this.spieler.reorderSpieler(id, new_spielklasse, new_mannschaft, new_position)
+      // check if mannschaften are invalid
+      if (old_spielklasse !== new_spielklasse || old_mannschaft !== new_mannschaft) {
+        this._checkMannschaftInvalid(old_spielklasse, old_mannschaft)
+        this._checkMannschaftInvalid(new_spielklasse, new_mannschaft)
+      }
+      // commit
+      this._commit()
+    } catch (e) {
+      // reset the view
+      this.onMannschaftenChanged()
+      this.onErrorOccured(`Spieler "${spieler.name}" darf nicht zweimal in der Spielklasse "${new_spielklasse}" gemeldet werden.`)
     }
-    // commit
-    this._commit()
+    
   }
 
   editSpielerSpv(id, spv) {

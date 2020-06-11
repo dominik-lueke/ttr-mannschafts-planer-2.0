@@ -22,8 +22,15 @@ class SpielerListeModel {
 
   reorderSpieler(id, new_spielklasse, new_mannschaft, new_position) {
     const spieler = this.liste.find(spieler => spieler.id == id)
+    const spieler_duplicate_in_new_spielklasse = false
+    if (spieler.mytt_id !== 0 && spieler.spielklasse !== new_spielklasse) {
+      spieler_duplicate_in_new_spielklasse = this.liste.filter(s => s.spielklasse == new_spielklasse).find(s.mytt_id == spieler.mytt_id)
+    }
+    if (spieler_duplicate_in_new_spielklasse) {
+      throw new Exception()
+    }
     // keep primary spv of spieler if it is reordered in the same mannschaft. Else delete it
-    var keep_spv = spieler.mannschaft == new_mannschaft
+    const keep_spv = (spieler.spielklasse == new_spielklasse && spieler.mannschaft == new_mannschaft)
     // reorder = remove from old position + insert in new position
     this._removeSpielerFromMannschaft(spieler, keep_spv)
     this._insertSpielerInMannschaft(spieler, new_spielklasse, new_mannschaft, new_position)

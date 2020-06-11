@@ -497,16 +497,32 @@ class PlanungsModel {
               if ( !( typeof new_spieler === 'undefined') ){
                 for (var spieler_key in new_spieler){
                   if (spieler.hasOwnProperty(spieler_key)){
-                    // Special case for bilanzen where we extend the hashmap
+                    // Special case for bilanzen where we extend the hashmap for all spieler with the same mytt_id
                     if (spieler_key === 'bilanzen') {
-                      for (var saison_key in spieler[spieler_key] ){
-                        new_spieler[spieler_key][saison_key] = spieler[spieler_key][saison_key]
-                      }
+                      this.spieler.getSpielerListeByMyTTId(new_spieler.mytt_id).forEach( spieler1 => {
+                        for (var saison_key in spieler[spieler_key] ){
+                          spieler1[spieler_key][saison_key] = spieler[spieler_key][saison_key]
+                        }
+                      })
+                    // Special case for qttr which is set for all spieler with the same mytt_id
+                    } else if (spieler_key === 'qttr') {
+                      this.spieler.getSpielerListeByMyTTId(new_spieler.mytt_id).forEach( spieler1 => {
+                        spieler1[spieler_key] = spieler[spieler_key]
+                      })
+                      qttr_values_changed = true
+                    // Special case for qttrdate which we convert to a Date object for all spieler with the same mytt_id
                     } else if (spieler_key === 'qttrdate') {
-                      new_spieler.qttrdate = new Date(spieler.qttrdate)
+                      this.spieler.getSpielerListeByMyTTId(new_spieler.mytt_id).forEach( spieler1 => {
+                        spieler1.qttrdate = new Date(spieler.qttrdate)
+                      })
+                    // Special case for qttrinfo which is set for all spieler with the same mytt_id
+                    } else if (spieler_key === 'qttrinfo') {
+                      this.spieler.getSpielerListeByMyTTId(new_spieler.mytt_id).forEach( spieler1 => {
+                        spieler1[spieler_key] = spieler[spieler_key]
+                      })
+                    // Default case for all other properties
                     } else {
                       new_spieler[spieler_key] = spieler[spieler_key]
-                      qttr_values_changed = qttr_values_changed || spieler_key == "qttr"
                     }
                   }
                 }

@@ -167,9 +167,19 @@ class SpielerListeModel {
 
   getSpielerByMyTTId(mytt_id, spielklasse) {
     if (mytt_id == 0) { return undefined }
-    return this.liste
-    .filter(spieler => ( spieler.spielklasse == spielklasse))
-    .find(spieler => ( spieler.mytt_id == mytt_id) )
+    if (typeof spielklasse === 'undefined') {
+      return this.liste
+      .find(spieler => ( spieler.mytt_id == mytt_id) )
+    } else {
+      return this.liste
+      .filter(spieler => ( spieler.spielklasse == spielklasse))
+      .find(spieler => ( spieler.mytt_id == mytt_id) )
+    }
+  }
+
+  getSpielerListeByMyTTId(mytt_id) {
+    if (mytt_id == 0) { return undefined }
+    return this.liste.filter(spieler => ( spieler.mytt_id == mytt_id) )
   }
 
   getSpielerOfMannschaft(spielklasse, nummer) {

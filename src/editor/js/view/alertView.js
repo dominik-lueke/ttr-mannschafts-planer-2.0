@@ -1,7 +1,7 @@
 class AlertView {
 
   constructor(){
-    $('#alert').append(`
+    this.html=`
       <div class="alert-container">
         <div id="saisonplanung-alert" class="alert alert-dismissible fade show" role="alert">
           <div id="saisonplanung-alert-message">
@@ -11,7 +11,16 @@ class AlertView {
           </button>
         </div>
       </div>
-    `)
+    `
+    this.init()
+    // reset the alert if it is closed
+    $('#saisonplanung-alert').on('closed.bs.alert', () => {
+      this.init()
+    })
+  }
+
+  init(){
+    $('#alert').append(this.html)
     this.alert_container=$('#alert .alert-container')
     this.alert_container.hide()
     this.saisonplanung_alert=$('#saisonplanung-alert')

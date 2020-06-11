@@ -42,6 +42,7 @@ class MyTTParser {
       planung = this.parseMyTTAufstellungsHtml(html, planung)
     } catch (e) {
       // Return empty if parsing error
+      console.log(e)
       planung = {}
     }
     /* return */
@@ -83,6 +84,10 @@ class MyTTParser {
         planung.verein = url_split[8].replace(/-/g," ").replace(/ae/g,"ä").replace(/ae/g,"ö").replace(/ue/g,"ü").replace(/\./g,"-")
         planung.url.verein = url_split[8]
       }
+      // mannschaftsmeldungen übersicht or mannschaftsmeldungendetails
+      if (url_split.length > 9) {
+        planung.auswahl_required = (url_split[9] == "mannschaftsmeldungen")
+      }
       // spielklasse
       if (url_split.length > 10) {
         planung.url.spielklasse = url_split[10]
@@ -117,14 +122,19 @@ class MyTTParser {
     jq.html(`<html><head></head><body>${html}</body></html>`);
     // verein, spielklasse, verband, vereinsNummer
     const verein_verband = jq.find(".panel-body > h1").first().html().split(" <small>") // "TuRa Elsen<small>WTTV</small>"
-    const verein_spielklasse = jq.find(".panel-body > h3").first().text().split(", ") // "TuRa Elsen, Herren"
-    const planung_spielklasse = verein_spielklasse[1].split(" ")[0] // Herren or Jungen
-    const spieler_spielklasse = verein_spielklasse[1] // Herren or Jungen 18
+    var verein_spielklasse = []
+    var planung_spielklasse = ""
+    var spieler_spielklasse = ""
+    try{
+      verein_spielklasse = jq.find(".panel-body > h3").first().text().split(", ") // "TuRa Elsen, Herren"
+      planung_spielklasse = verein_spielklasse[1].split(" ")[0] // Herren or Jungen
+      spieler_spielklasse = verein_spielklasse[1] // Herren or Jungen 18
+    } catch {}
     const vereinsNummer = jq.find(".panel-body > h5").first().text().split(", ")[0].split(": ")[1] // "VNr.: 187012, Gründungsjahr: 1947"
     if (verein_spielklasse.length == 2 && vereinsNummer.match(/\d*/g) !== null){
-      planung.verein = verein_verband[0].trim()
-      planung.vereinsNummer = vereinsNummer
-      planung.spielklasse = planung_spielklasse
+      planung.verein = planung.verein ? planung.verein : verein_verband[0].trim()
+      planung.vereinsNummer = planung.vereinsNummer ? planung.vereinsNummer : vereinsNummer
+      planung.spielklasse = planung.spielklasse ? planung.spielklasse : planung_spielklasse
       planung.spieler_spielklasse = spieler_spielklasse
     }
     // mannschaften, spieler
@@ -216,47 +226,53 @@ class MyTTParser {
       aufstellungFound = false
     }
     statusHtml += "<br/>"
-    // saison
-    if ("saison" in planung && "halbserie" in planung) {
-      statusHtml += `${planung.halbserie} ${planung.saison} ${this._getStatusIcon("success") } `
-    } else {
-      statusHtml += `Keine Saison gefunden ${this._getStatusIcon("danger") } `
+    // Spielklasse Auswahl required?
+    if (planung.auswahl_required) {
+      statusHtml += `Bitte eine Spielklasse und Halbserie auswählen ${this._getStatusIcon("warning")}`
       aufstellungFound = false
-    }
-    // spielklasse
-    if ("spielklasse" in planung && planung.spielklasse){
-      if (planung.spielklasse == current_planung.spielklasse){
-        statusHtml += `${planung.spieler_spielklasse} ${this._getStatusIcon("success") } `
+    } else {
+      // saison
+      if ("saison" in planung && "halbserie" in planung) {
+        statusHtml += `${planung.halbserie} ${planung.saison} ${this._getStatusIcon("success") } `
       } else {
-        statusHtml += `${planung.spieler_spielklasse} (Nicht ${current_planung.spielklasse}) ${this._getStatusIcon("danger") } `
+        statusHtml += `Keine Saison gefunden ${this._getStatusIcon("danger") } `
         aufstellungFound = false
       }
-      
-    } else {
-      statusHtml += `Keine Spielklasse gefunden ${this._getStatusIcon("danger") } `
-      aufstellungFound = false
-    }
-    statusHtml += "<br/>"
-    // mannschaften
-    if ("mannschaften" in planung && planung.mannschaften.liste.length > 0) {
-      statusHtml += `${planung.mannschaften.liste.length} Mannschaften gefunden ${this._getStatusIcon("success") } `
-    } else {
-      statusHtml += `Keine Mannschaften gefunden ${this._getStatusIcon("danger") } `
-      aufstellungFound = false
-    }
-    // spieler
-    if ("spieler" in planung && planung.spieler.liste.length > 0) {
-      statusHtml += `${planung.spieler.liste.length} Spieler gefunden ${this._getStatusIcon("success") } `
-    } else {
-      statusHtml += `Keine Spieler gefunden ${this._getStatusIcon("danger") } `
-      aufstellungFound = false
-    }
-    statusHtml += "<br/>"
-    // ttrwerte 
-    if ("ttrwerte" in planung && "aktuell" in planung.ttrwerte && "datestring" in planung.ttrwerte && planung.ttrwerte.datestring ) {
-      statusHtml += `TTR-Stichtag: ${planung.ttrwerte.datestring} (${planung.ttrwerte.aktuell}) ${this._getStatusIcon("success") } `
-    } else {
-      statusHtml += `Keine TTR-Werte gefunden ${this._getStatusIcon("danger") } `
+      // spielklasse
+      if ("spielklasse" in planung && planung.spielklasse){
+        if (planung.spielklasse == current_planung.spielklasse){
+          statusHtml += `${planung.spieler_spielklasse} ${this._getStatusIcon("success") } `
+        } else {
+          statusHtml += `${planung.spieler_spielklasse} (Nicht ${current_planung.spielklasse}) ${this._getStatusIcon("danger") } `
+          aufstellungFound = false
+        }
+        
+      } else {
+        statusHtml += `Keine Spielklasse gefunden ${this._getStatusIcon("danger") } `
+        aufstellungFound = false
+      }
+      statusHtml += "<br/>"
+      // mannschaften
+      if ("mannschaften" in planung && planung.mannschaften.liste.length > 0) {
+        statusHtml += `${planung.mannschaften.liste.length} Mannschaften gefunden ${this._getStatusIcon("success") } `
+      } else {
+        statusHtml += `Keine Mannschaften gefunden ${this._getStatusIcon("danger") } `
+        aufstellungFound = false
+      }
+      // spieler
+      if ("spieler" in planung && planung.spieler.liste.length > 0) {
+        statusHtml += `${planung.spieler.liste.length} Spieler gefunden ${this._getStatusIcon("success") } `
+      } else {
+        statusHtml += `Keine Spieler gefunden ${this._getStatusIcon("danger") } `
+        aufstellungFound = false
+      }
+      statusHtml += "<br/>"
+      // ttrwerte 
+      if ("ttrwerte" in planung && "aktuell" in planung.ttrwerte && "datestring" in planung.ttrwerte && planung.ttrwerte.datestring ) {
+        statusHtml += `TTR-Stichtag: ${planung.ttrwerte.datestring} (${planung.ttrwerte.aktuell}) ${this._getStatusIcon("success") } `
+      } else {
+        statusHtml += `Keine TTR-Werte gefunden ${this._getStatusIcon("danger") } `
+      }
     }
 
     var popoverhtml = ''
@@ -292,17 +308,25 @@ class MyTTParser {
         popoverhtml += `<i class="fa fa-check-circle text-success"></i> TTR-Stichtag: <b>${planung.ttrwerte.datestring}</b><br/> `
       }
       // Spieler Differenz
-      const new_spieler_arr = planung.spieler.liste.filter( spieler => current_planung.spieler.liste.find( spieler1 => spieler1.mytt_id === spieler.mytt_id) == undefined )
+      const new_spieler_arr = planung.spieler.liste
+      .filter( spieler => current_planung.spieler.liste
+        .find( spieler1 => ( spieler1.mytt_id === spieler.mytt_id && spieler1.spielklasse === planung.spieler_spielklasse ) ) == undefined )
       if (new_spieler_arr.length > 0){
         const wird = new_spieler_arr.length == 1 ? "wird" : "werden"
         popoverhtml +=  `<i class="fa fa-plus-circle text-success"></i> <b>${new_spieler_arr.length} Spieler</b> ${wird} der aktuellen Planung hinzugefügt.<br/> `
       }
-      const update_spieler_arr = current_planung.spieler.liste.filter( spieler => ( planung.spieler.liste.find( spieler1 => spieler1.mytt_id === spieler.mytt_id) !== undefined ) )
+      const update_spieler_arr = current_planung.spieler.liste
+      .filter( spieler => spieler.spielklasse === planung.spieler_spielklasse)
+      .filter( spieler => ( planung.spieler.liste
+        .find( spieler1 => ( spieler1.mytt_id === spieler.mytt_id ) ) !== undefined ) )
       if (update_spieler_arr.length > 0){
         const wird = update_spieler_arr.length == 1 ? "wird" : "werden"
         popoverhtml +=  `<i class="fa fa-refresh text-primary"></i> <b>${update_spieler_arr.length} Spieler</b> der aktuellen Planung ${wird} aktualisiert.<br/> `
       }
-      const delete_spieler_arr = current_planung.spieler.liste.filter( spieler => ( planung.spieler.liste.find( spieler1 => spieler1.mytt_id === spieler.mytt_id) == undefined ) )
+      const delete_spieler_arr = current_planung.spieler.liste
+      .filter( spieler => spieler.spielklasse === planung.spieler_spielklasse)
+      .filter( spieler => ( planung.spieler.liste
+        .find( spieler1 => ( spieler1.mytt_id === spieler.mytt_id ) ) == undefined ) )
       if (delete_spieler_arr.length > 0){
         const wird = delete_spieler_arr.length == 1 ? "wird" : "werden"
         popoverhtml +=  `<i class="fa fa-minus-circle text-danger"></i> <b>${delete_spieler_arr.length} Spieler</b> der aktuellen Planung ${wird} gelöscht.<br/> `

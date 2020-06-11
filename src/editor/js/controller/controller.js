@@ -54,6 +54,7 @@ class Controller {
     this.editorView = new EditorView()
     this.editorView.bindClickOnNeuePlanungButton(this.createNewPlanung)
     this.editorView.bindClickOnOeffnePlanungButton(this.handleClickOpenPlanungButton)
+    this.editorView.bindSpielklasseExpanded(this.handleExpandSpielklasse)
   }
 
   _createFooterView = () => {
@@ -199,6 +200,7 @@ class Controller {
     localStorage.removeItem('localStorageFilepathQuit')
     localStorage.removeItem('localStoragePlanung')
     localStorage.removeItem('localStoragePlanungTags')
+    localStorage.removeItem('localStorageView')
     localStorage.setItem('localStorageFileSaved',"true")
     // New planung
     this.model = new Model()
@@ -215,6 +217,9 @@ class Controller {
     // reset and hide MyTT Modal
     this.myTTModalView.destroyMyTTModal()
     this._createMyTTModalView()
+    // reset Editor View
+    this.editorView.destroy()
+    this._createEditorView()
     // Initial Display
     this.updateView()
   }
@@ -228,19 +233,15 @@ class Controller {
   }
 
   openPlanung = (file_content_str, filepath) => {
-    //try {
-      const file_content = JSON.parse(file_content_str)
-      // set tags
-      if (file_content.hasOwnProperty('tags')){
-        this.model.tags = JSON.parse(file_content.tags)
-      }
-      // update planung
-      this.model.updatePlanung(file_content, true)
-      this.setPlanungFile(filepath)
-      this.model.setSaved(true)
-    //} catch (e) {
-      //this.alertError(`Die geöffnete Datei ist beschädigt. Die Planung konnte nicht geladen werden!`)
-    //}
+    const file_content = JSON.parse(file_content_str)
+    // set tags
+    if (file_content.hasOwnProperty('tags')){
+      this.model.tags = JSON.parse(file_content.tags)
+    }
+    // update planung
+    this.model.updatePlanung(file_content, true)
+    this.setPlanungFile(filepath)
+    this.model.setSaved(true)
   }
 
   setPlanungFile = (filepath) => {
@@ -260,7 +261,7 @@ class Controller {
 
   updateView = () => {
     this.onHeaderDataChanged(this.model.planung)
-    this.onMannschaftenChanged(this.model.planung)
+    this.onMannschaftenChanged()
     this.onFooterDataChanged(this.model)
     this._updateDocumentTitle()
   }
@@ -272,8 +273,8 @@ class Controller {
     this.myTTModalView.setHomeUrl("bilanzen", planung.bilanzen.url)
   }
 
-  onMannschaftenChanged = (planung) => {
-    this.editorView.displayMannschaften(planung)
+  onMannschaftenChanged = () => {
+    this.editorView.displayMannschaften(this.model)
     this.editorView.bindAddMannschaft(this.handleAddMannschaft)
     this.editorView.bindClickOnLadeAufstellungLink(this.handleClickOnLadeAufstellungLink)
     this.editorView.bindClickOnMannschaft(this.handleClickOnMannschaft)
@@ -282,6 +283,7 @@ class Controller {
     this.editorView.bindToggleSpvOnSpieler(this.handleToggleSpvOnSpieler)
     this.editorView.bindReorderSpieler(this.handleReorderSpieler)
     this.editorView.bindReorderMannschaft(this.handleReorderMannschaft)
+    this.editorView.bindSpielklasseExpanded(this.handleExpandSpielklasse)
     this.myTTModalView.notifyPlanungUpdated()
     this.onSidebarViewChanged()
     ipcRenderer.send('enableFileMenu', !this.model.planung.isNew)
@@ -396,6 +398,10 @@ class Controller {
   }
 
   /* EDITOR HANDLER */
+
+  handleExpandSpielklasse(model, spielklasse, expanded){
+    model.expandSpielklasse(spielklasse, expanded)
+  }
 
   handleClickOnLadeAufstellungLink = () => {
     this.myTTModalView.loadUrl('aufstellung', this.model.planung.aufstellung.url)

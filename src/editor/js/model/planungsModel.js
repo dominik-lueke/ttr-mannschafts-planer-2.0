@@ -267,7 +267,7 @@ class PlanungsModel {
       this._commit()
     } else {
       // reset the view
-      this.onMannschaftenChanged(this)
+      this.onMannschaftenChanged()
       this.onErrorOccured(`Es ist nicht erlaubt, Mannschaften zwischen Spielklassen zu verschieben`)
     }
     
@@ -577,7 +577,7 @@ class PlanungsModel {
       // remove a possibly set tag as we now have changed the planung and the tag is not there any more
       this.tag = tag
       // trigger view update
-      this.onMannschaftenChanged(this)
+      this.onMannschaftenChanged()
       this.onHeaderDataChanged(this)
       this.onFooterDataChanged()
       // store planung

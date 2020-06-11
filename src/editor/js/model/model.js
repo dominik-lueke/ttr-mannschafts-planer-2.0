@@ -15,7 +15,8 @@ class Model {
       sidebar: {
         display: "",
         id: 0
-      }
+      },
+      spielklassenExpanded: {}
     }
     this.onSidebarViewChanged = () => {}
     this.onFooterDataChanged = () => {}
@@ -208,6 +209,16 @@ class Model {
     // Important! First close the sidebar, as the delete action will try to update it with the spieler we just deleted
     this.closeSidebar()
     this.planung.deleteSpieler(id)
+  }
+
+  /* SPIELKLASSEN COLLAPSE */
+
+  expandSpielklasse(spielklasse, expanded) {
+    if (!this.view.hasOwnProperty('spielklassenExpanded')) {
+      this.view.spielklassenExpanded = {}
+    }
+    this.view.spielklassenExpanded[spielklasse] = expanded
+    this._commit()
   }
 
   /* SIDEBAR */

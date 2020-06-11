@@ -31,9 +31,16 @@ class EditorView {
     this.spielklasseViews = []
     this.reorderSpielerHandler = {}
     this.reorderMannschaftHandler = {}
+    this.expandSpielklasseHandler = {}
   }
 
-  displayMannschaften(planung) {
+  destroy() {
+    this.spielklasseViews.forEach(spielklasse => spielklasse.delete())
+  }
+
+  displayMannschaften(model) {
+    const planung = model.planung
+    const view = model.view
     // Display neue planung 
     if (planung.isNew) {
       this.editor_col.addClass("display-none")
@@ -44,25 +51,40 @@ class EditorView {
     }
     const spielklassen = SPIELKLASSEN[planung.spielklasse]
 
-    // Delete all spielklassen
-    this.spielklasseViews.forEach( spielklasse => { spielklasse.delete() })
-    this.spielklasseViews = []
-
-    // Create spielklassen
     if (spielklassen) {
-      Object.keys(spielklassen).forEach(spielklasse => {
-        this.spielklasseViews.push( new SpielklasseView(this.editor_col, spielklasse, planung) )
-      })
-      // Expand the first spielklasse
-      this.spielklasseViews[0].expand()
-      // hide spielklassen header if there is only 1 spielklasse
-      if (Object.keys(spielklassen).length == 1) {
-        this.editor_col.addClass("single-spielklasse")
+      if (this.spielklasseViews.length > 0){
+        // Fill already present spielklassen
+        this.spielklasseViews.forEach(spielklasse => spielklasse.displayMannschaften(planung))
       } else {
-        this.editor_col.removeClass("single-spielklasse")
+        // Create spielklassen new
+        Object.keys(spielklassen).forEach(spielklasse => {
+          const spielklasseView = new SpielklasseView(this.editor_col, spielklasse, model)
+          spielklasseView.bindSpielklasseExpanded(this.expandSpielklasseHandler)
+          this.spielklasseViews.push(spielklasseView)
+        })
+        // hide spielklassen header if there is only 1 spielklasse
+        if (Object.keys(spielklassen).length == 1) {
+          this.editor_col.addClass("single-spielklasse")
+          // Expand the spielklasse
+          this.spielklasseViews[0].expand()
+        } else {
+          this.editor_col.removeClass("single-spielklasse")
+          if ( ( view.hasOwnProperty('spielklassenExpanded') && Object.keys(view.spielklassenExpanded).length > 0 ) || 
+                model.planung.mannschaften.liste.length > 0 ) 
+          {
+            // Expand the spielklassen that are stored as expanded
+            Object.keys(view.spielklassenExpanded).forEach( spielklasse => {
+              if (view.spielklassenExpanded[spielklasse]) {
+                this.spielklasseViews.find(view => view.id == spielklasse ).expand()
+              }
+            })
+          } else {
+            // Expand the first spielklasse
+            this.spielklasseViews[0].expand()
+          }
+        }
       }
     }
-
     // Activate sorting
     this.activateDragDrop()
 
@@ -106,7 +128,6 @@ class EditorView {
 
     // MANNSCHAFTEN
     $(".connected-sortable-mannschaft").sortable({
-      connectWith: ".connected-sortable-mannschaft",
       update: (event, ui) => {
         // handle reordering
         const old_spielklasse = ui.item.attr("spielklasse")
@@ -129,6 +150,7 @@ class EditorView {
   }
 
   /* PLANUNG */
+
   bindClickOnNeuePlanungButton(handler) {
     this.neue_planung_button.click( (event) => { handler() } )
   }
@@ -192,6 +214,12 @@ class EditorView {
   removeFocus(){
     $(".spieler-focused").removeClass("spieler-focused")
     $(".mannschaft-focused").removeClass("mannschaft-focused")
+  }
+
+  /* COLLAPSE SPIELKLASSEN */
+
+  bindSpielklasseExpanded(handler) {
+    this.expandSpielklasseHandler = handler
   }
 
 }

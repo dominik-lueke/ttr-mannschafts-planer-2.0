@@ -1,5 +1,7 @@
 class SpielklasseView {
-  constructor(spielklasseContainer, spielklasse, planung) {
+  constructor(spielklasseContainer, spielklasse, model) {
+    this.model = model
+    this.planung = model.planung
     this.spielklasse = spielklasse
     this.id = spielklasse.replace(" ","")
     this.html = $(`
@@ -39,7 +41,7 @@ class SpielklasseView {
     this.empty_planung_message = $(`.${this.id}-empty-planung-message`)
     this.lade_aufstellung_link = $(`#${this.id}-lade-aufstellung-link`)
     this.mannschaftViews = []
-    this.displayMannschaften(planung)
+    this.displayMannschaften(this.planung)
   }
 
   displayMannschaften(planung) {
@@ -65,14 +67,19 @@ class SpielklasseView {
     })
   }
 
-  expand(){
-    this.card_header.removeClass("collapsed")
-    this.card_header.attr("aria-expanded","true")
-    this.card_body.addClass("show")
-  }
-
   delete(){
     this.html.remove()
+  }
+
+  /* COLLAPSE */
+
+  expand(){
+    this.card_body.collapse('show')
+  }
+
+  bindSpielklasseExpanded(handler) {
+    this.card_body.on('show.bs.collapse', (event) => { handler(this.model, this.id, true) })
+    this.card_body.on('hide.bs.collapse', (event) => { handler(this.model, this.id, false) } )
   }
 
   /* LADE AUFSTELLUNG LINK */

@@ -124,6 +124,10 @@ a .spieler-farbe-selector {
   margin-bottom: 50px;
 }
 
+.card-spielklasse {
+  width: 550px;
+}
+
 #editor-col.single-spielklasse .card-spielklasse {
   border: none !important;
 }

@@ -382,7 +382,7 @@ class Controller {
     // Load RR-2019/20 -> Plan VR-2020/21
     this.model.planung.increaseSerie()
     // add tag to this aufstellung
-    this.model.addTagToPlanung(`Aufstellung ${planung_json.halbserie} ${planung_json.saison} von click-TT geladen`)
+    this.model.addTagToPlanung(`Aufstellung ${planung_json.spieler_spielklasse} ${planung_json.halbserie} ${planung_json.saison} von click-TT geladen`)
   }
 
   handleClickTTRWerteLadenButtonOnMyTTModal = (planung_json) => {

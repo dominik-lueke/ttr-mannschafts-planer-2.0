@@ -408,7 +408,8 @@ span.badge {
   #myTTModal,
   #newPlanungModal,
   #header-mytt-status-div,
-  #add-mannschaft-button-container,
+  #footer,
+  .add-mannschaft-button-container,
   ul.add-spieler-button-container,
   div.spv span.badge-light {
     display: none !important;
@@ -418,6 +419,7 @@ span.badge {
     display: block !important;
   }
 
+  .card-spielklasse,
   .mannschafts-row {
     page-break-inside: avoid;
   }

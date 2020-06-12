@@ -12,7 +12,7 @@ class SpielklasseView {
         <div id="${this.id}-card-body" class="card-body p-0 collapse" data-parent="#${this.id}">
           <div id="${this.id}-mannschafts-container" class="container connected-sortable-mannschaft" spielklasse="${spielklasse}">
           </div>
-          <div id="${this.id}-add-mannschaft-button-container" class="container">
+          <div id="${this.id}-add-mannschaft-button-container" class="container add-mannschaft-button-container">
             <div class="row mannschafts-row">
               <div class="${this.id}-empty-planung-message empty-planung-message text-center mannschaft mb-3 display-none">
                 <h6 class="mb-3">Es existieren noch keine Mannschaften oder Spieler</h6>

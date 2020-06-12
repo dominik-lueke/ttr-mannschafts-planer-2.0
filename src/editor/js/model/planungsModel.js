@@ -520,17 +520,20 @@ class PlanungsModel {
                       })
                     // Special case for qttr which is set for all spieler with the same mytt_id
                     } else if (spieler_key === 'qttr') {
+                      new_spieler[spieler_key] = spieler[spieler_key]
                       this.spieler.getSpielerListeByMyTTId(new_spieler.mytt_id).forEach( spieler1 => {
                         spieler1[spieler_key] = spieler[spieler_key]
                       })
                       qttr_values_changed = true
                     // Special case for qttrdate which we convert to a Date object for all spieler with the same mytt_id
                     } else if (spieler_key === 'qttrdate') {
+                      new_spieler[spieler_key] = new Date(spieler.qttrdate)
                       this.spieler.getSpielerListeByMyTTId(new_spieler.mytt_id).forEach( spieler1 => {
                         spieler1.qttrdate = new Date(spieler.qttrdate)
                       })
                     // Special case for qttrinfo which is set for all spieler with the same mytt_id
                     } else if (spieler_key === 'qttrinfo') {
+                      new_spieler[spieler_key] = spieler[spieler_key]
                       this.spieler.getSpielerListeByMyTTId(new_spieler.mytt_id).forEach( spieler1 => {
                         spieler1[spieler_key] = spieler[spieler_key]
                       })

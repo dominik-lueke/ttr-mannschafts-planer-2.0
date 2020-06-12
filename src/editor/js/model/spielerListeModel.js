@@ -178,7 +178,7 @@ class SpielerListeModel {
   }
 
   getSpielerListeByMyTTId(mytt_id) {
-    if (mytt_id == 0) { return undefined }
+    if (mytt_id == 0) { return [] }
     return this.liste.filter(spieler => ( spieler.mytt_id == mytt_id) )
   }
 

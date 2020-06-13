@@ -36,6 +36,7 @@ class EditorView {
 
   destroy() {
     this.spielklasseViews.forEach(spielklasse => spielklasse.delete())
+    $('#editor').html('')
   }
 
   displayMannschaften(model) {

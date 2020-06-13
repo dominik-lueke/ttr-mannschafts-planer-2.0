@@ -102,10 +102,9 @@ const VERBÄNDE = {
   RTTVR: "Rheinland Rheinhessen",
   STTB: "Saarland",
   TTVSA: "Sachsen-Anhalt",
-  SbTTV: "Südbaden",
   TTTV: "Thüringen",
   WTTV: "NRW",
-  TTBW: "Baden Würrtemberg"
+  TTBW: "Baden Württemberg"
 }
 DEFAULT_VERBAND = "WTTV"
 

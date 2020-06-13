@@ -445,8 +445,12 @@ class PlanungsModel {
     for (var key in planung_json) {
       if (this.hasOwnProperty(key)) {
 
-        /* Load MannschaftsListe */
-        if ( key == "mannschaften") {
+        if ( key == "spielklasse") {
+          /* Legacy Spielklassen, convert e.g. "Jungen 18" to "Jungen" */
+          this.spielklasse = planung_json.spielklasse.split(' ')[0]
+  
+        } else if ( key == "mannschaften") {
+          /* Load MannschaftsListe */
           if ( planung_json.mannschaften.hasOwnProperty("liste") ) {
             /* Load Mannschaften */
             planung_json.mannschaften.liste.forEach( (mannschaft) => {
@@ -487,7 +491,7 @@ class PlanungsModel {
 
         /* Load SpielerListe */
         } else if (key == "spieler") {
-          /* Load Spieler */
+          /* Load SpielerListe */
           if ( planung_json.spieler.hasOwnProperty("liste") ) {
             planung_json.spieler.liste.forEach( (spieler) => {
               /* Create Spieler */

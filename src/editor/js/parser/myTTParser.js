@@ -718,9 +718,11 @@ class MyTTParser {
         if (spieler_is_valid){
           // Now we can check if we already had this spieler
           // if yes, we start to fill the already found spieler with the current bilanzen
-          var found_spieler = planung.spieler.liste.find(findspieler => (findspieler.mytt_id == spieler.mytt_id))
-          if ( found_spieler ) {
-            found_spieler.bilanzen[saison_id].bilanzen.push(spieler_mannschafts_bilanz)
+          var found_spieler_arr = planung.spieler.liste.filter(findspieler => (findspieler.mytt_id == spieler.mytt_id))
+          if ( found_spieler_arr.length > 0 ) {
+            found_spieler_arr.forEach(foundspieler => {
+              foundspieler.bilanzen[saison_id].bilanzen.push(spieler_mannschafts_bilanz)
+            })
           } else {
             // Init the spieler bilanzen
             spieler.bilanzen[saison_id] = {
@@ -733,7 +735,9 @@ class MyTTParser {
             planung.spieler.liste.push(spieler)
           }
           // put the spieler also in the mannschafts bilanz
-          var found_mannschaft = planung.mannschaften.liste.find(findmannschaft => (findmannschaft.spielklasse == mannschaft.spielklasse && findmannschaft.romanNumber == mannschaft.romanNumber))
+          var found_mannschaft = planung.mannschaften.liste
+          .filter(findmannschaft => (findmannschaft.spielklasse == mannschaft.spielklasse))
+          .find(findmannschaft => (findmannschaft.romanNumber == mannschaft.romanNumber))
           if (found_mannschaft){
             found_mannschaft.bilanzen[saison_id].bilanzen.push(spieler_mannschafts_bilanz)
           } else {

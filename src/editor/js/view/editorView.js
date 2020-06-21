@@ -76,7 +76,10 @@ class EditorView {
             // Expand the spielklassen that are stored as expanded
             Object.keys(view.spielklassenExpanded).forEach( spielklasse => {
               if (view.spielklassenExpanded[spielklasse]) {
-                this.spielklasseViews.find(view => view.id == spielklasse ).expand()
+                const spielklasseView = this.spielklasseViews.find(view => view.id == spielklasse )
+                if (spielklasseView){
+                  spielklasseView.expand()
+                }
               }
             })
           } else {

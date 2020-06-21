@@ -200,7 +200,6 @@ class Controller {
     localStorage.removeItem('localStorageFilepathQuit')
     localStorage.removeItem('localStoragePlanung')
     localStorage.removeItem('localStoragePlanungTags')
-    localStorage.removeItem('localStorageView')
     localStorage.setItem('localStorageFileSaved',"true")
     // New planung
     this.model = new Model()
@@ -294,12 +293,16 @@ class Controller {
     const id = this.model.view.sidebar.id
     if (display == "spieler") {
       const spieler = this.model.planung.spieler.getSpieler(id)
-      this.sidebarView.displaySpieler(spieler)
-      this.editorView.focusSpieler(spieler)
+      if (spieler) {
+        this.sidebarView.displaySpieler(spieler)
+        this.editorView.focusSpieler(spieler)
+      }
     } else if (display == "mannschaft") {
       const mannschaft = this.model.planung.mannschaften.getMannschaft(id)
-      this.sidebarView.displayMannschaft(mannschaft)
-      this.editorView.focusMannschaft(mannschaft)
+      if (mannschaft){
+        this.sidebarView.displayMannschaft(mannschaft)
+        this.editorView.focusMannschaft(mannschaft)
+      }
     } else {
       this.sidebarView.hideSidebar()
       this.editorView.removeFocus()

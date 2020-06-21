@@ -57,10 +57,10 @@ class Model {
     this.closeSidebar()
     // Planung
     this.planung = new PlanungsModel()
-    this.planung.bindPlanungStored(this.handlePlanungStored)
     if ( planung_json ) {
       this.planung.loadFromJSON(planung_json, true, true)
     }
+    this.planung.bindPlanungStored(this.handlePlanungStored)
     // return this
     return this.planung
   }

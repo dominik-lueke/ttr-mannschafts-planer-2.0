@@ -24,7 +24,7 @@ function createAppWindows() {
 function createSplashscreen() {
   splashScreen = new BrowserWindow({ 
     width: 550,
-    height: 300,
+    height: 320,
     frame: false
   })
   splashScreen.setIgnoreMouseEvents(true)

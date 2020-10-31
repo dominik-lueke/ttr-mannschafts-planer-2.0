@@ -379,25 +379,18 @@ class Controller {
   handleClickAufstellungLadenButtonOnMyTTModal = (planung_json) => {
     // Hide the sidebar as the currently shown spieler/mannschaft might not be there after load
     this.model.closeSidebar()
-    // load the aufstellung
-    this.model.planung.loadFromJSON(planung_json, true)
-    // Assume if we load the Aufstellung of a Serie, we want to start planning the next 
-    // Load RR-2019/20 -> Plan VR-2020/21
-    this.model.planung.increaseSerie()
-    // add tag to this aufstellung
-    this.model.addTagToPlanung(`Aufstellung ${planung_json.spieler_spielklasse} ${planung_json.halbserie} ${planung_json.saison} von click-TT geladen`)
+    // load the aufstellung 
+    this.model.updateAufstellungFromMyTT(planung_json)
   }
 
   handleClickTTRWerteLadenButtonOnMyTTModal = (planung_json) => {
-    this.model.planung.loadFromJSON(planung_json)
-    // add tag to this aufstellung
-    this.model.addTagToPlanung(`TTR-Werte Stichtag ${planung_json.ttrwerte.datestring} von myTischtennis geladen`)
+    // Load TTR Werte
+    this.model.updateTTRWerteFromMyTT(planung_json)
   }
 
   handleClickBilanzenLadenButtonOnMyTTModal = (planung_json) => {
-    this.model.planung.loadFromJSON(planung_json)
-    // add tag to this aufstellung
-    this.model.addTagToPlanung(`Bilanzen ${planung_json.bilanzen.saisons[0]} von click-TT geladen`)
+    // Load Bilanzen
+    this.model.updateBilanzenFromMyTT(planung_json)
   }
 
   /* EDITOR HANDLER */

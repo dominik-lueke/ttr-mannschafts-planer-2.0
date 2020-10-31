@@ -57,16 +57,48 @@ class Model {
     this.closeSidebar()
     // Planung
     this.planung = new PlanungsModel()
+    this.planung.bindPlanungStored(this.handlePlanungStored)
     if ( planung_json ) {
       this.planung.loadFromJSON(planung_json, true, true)
     }
-    this.planung.bindPlanungStored(this.handlePlanungStored)
     // return this
     return this.planung
   }
 
   updatePlanung(planung_json, update_aufstellung){
     this.planung.loadFromJSON(planung_json, update_aufstellung)
+  }
+
+  updateAufstellungFromMyTT(planung_json){
+    // load the aufstellung
+    this.planung.loadFromJSON(planung_json, true)
+    // directly remove the undo state we have created as the next call will create a new one anyway
+    this.history.undo.pop()
+
+    // Assume if we load the Aufstellung of a Serie, we want to start planning the next 
+    // Load RR-2019/20 -> Plan VR-2020/21
+    this.planung.increaseSerie()
+    // directly remove the undo state we have created as the next call will create new one anyway
+    this.history.undo.pop()
+
+    // add tag to this aufstellung
+    this.addTagToPlanung(`Aufstellung ${planung_json.spieler_spielklasse} ${planung_json.halbserie} ${planung_json.saison} von click-TT geladen`)
+  }
+
+  updateTTRWerteFromMyTT(planung_json){
+    this.planung.loadFromJSON(planung_json)
+    // directly remove the undo state we have created as the next calls will create new ones anyway
+    this.history.undo.pop()
+    // add tag to this aufstellung
+    this.addTagToPlanung(`TTR-Werte Stichtag ${planung_json.ttrwerte.datestring} von myTischtennis geladen`)
+  }
+
+  updateBilanzenFromMyTT(planung_json){
+    this.planung.loadFromJSON(planung_json)
+    // directly remove the undo state we have created as the next calls will create new ones anyway
+    this.history.undo.pop()
+    // add tag to this aufstellung
+    this.addTagToPlanung(`Bilanzen ${planung_json.bilanzen.saisons[0]} von click-TT geladen`)
   }
 
   handlePlanungStored = (planung) => {
@@ -76,7 +108,12 @@ class Model {
     if (this.history.undo.length > 100){
       this.history.undo.shift()
     }
-    this.history.undo.push(planung.getPlanungAsJsonString())
+    // only update undo if there really is a change
+    var planungToStore = planung.getPlanungAsJsonString()
+    var lastPlanungOnUndoStack = this.history.undo[this.history.undo.length-1]
+    if ( planungToStore !== lastPlanungOnUndoStack ) {
+      this.history.undo.push(planungToStore)
+    }
     ipcRenderer.invoke('setUndoEnabled', this.history.undo.length > 1)
     ipcRenderer.invoke('setRedoEnabled', this.history.redo.length > 0)
 

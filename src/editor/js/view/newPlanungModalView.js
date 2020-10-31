@@ -32,7 +32,7 @@ class NewPlanungModalView {
   fillHalbserieSaisonFromCurrentDate() {
     const today = new Date(Date.now())
     const month = today.getMonth() + 1
-    const halbserie = month in [9,10,11,12] ? "Rückrunde" : "Vorrunde"
+    const halbserie = VORRUNDEN_MONATE.includes(month) ? "Rückrunde" : "Vorrunde"
     $('#newPlanungsFormHalbserie').val(halbserie)
     const year = today.getFullYear()
     $('#newPlanungsFormSaison').val(`${year}/${year - 1999}`)
@@ -161,7 +161,7 @@ class NewPlanungModalView {
                   <label for="newPlanungsFormVereinsnummer">Vereins-Nummer 
                     <small>
                       <i class="fa fa-info-circle" data-toggle="tooltip" data-html="true" data-placement="top" 
-                          title="Die Vereins-Nummer findest du auf der Info-Seite deines Vereins auf myTischtennis.de oder die Vereinssuche">
+                          title="Die Vereins-Nummer findest Du auf der Info-Seite deines Vereins auf myTischtennis.de oder die Vereinssuche">
                       </i>
                     </small>
                   </label>

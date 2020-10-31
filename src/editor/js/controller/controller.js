@@ -336,8 +336,8 @@ class Controller {
 
   /* HEADER HANDLER */
 
-  handleClickOnReloadDataButton = (tab, url) => {
-    this.myTTModalView.loadUrl(tab, url)
+  handleClickOnReloadDataButton = (tab) => {
+    this.myTTModalView.showTab(tab)
   }
 
   /* NEW PLANUNG MODAL HANDLER */
@@ -407,7 +407,7 @@ class Controller {
   }
 
   handleClickOnLadeAufstellungLink = () => {
-    this.myTTModalView.loadUrl('aufstellung', this.model.planung.aufstellung.url)
+    this.myTTModalView.showTab('aufstellung')
   }
 
   handleAddMannschaft = (spielklasse, nummer) => {

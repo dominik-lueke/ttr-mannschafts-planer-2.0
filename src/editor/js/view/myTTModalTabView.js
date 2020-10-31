@@ -100,7 +100,7 @@ class MyTTModalTabView {
     })
     //tab activation
     this.tab.on('shown.bs.tab', (event) => {
-      if (this.webview.getAttribute("src") == "") {
+      if (this.webview.getAttribute("src") == "" && this.home_url) {
         this.loadUrl(this.home_url)
       }
     })

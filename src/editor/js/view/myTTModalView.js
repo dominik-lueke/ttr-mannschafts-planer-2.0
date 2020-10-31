@@ -28,13 +28,11 @@ class MyTTModalView {
       "ttrwerte": new MyTTModalTabView(this.tab_container, "TTR-Werte"),
       "bilanzen": new MyTTModalTabView(this.tab_container, "Bilanzen")
     }
-    this.tabs["aufstellung"].show()
   }
 
-  loadUrl(id, url) {
+  showTab(id) {
     if (id in this.tabs) {
       this.tabs[id].show()
-      this.tabs[id].loadUrl(url)
     }
   }
 

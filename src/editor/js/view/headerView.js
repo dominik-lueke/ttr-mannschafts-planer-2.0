@@ -57,13 +57,13 @@ class HeaderView {
 
   bindClickOnReloadDataButon(handler) {
     this.mytt_status.aufstellung.badge.click( (event) => {
-      handler("aufstellung", this.planung.aufstellung.url)
+      handler("aufstellung")
     })
     this.mytt_status.ttrwerte.badge.click( (event) => {
-      handler("ttrwerte", this.planung.ttrwerte.url)
+      handler("ttrwerte")
     })
     this.mytt_status.bilanzen.badge.click( (event) => {
-      handler("bilanzen", this.planung.bilanzen.url)
+      handler("bilanzen")
     })
   }
 

@@ -18,7 +18,8 @@ class FooterView {
                 <i class="fa fa-tag"></i>
                 <sub class="overlay-icon"><i class="fa fa-plus-circle"></i><sub>
               </div>
-              <input id="planung-tag-input-text" type="text" class="form-control form-control-sm rounded-sm bg-light invisible" size="30"> 
+              <input id="planung-tag-input-text" type="text" class="form-control form-control-sm rounded-sm bg-light invisible" size="30">
+              <small id="planung-tag-input-hint" class="pt-1 pl-2 text-muted invisible">Erstellen mit Eingabetaste</small>
             </div>
           </div>
           <div class="p-1 flex-fill">
@@ -43,15 +44,20 @@ class FooterView {
     this.planung_tag_input_group = $('#planung-tag-input-group')
     this.planung_tag_input_button = $('#planung-tag-input-button')
     this.planung_tag_input_text = $('#planung-tag-input-text')
+    this.planung_tag_input_hint = $('#planung-tag-input-hint')
 
     this.planung_show_tags_button = $('#planung-show-tags-button')
     this.planung_show_tags_button_number = $('#planung-show-tags-button-number')
+
+    // initiaöize temp_tag_name to use it as default value
+    this.temp_tag_name = ""
 
     // Ui events
     this.planung_tag_input_button.on('click', (event) => {
       this.planung_tag_input_button.tooltip('hide')
       this.planung_tag_input_text.toggleClass('invisible')
       this.planung_tag_input_text.focus()
+      this.planung_tag_input_hint.toggleClass('invisible')
     })
   }
 
@@ -75,8 +81,14 @@ class FooterView {
     }
 
     // display "tag selection button"
-    const tag_count = Object.keys(model.tags).length
-    this.planung_tag_input_text.attr('placeholder', `Zwischtenstand #${tag_count+1}`)
+    var tag_count = Object.keys(model.tags).length
+    var new_temp_tag_count = tag_count
+    do {
+      // prevent that the same tag name is used twice
+      new_temp_tag_count = new_temp_tag_count+1
+      this.temp_tag_name = `Zwischenstand #${new_temp_tag_count}`
+    } while (Object.keys(model.tags).map(key => model.tags[key].name).includes(this.temp_tag_name))
+    this.planung_tag_input_text.attr('placeholder', this.temp_tag_name)
     if (tag_count) {
       this.planung_show_tags_button.removeClass('d-none')
       this.planung_show_tags_button_number.text(tag_count)
@@ -94,12 +106,15 @@ class FooterView {
     event.preventDefault()
     // On <Enter> we edit name
     if (event.keyCode === 13) {
+      this.planung_tag_input_text.val(this.temp_tag_name)
       this.planung_tag_input_text.blur() // delegate to the focusout handler
       this.planung_tag_input_text.addClass('invisible')
+      this.planung_tag_input_hint.addClass('invisible')
     // On <Escape> we cancel
     } else if (event.keyCode === 27) {
       this.planung_tag_input_text.val("")
       this.planung_tag_input_text.addClass('invisible')
+      this.planung_tag_input_hint.addClass('invisible')
     }
   }
 
@@ -114,6 +129,7 @@ class FooterView {
       this.planung_tag_input_text.val("")
     }
     this.planung_tag_input_text.addClass('invisible')
+    this.planung_tag_input_hint.addClass('invisible')
   }
 
   _addTag(handler){

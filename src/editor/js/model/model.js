@@ -156,8 +156,8 @@ class Model {
 
   addTagToPlanung(tag){
     this.planung.setTag(tag)
-    const tag_hash = tag.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0)
     const now = new Date(Date.now())
+    const tag_hash = `${tag}${now.toString()}`.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0)
     const date_options = { weekday: 'long', year: 'numeric', month: '2-digit', day: 'numeric', hour: 'numeric', minute: "2-digit" }
     const tag_planung = this.planung.getPlanungAsJsonString()
     var tag_size = Math.round((Buffer.byteLength(tag_planung, 'utf8') / 1024))

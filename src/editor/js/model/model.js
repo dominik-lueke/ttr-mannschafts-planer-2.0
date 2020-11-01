@@ -10,22 +10,19 @@ class Model {
     if (stored_filepath) { this.setFile(stored_filepath) }
 
     // store the view
-    const stored_view_json_str = localStorage.getItem('localStorageView')
-    this.view = stored_view_json_str ? JSON.parse(stored_view_json_str) : {
-      sidebar: {
-        display: "",
-        id: 0
-      },
-      spielklassenExpanded: {}
-    }
+    this.setView()
+
+    // bind handlers
     this.onSidebarViewChanged = () => {}
     this.onFooterDataChanged = () => {}
 
+    // undo-redo history
     this.history = {
       undo: [], // the tip of undo is always the current planung
       redo: []
     }
 
+    // tags
     this.tags = {}
 
     // load planung or create new
@@ -256,6 +253,24 @@ class Model {
     }
     this.view.spielklassenExpanded[spielklasse] = expanded
     this._commit()
+  }
+
+  /* VIEW */
+
+  resetView() {
+    localStorage.removeItem('localStorageView')
+    this.setView()
+  }
+
+  setView() {
+    const stored_view_json_str = localStorage.getItem('localStorageView')
+    this.view = stored_view_json_str ? JSON.parse(stored_view_json_str) : {
+      sidebar: {
+        display: "",
+        id: 0
+      },
+      spielklassenExpanded: {}
+    }
   }
 
   /* SIDEBAR */

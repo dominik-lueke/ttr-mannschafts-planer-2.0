@@ -342,6 +342,7 @@ class Controller {
 
   /* NEW PLANUNG MODAL HANDLER */
   handleClickSubmitPlanungButton = (planung_json) => {
+    this.model.resetView()
     this.model.updatePlanung(planung_json, false)
     ipcRenderer.send('enableSaveExportPrintClose')
   }

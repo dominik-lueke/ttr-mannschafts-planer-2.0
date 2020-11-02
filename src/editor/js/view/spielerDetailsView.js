@@ -207,7 +207,7 @@ class SpielerDetailsView {
               <h7 class="text-muted link">
                 <small><i class="fa fa-caret-down ml-1"></i></small>
                 ${saison.halbserie} ${saison.saison} 
-                <small>(Position ${saison.position} - Einsätze: ${saison.bilanzen.reduce((a,c)=>a+c.einsaetze,0)})</small>
+                <small class="pull-right">Position ${saison.position} - Einsätze: ${saison.bilanzen.reduce((a,c)=>a+c.einsaetze,0)}</small>
               </h7>
             </div>
             <div id="spieler-details-view-body-bilanzen-${saison_id}" class="collapse ${show}" data-parent="#spieler-details-view-body-bilanzen">

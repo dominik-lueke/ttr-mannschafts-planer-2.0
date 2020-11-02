@@ -22,9 +22,6 @@ class Model {
       redo: []
     }
 
-    // tags
-    this.tags = {}
-
     // load planung or create new
     const stored_planung_json_str = localStorage.getItem('localStoragePlanung')
     const stored_planung_json = stored_planung_json_str ? JSON.parse(stored_planung_json_str) : undefined
@@ -33,7 +30,7 @@ class Model {
     // tags
     const stored_tags_json_str = localStorage.getItem('localStoragePlanungTags')
     this.tags = stored_tags_json_str ? JSON.parse(stored_tags_json_str) : { } // a map of tagged planungen as json
-    
+
   }
 
   /**
@@ -153,6 +150,11 @@ class Model {
    * 
    * PLANUNG TAGS
    */
+
+  setTags(tags_json_str){
+    this.tags = JSON.parse(tags_json_str)
+    localStorage.setItem("localStoragePlanungTags",tags_json_str)
+  }
 
   addTagToPlanung(tag){
     this.planung.setTag(tag)

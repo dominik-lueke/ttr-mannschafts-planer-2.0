@@ -235,7 +235,7 @@ class Controller {
     const file_content = JSON.parse(file_content_str)
     // set tags
     if (file_content.hasOwnProperty('tags')){
-      this.model.tags = JSON.parse(file_content.tags)
+      this.model.setTags(file_content.tags)
     }
     // update planung
     this.model.updatePlanung(file_content, true)

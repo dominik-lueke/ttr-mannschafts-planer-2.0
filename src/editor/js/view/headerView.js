@@ -126,7 +126,7 @@ class HeaderView {
         this.mytt_status.ttrwerte.badge.removeClass("text-muted")
         this.mytt_status.ttrwerte.icon.removeClass("fa-times-circle").addClass("fa-check-circle").removeClass("fa-warning")
         this.mytt_status.ttrwerte.icon.removeClass("text-muted").addClass("text-success").removeClass("text-warning")
-        this.mytt_status.ttrwerte.div.attr("title", `Die geladenen TTR-Werte sind vom ${this.planung.ttrwerte.datestring}`)
+        this.mytt_status.ttrwerte.div.attr("title", `Die tagesaktuellen TTR-Werte vom ${this.planung.ttrwerte.datestring} wurden geladen `)
         break
       case "outdated":
         this.mytt_status.ttrwerte.badge.removeClass("text-muted")
@@ -149,7 +149,7 @@ class HeaderView {
         this.mytt_status.bilanzen.badge.removeClass("text-muted")
         this.mytt_status.bilanzen.icon.removeClass("fa-times-circle").addClass("fa-check-circle").removeClass("fa-warning")
         this.mytt_status.bilanzen.icon.removeClass("text-muted").addClass("text-success").removeClass("text-warning")
-        var title_attr = `Die geladenen Bilanzen sind aktuell.`
+        var title_attr = `Die geladenen Bilanzen sind aktuell`
         this.planung.bilanzen.saisons.forEach(saison => {
           title_attr += `<br/>${saison} <i class="fa fa-check"></i>`
         })
@@ -159,7 +159,7 @@ class HeaderView {
         this.mytt_status.bilanzen.badge.removeClass("text-muted")
         this.mytt_status.bilanzen.icon.removeClass("fa-times-circle").removeClass("fa-check-circle").addClass("fa-warning")
         this.mytt_status.bilanzen.icon.removeClass("text-muted").removeClass("text-success").addClass("text-warning")
-        var title_attr = `Die geladenen Bilanzen sind nicht aktuell.`
+        var title_attr = `Die geladenen Bilanzen sind nicht aktuell`
         this.planung.bilanzen.saisons.forEach(saison => {
           title_attr += `<br/>${saison} <i class="fa fa-check"></i>`
         })

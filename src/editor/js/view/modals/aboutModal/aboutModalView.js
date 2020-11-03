@@ -34,7 +34,7 @@ class AboutModalView {
               Dieses Tool bietet eine Unterstützung zur Erstellung von ${DEFAULT_VERBAND}-Wettspielordnungs-konformen Aufstellungen in Bezug auf Spielstärke-Reihenfolge nach QTTR-Werten und Mannschafts-Sollstärken (<a href="file://assets/WO2020-01-01.pdf" class="text-success">Stand 01/2020</a>, Abschnitt H).
             </p>
             <p>
-              Es garantiert allerdings nicht, dass die mit diesem Tool erstellten Aufstellungen vollständig WO-konform sind. Bitte überprüfe die erstellten Aufstellung stets noch einmal auf Richtigkeit. Einige Sonderstatus wie z.B. Jugend-Ersatzspieler oder gleichgestellte Ausländer werden nicht berücksichtigt.
+              Es garantiert allerdings nicht, dass die mit diesem Tool erstellten Aufstellungen vollständig WO-konform sind. Bitte überprüfe die erstellten Aufstellung stets noch einmal auf Richtigkeit. Einige Sonderstatus wie z.B. Ergänzungsspieler oder (gleichgestellte) Ausländer werden nicht berücksichtigt.
             </p>
             <p>
               Die Aufstellungen vergangener Halbserien, TTR-Werte und Bilanzen können manuell von den <a href="https://mytischtennis.de" class="text-success">myTischtennis.de</a> Seiten heruntergeladen werden. Für die eingebetteten Inhalte von myTischtennis.de wird keine Haftung übernommen. Für einige Funktionen ist ein Account bei myTischtennis.de notwendig.

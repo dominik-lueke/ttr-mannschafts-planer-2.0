@@ -42,6 +42,7 @@ class SpielklasseView {
     this.lade_aufstellung_link = $(`#${this.id}-lade-aufstellung-link`)
     this.spielklasse_infos = this.card_header.find('.spielklasse-infos')
     this.mannschaftViews = []
+    this.add_mannschaft_handler = {}
     this.displayMannschaften(this.planung)
   }
 
@@ -100,7 +101,10 @@ class SpielklasseView {
   }
 
   bindAddMannschaft(handler) {
-    this.add_mannschaft_button.click( (event) => { handler(this.spielklasse, this.mannschaften.length + 1)})
+    if (this.add_mannschaft_handler != handler) {
+      this.add_mannschaft_handler = handler
+      this.add_mannschaft_button.click( (event) => { handler(this.spielklasse, this.mannschaften.length + 1)})
+    }
   }
 
   /* SPIELER BINDINGS */

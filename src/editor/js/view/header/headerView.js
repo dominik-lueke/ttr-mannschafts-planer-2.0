@@ -126,7 +126,11 @@ class HeaderView {
         this.mytt_status.ttrwerte.badge.removeClass("text-muted")
         this.mytt_status.ttrwerte.icon.removeClass("fa-times-circle").addClass("fa-check-circle").removeClass("fa-warning")
         this.mytt_status.ttrwerte.icon.removeClass("text-muted").addClass("text-success").removeClass("text-warning")
-        this.mytt_status.ttrwerte.div.attr("title", `Die tagesaktuellen TTR-Werte vom ${this.planung.ttrwerte.datestring} wurden geladen `)
+        if (this.planung.ttrwerte.aktuell == "Q-TTR") {
+          this.mytt_status.ttrwerte.div.attr("title", `Die Q-TTR Werte vom ${this.planung.ttrwerte.datestring} wurden geladen`)
+        } else {
+          this.mytt_status.ttrwerte.div.attr("title", `Die tagesaktuellen TTR-Werte vom ${this.planung.ttrwerte.datestring} wurden geladen`)
+        }
         break
       case "outdated":
         this.mytt_status.ttrwerte.badge.removeClass("text-muted")

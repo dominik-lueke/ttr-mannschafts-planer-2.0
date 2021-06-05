@@ -111,11 +111,11 @@ class SpielerListeModel {
         if ( previous_nummer > 0) {
           // append the spieler of the deleted mannschaft to the previous mannschaft
           const new_position = this.getSpielerOfMannschaft(spielklasse, previous_nummer).length + 1
-          this.reorderSpieler(spieler.id, previous_nummer, new_position)
+          this.reorderSpieler(spieler.id, spielklasse, previous_nummer, new_position)
         } else {
           // prepend the spieler to the next mannschaft
           new_position_next_mannschaft++
-          this.reorderSpieler(spieler.id, nummer + 1, new_position_next_mannschaft)
+          this.reorderSpieler(spieler.id, spielklasse, nummer + 1, new_position_next_mannschaft)
         }
       } else {
         // delete the spieler

@@ -157,10 +157,10 @@ class Model {
   }
 
   addTagToPlanung(tag){
-    this.planung.setTag(tag)
     const now = new Date(Date.now())
     const tag_hash = `${tag}${now.toString()}`.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0)
-    const date_options = { weekday: 'long', year: 'numeric', month: '2-digit', day: 'numeric', hour: 'numeric', minute: "2-digit" }
+    const date_options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: 'numeric', minute: "2-digit" }
+    this.planung.setTag(tag_hash)
     const tag_planung = this.planung.getPlanungAsJsonString()
     var tag_size = Math.round((Buffer.byteLength(tag_planung, 'utf8') / 1024))
     var tag_bytes = "KB"
@@ -189,7 +189,7 @@ class Model {
 
   deleteTag(tag_id){
     if (this.tags.hasOwnProperty(tag_id)){
-      if ( this.planung.tag === this.tags[tag_id].name){
+      if (this.planung.tag == tag_id){
         this.planung.removeTag()
       }
       delete this.tags[tag_id]

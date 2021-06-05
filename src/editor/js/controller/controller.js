@@ -60,6 +60,7 @@ class Controller {
   _createFooterView = () => {
     this.footerView = new FooterView()
     this.footerView.bindAddTagToPlanung(this.handleAddTagToPlanung)
+    this.footerView.bindLoadTag(this.handleClickLoadTag)
   }
 
   _createSidebarView = () => {

@@ -330,6 +330,16 @@ span.badge {
   font-size: 1.3em;
 }
 
+/* FOOTER */
+#footer .inactive-tag {
+  opacity: 0.5;
+}
+
+#footer .inactive-tag:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
 /* ABOUT MODAL */
 
 #tischtennis-planer-about-modal {

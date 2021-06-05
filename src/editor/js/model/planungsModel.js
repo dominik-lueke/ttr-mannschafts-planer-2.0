@@ -21,6 +21,7 @@ class PlanungsModel {
     this._initBilanzenStatus()
     // FOOTER
     this.tag = ""
+    this.tag_is_active = false
     // METADATA
     this.isEmpty = this._isEmpty()
     this.isNew = true
@@ -156,13 +157,13 @@ class PlanungsModel {
 
   setTag(tag){
     this.tag = tag
-    this.onFooterDataChanged()
+    this.tag_is_active = true
     this._storePlanung()
   }
 
   removeTag(){
     this.tag = ""
-    this.onFooterDataChanged()
+    this.tag_is_active = false
     this._storePlanung()
   }
 
@@ -619,7 +620,7 @@ class PlanungsModel {
     if ( this.allow_commit === true ) {
       this._updateUrlStrings()
       // remove a possibly set tag as we now have changed the planung and the tag is not there any more
-      this.tag = tag
+      this.tag_is_active = tag != ""
       // trigger view update
       this.onMannschaftenChanged()
       this.onHeaderDataChanged(this)

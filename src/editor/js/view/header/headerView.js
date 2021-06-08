@@ -159,16 +159,30 @@ class HeaderView {
         })
         this.mytt_status.bilanzen.div.attr("title", title_attr)
         break
-      case "outdated":
-        this.mytt_status.bilanzen.badge.removeClass("text-muted")
-        this.mytt_status.bilanzen.icon.removeClass("fa-times-circle").removeClass("fa-check-circle").addClass("fa-warning")
-        this.mytt_status.bilanzen.icon.removeClass("text-muted").removeClass("text-success").addClass("text-warning")
-        var title_attr = `Die geladenen Bilanzen sind nicht aktuell`
-        this.planung.bilanzen.saisons.forEach(saison => {
-          title_attr += `<br/>${saison} <i class="fa fa-check"></i>`
-        })
-        this.mytt_status.bilanzen.div.attr("title", title_attr)
-        break
+        case "outdated":
+          this.mytt_status.bilanzen.badge.removeClass("text-muted")
+          this.mytt_status.bilanzen.icon.removeClass("fa-times-circle").removeClass("fa-check-circle").addClass("fa-warning")
+          this.mytt_status.bilanzen.icon.removeClass("text-muted").removeClass("text-success").addClass("text-warning")
+          var title_attr = `Die geladenen Bilanzen sind nicht aktuell`
+          // generate all missing halbserie
+          var first_loaded_halbserie = this.planung.bilanzen.saisons[0]
+          var other_halbserie = this.planung.halbserie
+          var last_saison = this.planung.saison
+          var last_halbserie_saison = ""
+          do {
+            if (last_halbserie_saison != "") {
+              title_attr += `<br/><span class="text-muted">${last_halbserie_saison} <i class="fa fa-times"></i></span>`
+            }
+            var last_saison = GET_PREVIOUS_SAISON(other_halbserie, last_saison)
+            var other_halbserie = GET_OTHER_HALBSERIE(other_halbserie)
+            last_halbserie_saison = `${other_halbserie} ${last_saison}`
+          } while (last_halbserie_saison != first_loaded_halbserie)
+          // display the halbserien that have been loaded
+          this.planung.bilanzen.saisons.forEach(saison => {
+            title_attr += `<br/>${saison} <i class="fa fa-check"></i>`
+          })
+          this.mytt_status.bilanzen.div.attr("title", title_attr)
+          break
       default:
         break
     }

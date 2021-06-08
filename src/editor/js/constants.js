@@ -136,3 +136,17 @@ COMPARE_HALBSERIEN = (a,b) => {
     return b_sort_saison - a_sort_saison
   }
 }
+
+GET_OTHER_HALBSERIE = (current_halbserie) => {
+  return current_halbserie== "Vorrunde" ? "Rückrunde" : "Vorrunde"
+}
+
+GET_PREVIOUS_SAISON = (current_halbserie, current_saison) => {
+  var prevSaisonRaw = `${parseInt( current_saison.replace("/",""),10) - 101}`
+  return current_halbserie == "Vorrunde" ? [prevSaisonRaw.slice(0,4),"/",prevSaisonRaw.slice(4)].join('') : current_saison
+}
+
+GET_NEXT_SAISON = (current_halbserie, current_saison) => {
+  var nextSaisonRaw = `${parseInt( current_saison.replace("/",""),10) + 101}`
+  return current_halbserie == "Vorrunde" ? [nextSaisonRaw.slice(0,4),"/",nextSaisonRaw.slice(4)].join('') : saison
+}

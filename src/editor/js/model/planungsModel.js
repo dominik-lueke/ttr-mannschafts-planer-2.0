@@ -408,7 +408,9 @@ class PlanungsModel {
     this.isEmpty = this._isEmpty()
     if ( ! this.isNew ) {
       var save_tag = ""
-      if (planung_json.hasOwnProperty('tag')) {
+      if (planung_json.hasOwnProperty('tag') 
+          && planung_json.hasOwnProperty('tag_is_active')
+          && planung_json.tag_is_active) {
         // Do not use setTag function as we do not want to notify that the planung has changed
         // and then create a new entry in the "undo" list of the model
         save_tag = planung_json.tag

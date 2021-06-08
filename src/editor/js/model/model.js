@@ -162,7 +162,7 @@ class Model {
     const date_options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: 'numeric', minute: "2-digit" }
     this.planung.setTag(tag_hash)
     const tag_planung = this.planung.getPlanungAsJsonString()
-    var tag_size = Math.round((Buffer.byteLength(tag_planung, 'utf8') / 1024))
+    var tag_size = Math.round((new Blob([tag_planung]).size / 1024))
     var tag_bytes = "KB"
     if (tag_size > 900) {
       tag_size = Math.round(tag_size / 1024)

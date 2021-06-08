@@ -71,7 +71,7 @@ class FooterView {
 
     // display "tag" or "add tag"
     $(`#planung-tag`).tooltip('dispose')
-    if (model.planung.tag !== "") {
+    if (model.planung.tag !== "" && model.planung.tag in model.tags ) {
       this.planung_tag_text.text(model.tags[model.planung.tag].name)
       this.planung_tag.removeClass('d-none')
       if (model.planung.tag_is_active) {

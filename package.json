@@ -1,14 +1,21 @@
 {
   "name": "ttr-mannschafts-planer-2.0",
-  "version": "2.2.0",
+  "version": "2.1.9",
   "description": "Tischtennis Mannschafts Planer",
   "productName": "Tischtennis Mannschafts Planer",
   "main": "main.js",
   "scripts": {
     "test": "electron . --dev",
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder build --win --publish never",
+    "deploy": "electron-builder build --win --publish always"
   },
-  "repository": "https://bitbucket.org/dominiklueke/ttr-mannschafts-planer-2.0/",
+  
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/dominik-lueke/ttr-mannschafts-planer-2.0.git",
+    "bitbucket" : "https://bitbucket.org/dominiklueke/ttr-mannschafts-planer-2.0/"
+  },
   "keywords": [
     "Tischtennis",
     "TTR",
@@ -19,9 +26,11 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "8.2.5",
+    "electron-builder": "^22.10.5",
     "electron-packager": "^14.2.1"
   },
   "dependencies": {
+    "electron-updater": "^4.3.9",
     "excel4node": "^1.7.2"
   },
   "vendor": {

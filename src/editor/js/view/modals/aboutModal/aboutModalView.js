@@ -45,7 +45,7 @@ class AboutModalView {
               Email: ${this.json.email}<br/>
               Version: ${this.json.version}<br/>
               Lizenz: ${this.json.license}<br/>
-              Repository: <a class="text-white" href="${this.json.repository}">${this.json.repository}</a>
+              Repository: <a class="text-white" href="${this.json.repository.url}">${this.json.repository.url}</a>
             </p>
             <hr class="border-white">
             <p>

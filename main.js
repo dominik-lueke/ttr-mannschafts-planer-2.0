@@ -1,5 +1,6 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow, Menu, ipcMain, shell} = require('electron')
+const { autoUpdater } = require('electron-updater');
 const ExcelExporter = require('./src/main/js/export/excelExporter')
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -65,6 +66,7 @@ function createWindow () {
   editorWindow.once('ready-to-show', () => {
     setTimeout(()=>{
       splashScreen.destroy()
+      autoUpdater.checkForUpdatesAndNotify()
       editorWindow.maximize()
       editorWindow.show()
       if (file_to_open && file_to_open !== '.') {
@@ -342,3 +344,16 @@ ipcMain.on('quitOK', (event, args) => {
 ipcMain.on('enableFileMenu', (event, args) => {
   enableFileMenu(args)
 })
+
+/* AUTO UPDATER */
+ipcMain.on('restart_app', () => {
+  autoUpdater.quitAndInstall();
+});
+
+autoUpdater.on('update-available', () => {
+  mainWindow.webContents.send('update_available');
+});
+
+autoUpdater.on('update-downloaded', () => {
+  mainWindow.webContents.send('update_downloaded');
+});

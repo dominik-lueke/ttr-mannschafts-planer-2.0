@@ -65,6 +65,16 @@
     <div id="progressbar">
     </div>
 
+    <!-- auto updater notification-->
+    <div id="notification" class="d-none">
+      <p id="message"></p>
+      <button id="close-button" onClick="closeNotification()">
+        Close
+      </button>
+      <button id="restart-button" onClick="restartApp()" class="d-none">
+        Restart
+      </button>
+    </div>
 
     <!-- You can also require other files to run in this process -->
     <script src="./../js/constants.js"></script>

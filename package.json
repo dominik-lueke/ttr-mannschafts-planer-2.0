@@ -10,11 +10,10 @@
     "build": "electron-builder build --win --publish never",
     "deploy": "electron-builder build --win --publish always"
   },
-  
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/dominik-lueke/ttr-mannschafts-planer-2.0.git",
-    "bitbucket" : "https://bitbucket.org/dominiklueke/ttr-mannschafts-planer-2.0/"
+    "type": "git",
+    "url": "https://github.com/dominik-lueke/ttr-mannschafts-planer-2.0.git",
+    "bitbucket": "https://bitbucket.org/dominiklueke/ttr-mannschafts-planer-2.0/"
   },
   "keywords": [
     "Tischtennis",
@@ -25,7 +24,7 @@
   "email": "dominik.lueke@gmail.com",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "8.2.5",
+    "electron": "^13.1.1",
     "electron-builder": "^22.10.5",
     "electron-packager": "^14.2.1"
   },

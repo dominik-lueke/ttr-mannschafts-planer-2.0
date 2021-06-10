@@ -33,6 +33,7 @@
     "excel4node": "^1.7.2"
   },
   "vendor": {
+    "electron": "13.1.1",
     "bootstrap": "4.4.1",
     "fontawesome": "4.7.0",
     "jquery": "3.3.1",

@@ -24,6 +24,8 @@ class Controller {
     this._createPlanungTagsModalView()
     // ABOUTMODAL
     this._createAboutModalView()
+    // AUTOUPDATERNOTIFICATION
+    this._createAutoUpdaterNotificationView()
     // ALERT
     this.alertView = new AlertView()
 
@@ -114,6 +116,11 @@ class Controller {
     this.aboutModalView = new AboutModalView()
   }
 
+  _createAutoUpdaterNotificationView = () => {
+    this.autoUpdaterNotificationView = new AutoUpdaterNotifactionView()
+    this.autoUpdaterNotificationView.bindRestartButtonClickHandler(this.handleRestartButtonClicked)
+  }
+
   /* UNDO + REDO */
 
   undo = () => {
@@ -122,6 +129,20 @@ class Controller {
 
   redo = () => {
     this.model.redo()
+  }
+
+  /* AUTO UPDATE NOTIFICATION VIEW */
+
+  displayUpdateAvailable = () => {
+    this.autoUpdaterNotificationView.displayUpdateAvailable()
+  }
+
+  displayDownloadDone = () => {
+    this.autoUpdaterNotificationView.displayDownloadDone()
+  }
+
+  handleRestartButtonClicked = () => {
+    ipcRenderer.send('restart_app')
   }
 
   /* ABOUT MODAL */

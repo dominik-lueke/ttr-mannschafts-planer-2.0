@@ -347,11 +347,10 @@ span.badge {
 }
 
 /* AUTO UPDATER */
-#notification {
+#auto-updater-notification {
   position: fixed;
-  bottom: 20px;
-  left: 20px;
-  width: 200px;
+  bottom: 50px;
+  right: 20px;
   padding: 20px;
   border-radius: 5px;
   background-color: white;

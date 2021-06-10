@@ -1,7 +1,0 @@
-set name=%1
-set platform=%2
-set arch=%3
-set version=%4
-
-cd ~dp0/..
-build\tools\7-ZipPortable-1805\7z.exe a -aoa -mx=9 .\dist\%name%-%platform%-%arch%-%version%.zip .\dist\%name%-%platform%-%arch%\*

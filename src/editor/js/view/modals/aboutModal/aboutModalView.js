@@ -6,7 +6,7 @@ class AboutModalView {
       this.json = json
       $("#aboutModal").append(this._getHtml())
     })
-    
+
   }
 
   displayAboutModal() {
@@ -50,7 +50,7 @@ class AboutModalView {
             <hr class="border-white">
             <p>
               <small>Built with 
-                <a href="https://www.electronjs.org">Electron ${this.json.devDependencies.electron}</a>,
+                <a href="https://www.electronjs.org">Electron ${this.json.vendor.electron}</a>,
                 <a href="https://getbootstrap.com/docs/4.4/getting-started/introduction/">Bootstrap ${this.json.vendor.bootstrap}</a>,
                 <a href="https://fontawesome.com/v4.7.0/icons/">Font Awesome ${this.json.vendor.fontawesome}</a>,
                 <a href="https://jquery.com/">jQuery ${this.json.vendor.jquery}</a>,

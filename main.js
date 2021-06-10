@@ -71,7 +71,7 @@ function createWindow () {
       autoUpdater.checkForUpdatesAndNotify()
       editorWindow.maximize()
       editorWindow.show()
-      if (file_to_open && file_to_open !== '.') {
+      if (file_to_open && file_to_open !== '.' && file_to_open !== '--updated') {
         editorWindow.webContents.send('openFilepath',file_to_open)
       }
     }, 1000)
@@ -348,14 +348,15 @@ ipcMain.on('enableFileMenu', (event, args) => {
 })
 
 /* AUTO UPDATER */
+
 ipcMain.on('restart_app', () => {
   autoUpdater.quitAndInstall();
 });
 
 autoUpdater.on('update-available', () => {
-  mainWindow.webContents.send('update_available');
+  editorWindow.webContents.send('update_available');
 });
 
 autoUpdater.on('update-downloaded', () => {
-  mainWindow.webContents.send('update_downloaded');
+  editorWindow.webContents.send('update_downloaded');
 });

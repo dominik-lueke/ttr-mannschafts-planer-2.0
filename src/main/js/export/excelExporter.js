@@ -63,7 +63,10 @@ class ExcelExporter {
     rows_written += header_rows_written
     write_to_row += header_rows_written
     // write spieler
-    planung.spieler.liste.filter(spieler => ( spieler.mannschaft === mannschaft.nummer)).forEach(spieler => {
+    planung.spieler.liste
+    .filter(spieler => ( spieler.spielklasse === mannschaft.spielklasse))
+    .filter(spieler => ( spieler.mannschaft === mannschaft.nummer))
+    .forEach(spieler => {
       var spieler_rows_written = this._writeSpieler(spieler, ws, write_to_row)
       rows_written += spieler_rows_written
       write_to_row += spieler_rows_written

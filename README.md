@@ -55,19 +55,6 @@ npm test
 
 ### Ein Release-Paket bauen
 
-Setze die korrekten Properties in `build.bat`
-
-z.B.
-
-```language
-set name=TischtennisMannschaftsPlaner
-set platform=win32
-set arch=x64
-set version=2.1.0
-```
-
-Bauen mit `electron-packager`
-
 ```powershell
-.\build.bat
+npm run build
 ```

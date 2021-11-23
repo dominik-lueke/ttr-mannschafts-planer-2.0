@@ -1,7 +1,7 @@
 class SpielerListeModel {
 
-  constructor(spielklasse="") {
-    this.spielklasse = spielklasse
+  constructor(saison="") {
+    this.saison = saison
     this.liste = []
   }
 
@@ -9,33 +9,41 @@ class SpielerListeModel {
    *  Public Functions 
    */
 
-  addSpieler(mannschaft=0, position=0, name="", qttr=1) {
+  addSpieler(spielklasse="", mannschaft=0, position=0, name="", qttr=1) {
     const id = this.liste.length > 0 ? Math.max.apply(null, this.liste.map(spieler => spieler.id)) + 1 : 1
     // add the spieler 
-    const spieler = new SpielerModel(id, name, this.spielklasse, qttr)
+    const spieler = new SpielerModel(id, name, spielklasse, qttr)
     this.liste.push(spieler)
     // insert the new spieler in the correct (mannschaft, position)
-    this._insertSpielerInMannschaft(spieler, mannschaft, position)
+    this._insertSpielerInMannschaft(spieler, spielklasse, mannschaft, position)
     // return the id
     return id
   }
 
-  reorderSpieler(id, new_mannschaft, new_position) {
+  reorderSpieler(id, new_spielklasse, new_mannschaft, new_position) {
     const spieler = this.liste.find(spieler => spieler.id == id)
+    const spieler_duplicate_in_new_spielklasse = false
+    if (spieler.mytt_id !== 0 && spieler.spielklasse !== new_spielklasse) {
+      spieler_duplicate_in_new_spielklasse = this.liste.filter(s => s.spielklasse == new_spielklasse).find(s.mytt_id == spieler.mytt_id)
+    }
+    if (spieler_duplicate_in_new_spielklasse) {
+      throw new Exception()
+    }
     // keep primary spv of spieler if it is reordered in the same mannschaft. Else delete it
-    var keep_spv = spieler.mannschaft == new_mannschaft
+    const keep_spv = (spieler.spielklasse == new_spielklasse && spieler.mannschaft == new_mannschaft)
     // reorder = remove from old position + insert in new position
     this._removeSpielerFromMannschaft(spieler, keep_spv)
-    this._insertSpielerInMannschaft(spieler, new_mannschaft, new_position)
+    this._insertSpielerInMannschaft(spieler, new_spielklasse, new_mannschaft, new_position)
   }
 
-  reorderMannschaft(old_mannschaft, new_mannschaft) {
+  reorderMannschaft(spielklasse, old_mannschaft, new_mannschaft) {
     // reorder
     this.liste
-      .filter(spieler => ( spieler.mannschaft == old_mannschaft ))
-      .forEach(spieler => {
-        spieler.mannschaft = new_mannschaft
-      })
+    .filter(spieler => ( spieler.spielklasse == spielklasse ))
+    .filter(spieler => ( spieler.mannschaft == old_mannschaft ))
+    .forEach(spieler => {
+      spieler.mannschaft = new_mannschaft
+    })
     // sort liste
     this._sortSpielerListe()
     // validate all spieler
@@ -56,6 +64,12 @@ class SpielerListeModel {
   editSpielerQttr(id, qttr) {
     const spieler = this.liste.find(spieler => spieler.id == id)
     this._setQttrForSpieler(spieler, qttr)
+  }
+
+  editSpielerJahrgang(id, jahrgang) {
+    const spieler = this.liste.find(spieler => spieler.id == id)
+    spieler.jahrgang = jahrgang
+    this._checkAgeForSpielklasseForSpieler(spieler)
   }
 
   editSpielerRes(id, res) {
@@ -88,20 +102,20 @@ class SpielerListeModel {
     this.liste = this.liste.filter(spieler => ( spieler.id !== id ) )
   }
 
-  deleteMannschaft(nummer, keep_spieler){
+  deleteMannschaft(spielklasse, nummer, keep_spieler){
     // Handle the spieler of the deleted mannschaft
     const previous_nummer = nummer - 1
     var new_position_next_mannschaft = 0
-    this.getSpielerOfMannschaft(nummer).forEach(spieler => {
+    this.getSpielerOfMannschaft(spielklasse, nummer).forEach(spieler => {
       if ( keep_spieler ) {
         if ( previous_nummer > 0) {
           // append the spieler of the deleted mannschaft to the previous mannschaft
-          const new_position = this.getSpielerOfMannschaft(previous_nummer).length + 1
-          this.reorderSpieler(spieler.id, previous_nummer, new_position)
+          const new_position = this.getSpielerOfMannschaft(spielklasse, previous_nummer).length + 1
+          this.reorderSpieler(spieler.id, spielklasse, previous_nummer, new_position)
         } else {
           // prepend the spieler to the next mannschaft
           new_position_next_mannschaft++
-          this.reorderSpieler(spieler.id, nummer + 1, new_position_next_mannschaft)
+          this.reorderSpieler(spieler.id, spielklasse, nummer + 1, new_position_next_mannschaft)
         }
       } else {
         // delete the spieler
@@ -110,12 +124,15 @@ class SpielerListeModel {
     })
     // Then decrease the mannschaft of all spieler with greater mannschaft than nummer
     this.liste
+    .filter(spieler => ( spieler.spielklasse > spielklasse ))
     .filter(spieler => ( spieler.mannschaft > nummer ))
     .forEach(spieler => spieler.mannschaft = spieler.mannschaft - 1)
   }
 
-  clearAllSpielerPositionen(){
-    this.liste.forEach( spieler => { spieler.clearPosition() } )
+  clearAllSpielerPositionen(spielklasse){
+    this.liste
+    .filter( spieler => spieler.spielklasse.startsWith(spielklasse))
+    .forEach( spieler => { spieler.clearPosition() } )
   }
 
   cleanUp(){
@@ -130,6 +147,8 @@ class SpielerListeModel {
       this._recomputeTtrDifferenzForSpieler(spieler)
       // check if any ttrdifferenzen are invalids
       this._checkTtrDifferenzenForSpieler(spieler)
+      // check if spieler has correct age
+      this._checkAgeForSpielklasseForSpieler(spieler)
     })
   }
 
@@ -140,26 +159,43 @@ class SpielerListeModel {
     return this.liste.find(spieler => (spieler.id == id))
   }
 
-  getSpielerByName(name) {
-    return this.liste.find(spieler => ( spieler.name == name) )
+  getSpielerByName(name, spielklasse) {
+    return this.liste
+    .filter(spieler => ( spieler.spielklasse == spielklasse))
+    .find(spieler => ( spieler.name == name) )
   }
 
-  getSpielerByMyTTId(mytt_id) {
+  getSpielerByMyTTId(mytt_id, spielklasse) {
     if (mytt_id == 0) { return undefined }
-    return this.liste.find(spieler => ( spieler.mytt_id == mytt_id) )
+    if (typeof spielklasse === 'undefined') {
+      return this.liste
+      .find(spieler => ( spieler.mytt_id == mytt_id) )
+    } else {
+      return this.liste
+      .filter(spieler => ( spieler.spielklasse == spielklasse))
+      .find(spieler => ( spieler.mytt_id == mytt_id) )
+    }
   }
 
-  getSpielerOfMannschaft(nummer) {
-    return this.liste.filter(spieler => ( spieler.mannschaft == nummer))
+  getSpielerListeByMyTTId(mytt_id) {
+    if (mytt_id == 0) { return [] }
+    return this.liste.filter(spieler => ( spieler.mytt_id == mytt_id) )
+  }
+
+  getSpielerOfMannschaft(spielklasse, nummer) {
+    return this.liste
+    .filter(spieler => ( spieler.spielklasse == spielklasse))
+    .filter(spieler => ( spieler.mannschaft == nummer))
   }
 
   /**
    * Internal Manipulate Spieler Array Functions
    */
 
-  _insertSpielerInMannschaft(insert_spieler, mannschaft, position) {
-    const current_spieler_with_position = this.liste.find(spieler => ( spieler.mannschaft == mannschaft && spieler.position === position ) )
+  _insertSpielerInMannschaft(insert_spieler, spielklasse, mannschaft, position) {
+    const current_spieler_with_position = this.liste.filter(spieler => (spieler.spielklasse == spielklasse)).find(spieler => ( spieler.mannschaft == mannschaft && spieler.position === position ) )
     this.liste
+    .filter( spieler => ( spieler.spielklasse == spielklasse ))
     .filter( spieler => ( spieler.mannschaft == mannschaft && spieler.position >= position ) )
     .forEach( spieler => {
       // increase all positionen from the same mannschaft greater or equal than position by one
@@ -168,6 +204,7 @@ class SpielerListeModel {
       if (spieler.spv.primary) { insert_spieler.spv.secondary++ }
     } )
     // put the insert_spieler in new position
+    insert_spieler.spielklasse = spielklasse
     insert_spieler.mannschaft = mannschaft
     insert_spieler.position = position
     // Sort this.liste
@@ -205,7 +242,8 @@ class SpielerListeModel {
     remove_spieler.position = 0
     // decrease all positionen from mannschaft greater than position by one
     this.liste
-    .filter( spieler => ( spieler.spielklasse == remove_spieler.spielklasse && spieler.mannschaft == old_mannschaft && spieler.position >= old_position ) )
+    .filter( spieler => ( spieler.spielklasse == remove_spieler.spielklasse ))
+    .filter( spieler => ( spieler.mannschaft == old_mannschaft && spieler.position >= old_position ) )
     .forEach( spieler => { spieler.position-- } )
     // sort this.liste
     this._sortSpielerListe()
@@ -250,6 +288,7 @@ class SpielerListeModel {
   _checkTtrDifferenzenAgainstHigherPositionenForSpieler(check_spieler){
     // Check if this spieler is invalid because of any positionen higher than its own
     this.liste
+    .filter(spieler => ( spieler.spielklasse == check_spieler.spielklasse ))
     .filter(spieler => (
       ( spieler.mannschaft == check_spieler.mannschaft && spieler.position < check_spieler.position ) || ( spieler.mannschaft < check_spieler.mannschaft ) &&
       spieler.qttr < check_spieler.qttr) )
@@ -267,6 +306,7 @@ class SpielerListeModel {
   _checkTtrDifferenzenAgainstLowerPositionenForSpieler(check_spieler){
     // Check if this spieler is invalid because of any positionen higher than its own
     this.liste
+    .filter(spieler => ( spieler.spielklasse == check_spieler.spielklasse ))
     .filter(spieler => (
       ( spieler.mannschaft == check_spieler.mannschaft && spieler.position > check_spieler.position ) || ( spieler.mannschaft > check_spieler.mannschaft ) ) )
     .forEach(spieler => {
@@ -338,6 +378,34 @@ class SpielerListeModel {
   }
 
   /**
+   * check if the spieler has the correct age for his or her spielklasse
+   */
+  _checkAgeForSpielklasseForSpieler(spieler){
+    if (spieler.spielklasse !== "Herren" && spieler.spielklasse !== "Damen" && spieler.jahrgang !== "") {
+      spieler.wrongAgeForSpielklasse = false
+      const saison_year = parseInt(this.saison.substring(0,4),10)
+      const spielklassen_age_str = spieler.spielklasse.match(/\d+/).join()
+      var spielklassen_age
+      if (spielklassen_age_str) {
+        spielklassen_age = parseInt(spielklassen_age_str)
+      } else {
+        return
+      }
+      if (spielklassen_age <= 18) {
+        // Jugend
+        if ( ( saison_year + 1 - spielklassen_age ) > spieler.jahrgang ) {
+          spieler.wrongAgeForSpielklasse = true
+        }
+      } else {
+        // Senioren
+        if ( ( saison_year + 1 - spielklassen_age ) < spieler.jahrgang ){
+          spieler.wrongAgeForSpielklasse = true
+        }
+      }
+    }
+  }
+
+  /**
    * Array Functions
    */
 
@@ -345,14 +413,14 @@ class SpielerListeModel {
     const prev_index = this.liste.indexOf(spieler) - 1
     if (prev_index > -1){
       const prev_spieler = this.liste[prev_index]
-      return ( prev_spieler.mannschaft > 0 && prev_spieler.position > 0) ? prev_spieler : null
+      return ( prev_spieler.spielklasse == spieler.spielklasse && prev_spieler.mannschaft > 0 && prev_spieler.position > 0 ) ? prev_spieler : null
     }
     return null
   }
 
   _getNextSpieler(spieler){
     const next_index = this.liste.indexOf(spieler) + 1
-    return ( next_index < this.liste.length ) ? this.liste[next_index] : null
+    return ( next_index < this.liste.length && this.liste[next_index].spielklasse == spieler.spielklasse) ? this.liste[next_index] : null
   }
 
   _sortSpielerListe(){

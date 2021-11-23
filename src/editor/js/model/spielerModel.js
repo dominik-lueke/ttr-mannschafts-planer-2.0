@@ -12,6 +12,7 @@ class SpielerModel {
     this.qttrinfo = `Manuell eingetragen am ${this.qttrdate.getDate()}.${this.qttrdate.getMonth()+1}.${this.qttrdate.getFullYear()}`
     this.ttrdifferenz = 0
     this.farbe = "default"
+    this.jahrgang = ""
     this.reserve = false
     this.sbe = false
     this.spv = {
@@ -23,6 +24,7 @@ class SpielerModel {
     this.kommentar = ""
     this.invalid = [] // Store all players because of which this spieler is invalid
     this.invalidSpielerFromHigherMannschaften = 0 // Store how many spieler because of which we are invalid are from higher mannschaften
+    this.wrongAgeForSpielklasse = false
     this.bilanzen = {}
     /*
     {
@@ -94,7 +96,8 @@ class SpielerModel {
   }
 
   compare(other_spieler) {
-    return ( this.mannschaft * 1000 + this.position ) - ( other_spieler.mannschaft * 1000 + other_spieler.position )
+    const spielklasse_compare = this.spielklasse.localeCompare(other_spieler.spielklasse)
+    return spielklasse_compare !== 0 ? spielklasse_compare : ( this.mannschaft * 1000 + this.position ) - ( other_spieler.mannschaft * 1000 + other_spieler.position )
   }
 
   addSpielerToInvalidList(invalid_spieler) {
@@ -141,8 +144,16 @@ class SpielerModel {
    */
 
   _getAllowedTtrDifferenz(other_spieler) {
-    var delta = this.mannschaft == other_spieler.mannschaft ? 35 : 50
-    delta += this.sbe || other_spieler.sbe ? 35 : 0
+    var delta = this.mannschaft == other_spieler.mannschaft ? TTR_TOLERANZ_INTERN : TTR_TOLERANZ
+    // Add Jugend Bonus
+    var jugend_spielklasse = false
+    JUGEND_SPIELKLASSEN.forEach(spielklasse => {
+      jugend_spielklasse = this.spielklasse.match(new RegExp(`${spielklasse}.*`))
+    })
+    delta += ( this.sbe || other_spieler.sbe || jugend_spielklasse ) ? TTR_TOLERANZ_JUGEND_BONUS : 0
+    // Add D-Kader Bonus
+    delta += ( this.dkader || other_spieler.dkader ) ? TTR_TOLERANZ_DKADER_BONUS : 0
+    // return allowed delta
     return delta
   }
 

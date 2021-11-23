@@ -3,12 +3,11 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'">
     <title>Tischtennis Mannschafts Planer</title>
     <!-- app styles -->
-    <script type="text/javascript" src="./../../vendor/jquery-3.3.1/jquery-3.3.1.slim.min.js"></script>
-    <script type="text/javascript" src="./../../vendor/bootstrap-4.4.1/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./../../vendor/jquery-1.12.4/jquery-1.12.4.js"></script>
     <link rel="stylesheet" type="text/css" href="./../../vendor/bootstrap-4.4.1/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="./../css/splashscreen.css">
   </head>
@@ -21,6 +20,7 @@
           </div>
           <div class="col-8">
             <h4 class="pl-2 display-4">Tischtennis<br/>Mannschafts<br/>Planer</h4>
+            <div class="pl-2 text-muted">Version: <span id="version"></div>
           </div>
         </div>
         <div class="row">
@@ -38,5 +38,12 @@
         </div>
       </div>
     </div>
+    <script>
+      $( document ).ready(() => {
+        $.getJSON("./../../../package.json", (json) => {
+          $('#version').text(json.version)
+        })
+      });
+    </script>
   </body>
 </html>

@@ -7,18 +7,30 @@ a, a:hover,
 a .spieler-farbe-selector.active,
 a .spieler-farbe-selector.active:hover,
 a .spieler-farbe-selector:hover {
+
   border: 2px solid;
-  margin: 5px 10px 5px 0px;
+  margin: 0px 10px 5px 0px !important;
 }
 
 a .spieler-farbe-selector {
   border: 1px solid;
-  margin: 6px 11px 6px 1px;
+  margin: 1px 11px 6px 1px !important;
 }
 
 /* HEADER */
 #header h4 {
   cursor: default;
+}
+
+/* FOOTER */
+.tooltip-inner-wide {
+  max-width: unset !important;
+}
+
+/* PLANUNG TAGS MODAL */
+.tag-list-item-badge {
+  white-space: normal;
+  text-align: left;
 }
 
 /* SPIELER FARBE */
@@ -53,6 +65,9 @@ a .spieler-farbe-selector {
 .display-none {
   display: none;
 }
+.invisible {
+  visibility: hidden;
+}
 
 /* SIDEBAR */
 
@@ -66,7 +81,7 @@ a .spieler-farbe-selector {
 }
 
 .details-sidebar > .card {
-  height: calc(100vh - 100px);
+  height: calc(100vh - 130px);
 }
 
 .sidebar-details-icon {
@@ -83,6 +98,18 @@ a .spieler-farbe-selector {
   cursor: default;
 }
 
+.card-collapseable .card-header i.fa-caret-down {
+  transition: 0.5s;
+}
+
+.card-collapseable .card-header.collapsed {
+  border-bottom: none;
+}
+
+.card-collapseable .card-header.collapsed i.fa-caret-down {
+  transform: rotate(-90deg);
+}
+
 #mannschaft-details-view-body-bilanzen td.bilanzen-spieler-name {
   overflow: hidden;
   white-space: nowrap;
@@ -94,6 +121,18 @@ a .spieler-farbe-selector {
 
 .editor-container {
   margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.card-spielklasse {
+  width: 550px;
+}
+
+#editor-col.single-spielklasse .card-spielklasse {
+  border: none !important;
+}
+#editor-col.single-spielklasse .card-spielklasse > .card-header{
+  display: none !important;
 }
 
 .mannschafts-row {
@@ -125,6 +164,11 @@ a .spieler-farbe-selector {
 
 .mannschaft .spielerliste {
   min-height: 25px;
+}
+
+.mannschaft .new-qttr-input.is-invalid {
+  padding-right: inherit !important;
+  background-image: none;
 }
 
 .mannschaft-focused .mannschaft-header {
@@ -235,7 +279,7 @@ a .spieler-farbe-selector {
 }
 
 /* NEW PLANUNG MODAL */
-#newPlanungModal .form-control:valid{
+#newPlanungModal .form-control:valid {
   background-image: none !important;
 }
 /* OVERLAY ICON */
@@ -286,10 +330,31 @@ span.badge {
   font-size: 1.3em;
 }
 
+/* FOOTER */
+#footer .inactive-tag {
+  opacity: 0.5;
+}
+
+#footer .inactive-tag:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
 /* ABOUT MODAL */
 
 #tischtennis-planer-about-modal {
   top: 50px !important;
+}
+
+/* AUTO UPDATER */
+#auto-updater-notification {
+  position: fixed;
+  bottom: 50px;
+  right: 20px;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 /* SMALL SCREEN */
@@ -364,7 +429,8 @@ span.badge {
   #myTTModal,
   #newPlanungModal,
   #header-mytt-status-div,
-  #add-mannschaft-button-container,
+  #footer,
+  .add-mannschaft-button-container,
   ul.add-spieler-button-container,
   div.spv span.badge-light {
     display: none !important;
@@ -374,6 +440,7 @@ span.badge {
     display: block !important;
   }
 
+  .card-spielklasse,
   .mannschafts-row {
     page-break-inside: avoid;
   }

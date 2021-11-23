@@ -55,10 +55,10 @@ ipcRenderer.on('openFilepath', (event, args) => {
 })
 
 ipcRenderer.on('exportAsExcel', (event, args) => {
-  var filepath = exportAsXlsxDialog(app.planung)
+  var filepath = exportAsXlsxDialog(app.model.planung)
   if ( filepath ) {
     app.showProgressBar('success', 'white', 'Exportiere nach Excel...')
-    ipcRenderer.send('exportAsExcelReply', {filepath: filepath, planung: app.planung.getPlanungAsJsonString()})
+    ipcRenderer.send('exportAsExcelReply', {filepath: filepath, planung: app.model.planung.getPlanungAsJsonString()})
   }
 })
 
@@ -99,13 +99,13 @@ ipcRenderer.on('showAboutModal', (event, args) => {
 
 ipcRenderer.on('quit', (event, args) => {
   // store current file
-  const file = app.planung.file 
+  const file = app.model.file 
   app.closePlanungSave().then((result) => {
     if (result) {
       if (file) {
-        localStorage.setItem('localStorageFilepath', file)
+        localStorage.setItem('localStorageFilepathQuit', file)
       } else {
-        localStorage.removeItem('localStorageFilepath')
+        localStorage.removeItem('localStorageFilepathQuit')
       }
       ipcRenderer.send('quitOK')
     }
@@ -151,8 +151,8 @@ exportAsXlsxDialog = (planung) => {
   const dialog = remote.dialog
   const window = remote.getCurrentWindow();
   const friendly_saison = planung.saison.replace("/","")
-  const empty_filepath_suggestion = `Saisonplanung-${planung.verein}-${planung.spielklasse}-${planung.halbserie}-${friendly_saison}.xslx`
-  const filepath_suggestion = planung.file ? planung.file.replace("ttsp","xlsx") : path.resolve(eleapp.getPath("documents"),empty_filepath_suggestion)
+  const empty_filepath_suggestion = `Saisonplanung-${planung.verein}-${planung.spielklasse}-${planung.halbserie}-${friendly_saison}`
+  const filepath_suggestion = planung.file ? planung.file.replace("ttsp","") : path.resolve(eleapp.getPath("documents"),empty_filepath_suggestion)
   let options = {
     title: "Exportiere Saisonplanung - Tischtennis Mannschafts Planer",
     defaultPath : path.resolve(filepath_suggestion),
@@ -193,14 +193,14 @@ writePlanungToFile = (filepath, planung_json_str) => {
 
 openPlanungFromFile = (filepath) => {
   app.showProgressBar("primary","white","",true) // start "loading"
-  fs.readFile(filepath, 'utf-8', (err, planung_json_str) => {
+  fs.readFile(filepath, 'utf-8', (err, file_content_str) => {
     if(err){
         app.alertError(`An error ocurred reading the file ${filepath}:<br/>${err.message}`);
         return;
     }
     app.closePlanungSave().then((result) => {
       if (result) {
-        app.openPlanung(planung_json_str, filepath)
+        app.openPlanung(file_content_str, filepath)
       }
       app.hideProgressBar() // stop "loading"
     })
@@ -217,8 +217,22 @@ $(document).on('click', 'a[href^="http"]', function(event) {
 
 $(document).on('click', 'a[href^="file://"]', function(event) {
   event.preventDefault()
-  shell.openItem(path.resolve(__dirname, this.href.replace('file://','./../../../')))
+  shell.openPath(path.resolve(__dirname, this.href.replace('file://','./../../../')))
 });
+
+/**
+ * Auto Updater
+ */
+
+ipcRenderer.on('update_available', () => {
+  ipcRenderer.removeAllListeners('update_available')
+  app.displayUpdateAvailable()
+})
+
+ipcRenderer.on('update_downloaded', () => {
+  ipcRenderer.removeAllListeners('update_downloaded')
+  app.displayDownloadDone()
+})
 
 /*
 * --------------
@@ -226,6 +240,6 @@ $(document).on('click', 'a[href^="file://"]', function(event) {
 * --------------
 */
 const app = new Controller()
-if (localStorage.getItem('localStorageFilepath')) {
-  openPlanungFromFile(localStorage.getItem('localStorageFilepath'))
+if (localStorage.getItem('localStorageFilepathQuit')) {
+  openPlanungFromFile(localStorage.getItem('localStorageFilepathQuit'))
 }

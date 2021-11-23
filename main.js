@@ -1,5 +1,6 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow, Menu, ipcMain, shell} = require('electron')
+const { autoUpdater } = require('electron-updater');
 const ExcelExporter = require('./src/main/js/export/excelExporter')
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -24,7 +25,7 @@ function createAppWindows() {
 function createSplashscreen() {
   splashScreen = new BrowserWindow({ 
     width: 550,
-    height: 300,
+    height: 320,
     frame: false
   })
   splashScreen.setIgnoreMouseEvents(true)
@@ -44,6 +45,8 @@ function createWindow () {
     webPreferences: {
       nodeIntegration: true,
       webviewTag: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
       devTools: is_dev_mode
     }
   })
@@ -65,9 +68,10 @@ function createWindow () {
   editorWindow.once('ready-to-show', () => {
     setTimeout(()=>{
       splashScreen.destroy()
+      autoUpdater.checkForUpdatesAndNotify()
       editorWindow.maximize()
       editorWindow.show()
-      if (file_to_open && file_to_open !== '.') {
+      if (file_to_open && file_to_open !== '.' && file_to_open !== '--updated') {
         editorWindow.webContents.send('openFilepath',file_to_open)
       }
     }, 1000)
@@ -342,3 +346,17 @@ ipcMain.on('quitOK', (event, args) => {
 ipcMain.on('enableFileMenu', (event, args) => {
   enableFileMenu(args)
 })
+
+/* AUTO UPDATER */
+
+ipcMain.on('restart_app', () => {
+  autoUpdater.quitAndInstall();
+});
+
+autoUpdater.on('update-available', () => {
+  editorWindow.webContents.send('update_available');
+});
+
+autoUpdater.on('update-downloaded', () => {
+  editorWindow.webContents.send('update_downloaded');
+});
